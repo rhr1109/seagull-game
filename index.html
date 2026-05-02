@@ -522,6 +522,32 @@ button { font-family: inherit; font-size: inherit; color: inherit; cursor: point
   font-size: 14px;
   font-weight: 600;
 }
+.slot-list { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+.slot-card {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--c-panel);
+  border: 1px solid var(--c-line);
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  text-align: left;
+}
+.slot-card:hover { background: var(--c-panel-2); border-color: #5a6580; }
+.slot-card.empty { color: var(--c-text-dim); border-style: dashed; }
+.slot-card.active-slot { border-color: var(--c-accent); background: rgba(244,196,48,0.08); }
+.slot-card .slot-info { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.slot-card .slot-info b { font-size: 13px; }
+.slot-card .slot-info .meta { font-size: 11px; color: var(--c-text-dim); }
+.slot-card .slot-action { display: flex; gap: 4px; }
+.slot-card .slot-del {
+  background: transparent;
+  border: 1px solid var(--c-line);
+  color: var(--c-text-dim);
+  padding: 4px 8px; border-radius: 5px; font-size: 11px;
+  cursor: pointer;
+}
+.slot-card .slot-del:hover { color: var(--c-bad); border-color: var(--c-bad); }
 .title-screen .menu button:hover { background: #3b465e; }
 .title-screen canvas#titleCanvas {
   width: 240px;
@@ -737,7 +763,7 @@ hr { border: none; border-top: 1px solid var(--c-line); margin: 8px 0; }
       <span class="pill" id="timeLabel">아침 ☀️</span>
       <span class="pill" id="weatherLabel">맑음</span>
       <span class="pill" id="moneyLabel" title="동전 — 상점에서 사용">💰 0</span>
-      <span class="pill" id="foodLabel" title="음식 — 배고픔 자동 회복">🍖 0</span>
+      <span class="pill" id="foodLabel" title="음식 — 포만감 자동 회복">🍖 0</span>
     </div>
     <div class="icons">
       <button class="icon-btn" id="muteBtn" title="음소거">🔊</button>
@@ -805,8 +831,9 @@ hr { border: none; border-top: 1px solid var(--c-line); margin: 8px 0; }
       <div class="by">"끼룩이 아니라 끄어억" <span class="rating-mark">19</span></div>
     </div>
     <div class="menu">
+      <div id="slotList" class="slot-list"></div>
+      <button id="newGameBtn" class="hidden-init">새 갈매기 시작</button>
       <button id="continueBtn" class="hidden-init">이어하기</button>
-      <button id="newGameBtn">새 갈매기 시작</button>
       <button id="albumOpenBtn">📔 꽁초의 일대기</button>
       <button id="creditsBtn">크레딧</button>
     </div>
@@ -1104,6 +1131,7 @@ function defaultMeta() {
     selectedCostume: 'default',
     titlesUnlocked: [],
     selectedTitle: '',
+    currentSlot: 0,
     totalRuns: 0,
     totalCigSmoked: 0,
     longestLife: 0,
@@ -1116,17 +1144,23 @@ let RUN = defaultRun();
 let META = loadMeta();
 
 // ============================================================
-// SAVE / LOAD
+// SAVE / LOAD — 3 slot system
 // ============================================================
-const SAVE_KEY_RUN = 'kkeuh_run_v1';
 const SAVE_KEY_META = 'kkeuh_meta_v1';
+const SAVE_KEY_RUN_LEGACY = 'kkeuh_run_v1';
+const SLOT_COUNT = 3;
+const slotKey = (i) => `kkeuh_run_v1_slot_${i}`;
+
+function activeSlot() {
+  return (typeof META !== 'undefined' && META && Number.isInteger(META.currentSlot)) ? META.currentSlot : 0;
+}
 
 function saveRun() {
-  try { localStorage.setItem(SAVE_KEY_RUN, JSON.stringify(RUN)); } catch(e){}
+  try { localStorage.setItem(slotKey(activeSlot()), JSON.stringify(RUN)); } catch(e){}
 }
 function loadRun() {
   try {
-    const raw = localStorage.getItem(SAVE_KEY_RUN);
+    const raw = localStorage.getItem(slotKey(activeSlot()));
     if (!raw) return null;
     const obj = JSON.parse(raw);
     if (!obj || obj.finished) return null;
@@ -1134,7 +1168,29 @@ function loadRun() {
   } catch(e) { return null; }
 }
 function clearRun() {
-  try { localStorage.removeItem(SAVE_KEY_RUN); } catch(e){}
+  try { localStorage.removeItem(slotKey(activeSlot())); } catch(e){}
+}
+function loadRunFromSlot(i) {
+  try {
+    const raw = localStorage.getItem(slotKey(i));
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (!obj || obj.finished) return null;
+    return obj;
+  } catch(e) { return null; }
+}
+function clearSlot(i) {
+  try { localStorage.removeItem(slotKey(i)); } catch(e){}
+}
+// One-time migration: legacy single save → slot 0
+function migrateLegacySave() {
+  try {
+    const legacy = localStorage.getItem(SAVE_KEY_RUN_LEGACY);
+    if (legacy && !localStorage.getItem(slotKey(0))) {
+      localStorage.setItem(slotKey(0), legacy);
+    }
+    if (legacy) localStorage.removeItem(SAVE_KEY_RUN_LEGACY);
+  } catch(e){}
 }
 function saveMeta() {
   try { localStorage.setItem(SAVE_KEY_META, JSON.stringify(META)); } catch(e){}
@@ -2620,14 +2676,14 @@ function resolveHunt(loc) {
     toast(msg, 'good');
     AUDIO.sfx('success');
     changeStat('reputation', +1, {silent:true});
-    changeStat('flight', -4, {silent:true});
+    changeStat('flight', -2, {silent:true});
     changeStat('stress', +3);
   } else {
     msg = `${loc.loc}: 사냥 실패. 텅 빈 부리만 남았다.`;
     logLine(msg, 'bad');
     toast(msg, 'bad');
     AUDIO.sfx('fail');
-    changeStat('flight', -6, {silent:true});
+    changeStat('flight', -3, {silent:true});
     changeStat('stress', +9);
   }
 
@@ -2653,7 +2709,8 @@ function triggerRisk(loc) {
         changeStat('lung', -8);
         changeStat('reputation', -5);
         changeStat('stress', +10);
-        if (RUN.stats.lung < 5) {
+        // 부상 트리거 — 폐 30 이하로 떨어지면 critical
+        if (RUN.stats.lung < 30) {
           RUN.flags.injuredCritical = true;
           maybeHumanAdoptionEnding();
         }
@@ -2812,7 +2869,7 @@ function actionInteract() {
   // weighted
   const e = (() => {
     const r = Math.random();
-    if (RUN.flags.suitGullDaysSince === 3) return eventSuitGullCallback;
+    if (RUN.flags.suitGullDaysSince >= 2) return eventSuitGullCallback;
     if (r < 0.35) return eventNormalGull;
     if (r < 0.55) return eventRivalGull;
     if (r < 0.70) return eventTouristNice;
@@ -3000,6 +3057,8 @@ function eventSuitGull() {
 }
 
 function eventSuitGullCallback() {
+  // mark as fired so it doesn't re-trigger every interaction after day 2
+  RUN.flags.suitGullDaysSince = -1;
   spawnGuest('suit', { targetX: 0.25, life: 480, scale: 1.4 });
   presentChoicesWithPortrait('suit', '📩 다시 만난 정장', '명함의 갈매기가 다시 왔다.\n"사장님이 만나고 싶어합니다."', [
     {
@@ -3007,7 +3066,7 @@ function eventSuitGullCallback() {
       onPick:()=>{
         RUN.flags.ceoMet = true;
         toast('🚗 어딘가의 펜트하우스. 담배 회사 CEO 갈매기.','warn');
-        logLine('CEO: "A급 이상으로 8개 피우면 우리 결혼 어떨까?"');
+        logLine('CEO: "A급 이상으로 3개 피우면 우리 결혼 어떨까?"');
         advanceTime();
       }
     },
@@ -3015,7 +3074,6 @@ function eventSuitGullCallback() {
       text:'거절한다',
       onPick:()=>{
         toast('"실망입니다." 그는 사라졌다.','');
-        RUN.flags.suitGullDaysSince = -1;
         advanceTime();
       }
     }
@@ -3030,7 +3088,7 @@ function eventCEO() {
     {
       text:'알겠다고 끄덕인다',
       onPick:()=>{
-        toast(`A급 이상 ${RUN.flags.aPlusSmokedTotal}/8 흡연`,'warn');
+        toast(`A급 이상 ${RUN.flags.aPlusSmokedTotal}/3 흡연`,'warn');
         advanceTime();
       }
     },
@@ -3203,7 +3261,7 @@ function pickEvent(table) {
 }
 
 function triggerRandomEvent() {
-  if (RUN.flags.suitGullMet && RUN.flags.suitGullDaysSince === 3) {
+  if (RUN.flags.suitGullMet && RUN.flags.suitGullDaysSince >= 2) {
     eventSuitGullCallback();
     return;
   }
@@ -3345,11 +3403,12 @@ function eventFireworks() {
         spawnFireworks(10);
         if (auto || (RUN.stats.flight > 50 && chance(0.55))) {
           changeStat('reputation', +15);
-          changeStat('flight', -10);
+          changeStat('flight', -5);
           RUN.flags.fireworkStageDone = true;
           toast('🎆 폭죽 사이를 가로질렀다. 부두의 록스타가 됐다.','good');
           screenFlash('rgba(255,200,80,0.6)', 24);
-          if (RUN.stats.flight >= 90) RUN.flags.pegasusAchieved = true;
+          // pegasus credit if you went into the stage with high flight
+          if (RUN.stats.flight + 5 >= 75) RUN.flags.pegasusAchieved = true;
         } else {
           changeStat('lung', -12);
           changeStat('flight', -15);
@@ -3395,10 +3454,10 @@ function eventTyphoon() {
     { text:'강풍을 즐긴다',
       sub:'스릴 — 비행 ↑ 위험 ↑',
       onPick:()=>{
-        if (RUN.stats.flight > 70 && chance(0.5)) {
+        if (RUN.stats.flight > 60 && chance(0.6)) {
           changeStat('flight', +10);
           changeStat('stress', -12);
-          RUN.flags.pegasusAchieved = true; // 천공 트리거 후보
+          RUN.flags.pegasusAchieved = true;
           toast('🌪️ 풍속 30m/s를 거슬렀다. 너는 다른 차원의 갈매기다.','good');
         } else {
           changeStat('lung', -15);
@@ -3561,12 +3620,11 @@ function eventQuitChallenge() {
 }
 
 function maybeHumanAdoptionEnding() {
-  if (RUN.flags.humanAffinity >= 80 && RUN.flags.injuredCritical) {
+  if (RUN.flags.humanAffinity >= 55 && RUN.flags.injuredCritical) {
     triggerEnding(5);
   } else if (RUN.stats.lung <= 0) {
     triggerEnding(1);
   } else {
-    // recovered to barely alive
     RUN.stats.lung = Math.max(RUN.stats.lung, 5);
     advanceTime();
   }
@@ -3586,7 +3644,7 @@ function advanceTime(slept=false) {
   changeStat('craving', cravingDrift, {silent:true});
   changeStat('stress',  +2, {silent:true});
   // flight: hunting drains it (handled in resolveHunt). Outside hunts, slowly recover.
-  if (!RUN.flags.huntedThisTurn) changeStat('flight', +0.7, {silent:true});
+  if (!RUN.flags.huntedThisTurn) changeStat('flight', +1.2, {silent:true});
   RUN.flags.huntedThisTurn = false;
   changeStat('hunger',  -hungerDrift, {silent:true});
   // lung self-repair when not actively smoking today
@@ -3738,18 +3796,18 @@ function checkEndings() {
   if (RUN.flags.sCigarettesSmoked >= 3) return triggerEnding(2);                                  // 5 → 3
   if (s.reputation >= 100 && RUN.flags.underlings >= 5) return triggerEnding(3);                  // 마피아 — 의도적으로 어려운 채로
   if (RUN.flags.overdose) return triggerEnding(4);
-  if (RUN.flags.humanAffinity >= 70 && RUN.flags.injuredCritical) return triggerEnding(5);        // 80 → 70
-  if (RUN.flags.ceoMet && RUN.flags.aPlusSmokedTotal >= 5) return triggerEnding(7);               // 8 → 5
+  if (RUN.flags.humanAffinity >= 55 && RUN.flags.injuredCritical) return triggerEnding(5);        // 70 → 55 (and 부상 트리거 더 잘 되도록)
+  if (RUN.flags.ceoMet && RUN.flags.aPlusSmokedTotal >= 3) return triggerEnding(7);               // CEO 결혼: A급↑ 3개
   if (s.reputation <= 5 && RUN.flags.daysWithoutInteraction >= 8) return triggerEnding(8);        // 0/10 → 5/8
   if (RUN.flags.consecutiveCleanDays >= 12 && s.reputation <= 20) return triggerEnding(11);       // 15/15 → 12/20
   if (s.reputation >= 90 && RUN.flags.underlings >= 4 && RUN.flags.sCigarettesSmoked >= 1) return triggerEnding(12); // 95/5/2 → 90/4/1
   // 14~20 new endings
   if (RUN.flags.humanAffinity >= 55 && s.reputation >= 45 && RUN.day >= 6 && !RUN.flags.ceoMet) return triggerEnding(14); // 프린세스: 65/55 → 55/45
-  if (s.flight >= 85 && RUN.flags.pegasusAchieved) return triggerEnding(15);                              // 천마: 90 → 85
+  if (s.flight >= 75 && RUN.flags.pegasusAchieved) return triggerEnding(15);                              // 천마: 85 → 75
   if (RUN.flags.underlings >= 3 && s.reputation >= 50) return triggerEnding(16);                          // 사부: 4/55 → 3/50
   if (RUN.flags.fireworkStageDone && s.reputation >= 80 && s.flight >= 70) return triggerEnding(17);     // 록스타 — 의도적으로 약간 어려움
   if (RUN.flags.photoCount >= 2 && RUN.flags.humanAffinity >= 40) return triggerEnding(18);               // 화가: 3/50 → 2/40
-  if (RUN.flags.killCount >= 2) return triggerEnding(19);                                                  // 살인마: 3 → 2
+  if (RUN.flags.killCount >= 2) return triggerEnding(19);                                                  // 거리의 깡패: 격투 2승
   // 갈매기 신 — 다른 엔딩 1~19 모두 해금된 사용자에게만
   const others = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
   if (others.every(id => META.endingsUnlocked.includes(id)) && RUN.day >= 10) return triggerEnding(20);
@@ -3778,7 +3836,7 @@ const ENDING_DEFS = [
   { id:16, name:'갈매기 사부',     flavor:'젊은 갈매기들이 너에게 와서 끄어억을 배웠다.',              costume:'master',   costumeName:'사부 갈매기',  title:'끄어억 사부',       hidden:false },
   { id:17, name:'갈매기 록스타',   flavor:'폭죽 무대 한가운데에서 너는 록스타가 됐다.',                costume:'rockstar', costumeName:'록스타',       title:'부둣가 록스타',     hidden:false },
   { id:18, name:'부둣가의 화가',   flavor:'갈매기 한 마리가 인스타에서 100만 팔로워를 찍었다.',         costume:'painter',  costumeName:'화가',         title:'인스타 갈매기',     hidden:false },
-  { id:19, name:'갈매기 살인마',   flavor:'부두는 조용해졌다. 다들 너를 피했다.',                       costume:'killer',   costumeName:'살인마',       title:'부두의 그림자',     hidden:false },
+  { id:19, name:'거리의 깡패',     flavor:'부두는 조용해졌다. 다들 너를 피했다.',                       costume:'killer',   costumeName:'거리의 깡패',  title:'부두의 깡패',       hidden:false },
   { id:20, name:'갈매기 신',       flavor:'모든 길을 본 너는 끄어억의 본질이 됐다.',                    costume:'god',      costumeName:'갈매기 신',    title:'끄어억 자체',       hidden:true  }
 ];
 
@@ -3873,10 +3931,10 @@ function showInventory() {
   html += '</div>';
   // food eat button
   html += `<hr><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px">
-    <span>🍖 음식 ${RUN.foodCount}개 · 배고픔 ${Math.round(RUN.stats.hunger)}/100</span>
+    <span>🍖 음식 ${RUN.foodCount}개 · 포만감 ${Math.round(RUN.stats.hunger)}/100</span>
     <button id="invEat" style="background:#7BC47F;color:#fff;border:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer" ${RUN.foodCount<=0?'disabled':''}>지금 먹기 (+30)</button>
   </div>`;
-  html += `<div class="dim">자금: 💰${RUN.money} · Day ${RUN.day}/30 · 음식은 배고픔 35 이하에서 자동 소비됨</div>`;
+  html += `<div class="dim">자금: 💰${RUN.money} · Day ${RUN.day}/30 · 음식은 포만감 50 이하에서 자동 소비됨 (+40)</div>`;
   html += `<div class="dim">총 흡연량: ${RUN.cigarettesSmokedTotal} · S급 흡연: ${RUN.flags.sCigarettesSmoked}</div>`;
 
   // === Ending progress ===
@@ -3888,9 +3946,9 @@ function showInventory() {
     { id:2,  label:'전설의 골초',        cur:`S급 시가 ${f.sCigarettesSmoked}/3개 흡연` },
     { id:3,  label:'마피아 보스',        cur:`평판 ${Math.round(s.reputation)}/100 + 부하 ${f.underlings}/5명` },
     { id:4,  label:'약물 과다',          cur:f.overdose?'✓ 발생':`S급 5개 보유 후 흡연 모달의 "한입에 5개"` },
-    { id:5,  label:'인간 입양',          cur:`인간 호감 ${f.humanAffinity}/70 + 폐 5 이하로 부상 시` },
+    { id:5,  label:'인간 입양',          cur:`인간 호감 ${f.humanAffinity}/55 + 인간 추격 시 폐 30↓ 부상` },
     { id:6,  label:'철학자',             cur:`연속 무흡연 ${f.consecutiveCleanDays}/18일 + 평판 50+ + Day 22+` },
-    { id:7,  label:'CEO와 결혼',         cur:`${f.ceoMet?'✓ CEO 만남':'CEO 만남 (정장 갈매기)'} + A급↑ ${f.aPlusSmokedTotal}/5개` },
+    { id:7,  label:'CEO와 결혼',         cur:`${f.ceoMet?'✓ CEO 만남':'CEO 만남 (정장 갈매기 명함→2일 후 따라가기)'} + A급↑ ${f.aPlusSmokedTotal}/3개` },
     { id:8,  label:'어느 날 사라짐',     cur:`평판 ${Math.round(s.reputation)}≤5 + 무상호작용 ${f.daysWithoutInteraction}/8일` },
     { id:9,  label:'돌고래와 떠남 🔒',   cur:`돌고래 충고 ${f.dolphinChats}/5회 + 연속 무흡연 ${f.consecutiveCleanDays}/7일` },
     { id:10, label:'평범한 삶 🔒',       cur:`모든 스탯 50~70 유지 ${f.normalDayStreak}/14일 + Day 22+` },
@@ -3898,11 +3956,11 @@ function showInventory() {
     { id:12, label:'갈매기왕 🔒',        cur:`평판 ${Math.round(s.reputation)}/90 + 부하 ${f.underlings}/4명 + S급 ${f.sCigarettesSmoked}/1개` },
     { id:13, label:'굶어 죽음',          cur:`포만감 ${Math.round(s.hunger)}/100 → 0이면 사망 · 음식 ${RUN.foodCount}개` },
     { id:14, label:'프린세스',           cur:`호감 ${f.humanAffinity}/55 + 평판 ${Math.round(s.reputation)}/45 + Day 6+ + CEO 안 만남` },
-    { id:15, label:'천마 갈매기 🔒',     cur:`비행 ${Math.round(s.flight)}/85 + 폭죽/태풍에서 비행 90+로 강풍 돌파 ${f.pegasusAchieved?'✓':'✗'}` },
+    { id:15, label:'천마 갈매기 🔒',     cur:`비행 ${Math.round(s.flight)}/75 + 폭죽 무대 통과(비행 75+) 또는 태풍 강풍 돌파 ${f.pegasusAchieved?'✓':'✗'}` },
     { id:16, label:'사부 갈매기',        cur:`부하 ${f.underlings}/3명 + 평판 ${Math.round(s.reputation)}/50` },
     { id:17, label:'록스타',             cur:`폭죽 무대 통과 ${f.fireworkStageDone?'✓':'✗'} + 평판 ${Math.round(s.reputation)}/80 + 비행 ${Math.round(s.flight)}/70` },
     { id:18, label:'화가',               cur:`사진작가 ${f.photoCount||0}/2회 + 인간 호감 ${f.humanAffinity}/40` },
-    { id:19, label:'살인마',             cur:`라이벌 격투 승리 ${f.killCount||0}/2회` },
+    { id:19, label:'거리의 깡패',        cur:`라이벌 격투 승리 ${f.killCount||0}/2회` },
     { id:20, label:'갈매기 신 🔒',       cur:`엔딩 1~19 모두 해금 후 다음 회차 Day 10+에 자동` }
   ];
   const unlockedSet = new Set(META.endingsUnlocked);
@@ -4020,8 +4078,14 @@ function showMenu() {
   document.getElementById('m_help').onclick = () => { showHelp(); };
   document.getElementById('m_title').onclick = () => { saveRun(); closeModal(); showTitle(); };
   document.getElementById('m_reset').onclick = () => {
-    if (confirm('정말로 모든 메타 데이터를 지울까? (엔딩, 코스튬, 통계 전부)')) {
-      META = defaultMeta(); saveMeta(); clearRun(); closeModal(); showTitle(); toast('초기화됨','warn');
+    if (confirm('정말로 모든 메타 데이터를 지울까? (엔딩, 코스튬, 통계, 모든 슬롯 전부)')) {
+      META = defaultMeta();
+      saveMeta();
+      for (let i=0;i<SLOT_COUNT;i++) clearSlot(i);
+      RUN = defaultRun();
+      closeModal();
+      showTitle();
+      toast('초기화됨','warn');
     }
   };
 }
@@ -4039,13 +4103,13 @@ const COSTUME_EFFECTS = {
   salaryman:    { name:'회사원 갈매기', effect:'모든 시작 스탯 +10',                             tradeoff:'스트레스 누적 +20%' },
   poet:         { name:'시인 갈매기',   effect:'스트레스 자연 감소 +5%, 평판 패널티 면제',         tradeoff:'다른 갈매기 무시당함' },
   king:         { name:'갈매기왕',      effect:'시작 평판 +30, 부하 모집 확률 +20%',              tradeoff:'사냥터 위험도 +10%' },
-  skeleton:     { name:'해골 갈매기',   effect:'배고픔 0이어도 즉사하지 않음 (1회)',              tradeoff:'시작 비행 -20' },
+  skeleton:     { name:'해골 갈매기',   effect:'포만감 0이어도 즉사하지 않음 (1회)',              tradeoff:'시작 비행 -20' },
   princess:     { name:'프린세스',     effect:'시작 인간 호감 +30, 사진작가 보상 +50%',          tradeoff:'시작 평판 -10' },
   pegasus:      { name:'천마 갈매기',   effect:'시작 비행 +30, 비행 능력 자연 회복',              tradeoff:'시작 욕구 +20' },
   master:       { name:'사부 갈매기',   effect:'시작 부하 +2, 평판 회복 빠름',                    tradeoff:'시작 흡연 만족 -10%' },
   rockstar:     { name:'록스타',        effect:'폭죽 이벤트 자동 성공, 평판 +25',                  tradeoff:'시작 폐 -15' },
   painter:      { name:'화가',          effect:'사진작가 호감 +50%, 동전 획득 +30%',               tradeoff:'시작 비행 -10' },
-  killer:       { name:'살인마',        effect:'라이벌 격투 자동 승리',                            tradeoff:'시작 평판 -40, 잡담 불가' },
+  killer:       { name:'거리의 깡패',   effect:'라이벌 격투 자동 승리',                            tradeoff:'시작 평판 -40, 잡담 불가' },
   god:          { name:'갈매기 신',     effect:'모든 스탯 100, 죽지 않음',                         tradeoff:'엔딩 도달 시까지 자동 진행' }
 };
 
@@ -4137,26 +4201,79 @@ function showHelp() {
 function showTitle() {
   document.getElementById('titleScreen').style.display = '';
   closeModal();
-  // continue button — class-based AND inline style for double-safe handling
+  renderSlotList();
+  // legacy single-button — hidden because slot list replaces it
   const cb = document.getElementById('continueBtn');
-  const saved = loadRun();
-  const hasSave = !!saved;
-  cb.classList.remove('hidden-init','hidden');
-  if (hasSave) {
-    cb.classList.remove('hidden');
-    cb.style.display = '';
-    cb.style.visibility = 'visible';
-    cb.textContent = `이어하기 (Day ${saved.day || 1})`;
-  } else {
-    cb.classList.add('hidden');
-    cb.style.display = 'none';
-  }
-  // reset title-only particles so we don't carry over from prior session
+  const ng = document.getElementById('newGameBtn');
+  if (cb) cb.classList.add('hidden');
+  if (ng) ng.classList.add('hidden');
+  // reset title-only particles
   titleSmokeParticles.length = 0;
   titleAshParticles.length = 0;
   titleCryTimer = 0;
   titleStretchTimer = 0;
   titleStretching = false;
+}
+
+function renderSlotList() {
+  const list = document.getElementById('slotList');
+  if (!list) return;
+  list.innerHTML = '';
+  for (let i=0;i<SLOT_COUNT;i++) {
+    const data = loadRunFromSlot(i);
+    const card = document.createElement('div');
+    const isActive = (META.currentSlot === i);
+    card.className = 'slot-card' + (data ? '' : ' empty') + (isActive && data ? ' active-slot' : '');
+    if (data) {
+      const cosName = (COSTUME_EFFECTS[data.costume] || {}).name || '기본 꽁초';
+      const t = TIMES[data.timeIdx || 0];
+      card.innerHTML = `
+        <div class="slot-info">
+          <b>슬롯 ${i+1} · Day ${data.day} ${escapeHtml(t.icon||'')}</b>
+          <span class="meta">${escapeHtml(cosName)} · 폐 ${Math.round(data.stats.lung)} · 평판 ${Math.round(data.stats.reputation)}</span>
+        </div>
+        <div class="slot-action">
+          <button class="slot-del" data-idx="${i}" title="삭제">🗑</button>
+        </div>`;
+      card.addEventListener('click', (e) => {
+        if (e.target.classList.contains('slot-del')) return;
+        META.currentSlot = i;
+        saveMeta();
+        RUN = loadRunFromSlot(i);
+        hideTitle();
+        document.getElementById('endingScreen').classList.remove('show');
+        AUDIO.resume(); AUDIO.startBgm();
+        updateUI();
+        logLine(`▶ 슬롯 ${i+1} 이어하기 (Day ${RUN.day})`);
+      });
+    } else {
+      card.innerHTML = `
+        <div class="slot-info">
+          <b>슬롯 ${i+1} · 빈 슬롯</b>
+          <span class="meta">+ 새 갈매기 시작</span>
+        </div>
+        <div class="slot-action">
+          <span style="color:var(--c-text-dim);font-size:18px">＋</span>
+        </div>`;
+      card.addEventListener('click', () => {
+        META.currentSlot = i;
+        saveMeta();
+        newGame();
+      });
+    }
+    list.appendChild(card);
+  }
+  // bind delete buttons
+  list.querySelectorAll('.slot-del').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const idx = parseInt(btn.dataset.idx);
+      if (confirm(`슬롯 ${idx+1}의 갈매기를 삭제할까? (되돌릴 수 없음)`)) {
+        clearSlot(idx);
+        renderSlotList();
+      }
+    });
+  });
 }
 function hideTitle() {
   document.getElementById('titleScreen').style.display = 'none';
@@ -4211,7 +4328,7 @@ const META_BONUSES = [
   { req: 5,  desc:'매 턴 욕구 누적 -0.5',                  apply:(R,M)=>{ M.metaBonus_cravingReduce = (M.metaBonus_cravingReduce||0) + 0.5; } },
   { req: 6,  desc:'시작 비행 +5',                         apply:(R)=>{ R.stats.flight = clamp(R.stats.flight+5,0,100); } },
   { req: 7,  desc:'시작 평판 +5',                         apply:(R)=>{ R.stats.reputation = clamp(R.stats.reputation+5,0,100); } },
-  { req: 8,  desc:'매 턴 배고픔 누적 -0.4',                apply:(R,M)=>{ M.metaBonus_hungerReduce = (M.metaBonus_hungerReduce||0) + 0.4; } },
+  { req: 8,  desc:'매 턴 포만감 누적 -0.4 (덜 배고파짐)',     apply:(R,M)=>{ M.metaBonus_hungerReduce = (M.metaBonus_hungerReduce||0) + 0.4; } },
   { req: 9,  desc:'시작 동전 +15, 음식 +2',                apply:(R)=>{ R.money += 15; R.foodCount += 2; } },
   { req: 10, desc:'시작 모든 스탯 +5',                     apply:(R)=>{ for (const k of ['lung','flight','reputation']) R.stats[k] = clamp(R.stats[k]+5,0,100); R.stats.hunger = clamp(R.stats.hunger+5,0,100); } },
   { req: 12, desc:'시작 인벤 C급 ×2',                     apply:(R)=>{ R.inventory.C += 2; } },
@@ -4348,24 +4465,12 @@ document.getElementById('muteBtn').addEventListener('click', () => {
   document.getElementById('muteBtn').textContent = on ? '🔊' : '🔇';
   toast(on ? '🔊 사운드 ON' : '🔇 사운드 OFF', '');
 });
-document.getElementById('newGameBtn').addEventListener('click', () => {
-  if (loadRun()) {
-    if (confirm('진행 중인 갈매기가 있다. 새로 시작하면 그 갈매기는 사라진다. 계속할까?')) {
-      clearRun();
-      newGame();
-    }
-  } else {
-    newGame();
-  }
-});
+// Slot card list now drives both new game and continue. These legacy handlers stay as
+// safety fallbacks if the buttons are ever shown.
+document.getElementById('newGameBtn').addEventListener('click', () => { newGame(); });
 document.getElementById('continueBtn').addEventListener('click', () => {
   const r = loadRun();
-  if (r) {
-    RUN = r;
-    hideTitle();
-    updateUI();
-    logLine('이어하기.');
-  }
+  if (r) { RUN = r; hideTitle(); AUDIO.resume(); AUDIO.startBgm(); updateUI(); logLine('이어하기.'); }
 });
 document.getElementById('albumOpenBtn').addEventListener('click', showAlbum);
 document.getElementById('creditsBtn').addEventListener('click', () => {
@@ -4411,6 +4516,7 @@ window.addEventListener('orientationchange', setCanvasSize);
 // BOOT
 // ============================================================
 function boot() {
+  migrateLegacySave();
   showTitle();
   setCanvasSize();
   setupSceneInput();
