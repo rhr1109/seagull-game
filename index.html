@@ -767,12 +767,12 @@ hr { border: none; border-top: 1px solid var(--c-line); margin: 8px 0; }
 
   <!-- Stats -->
   <div class="stats" id="statsBox">
-    <div class="stat"><span class="label">🫁 폐</span><div class="bar"><div class="fill" id="lungBar"></div></div><span class="num" id="lungNum">100</span></div>
-    <div class="stat"><span class="label">🚬 욕구</span><div class="bar"><div class="fill craving" id="cravingBar"></div></div><span class="num" id="cravingNum">30</span></div>
-    <div class="stat"><span class="label">✈️ 비행</span><div class="bar"><div class="fill" id="flightBar"></div></div><span class="num" id="flightNum">100</span></div>
-    <div class="stat"><span class="label">😤 스트레스</span><div class="bar"><div class="fill stress" id="stressBar"></div></div><span class="num" id="stressNum">30</span></div>
-    <div class="stat"><span class="label">👥 평판</span><div class="bar"><div class="fill" id="repBar"></div></div><span class="num" id="repNum">50</span></div>
-    <div class="stat"><span class="label">🍖 배고픔</span><div class="bar"><div class="fill hunger" id="hungerBar"></div></div><span class="num" id="hungerNum">80</span></div>
+    <div class="stat" data-key="lung"><span class="label">🫁 폐</span><div class="bar"><div class="fill" id="lungBar"></div></div><span class="num" id="lungNum">100</span></div>
+    <div class="stat" data-key="craving"><span class="label">🚬 욕구</span><div class="bar"><div class="fill craving" id="cravingBar"></div></div><span class="num" id="cravingNum">30</span></div>
+    <div class="stat" data-key="flight"><span class="label">✈️ 비행</span><div class="bar"><div class="fill" id="flightBar"></div></div><span class="num" id="flightNum">100</span></div>
+    <div class="stat" data-key="reputation"><span class="label">👥 평판</span><div class="bar"><div class="fill" id="repBar"></div></div><span class="num" id="repNum">50</span></div>
+    <div class="stat" data-key="hunger"><span class="label">🍖 배고픔</span><div class="bar"><div class="fill hunger" id="hungerBar"></div></div><span class="num" id="hungerNum">80</span></div>
+    <div class="stat" data-key="stress"><span class="label">😤 스트레스</span><div class="bar"><div class="fill stress" id="stressBar"></div></div><span class="num" id="stressNum">30</span></div>
   </div>
 
   <!-- Actions -->
@@ -1009,12 +1009,12 @@ const WEATHERS = [
 ];
 
 const GRADES = {
-  F: { name:'비에 젖은 꽁초', satisfaction:10,  lungDamage:5,  color:'#888'    },
-  D: { name:'길거리 꽁초',    satisfaction:25,  lungDamage:8,  color:'#B0B080' },
-  C: { name:'편의점 절도',    satisfaction:50,  lungDamage:12, color:'#B0C080' },
-  B: { name:'정품 한 갑',     satisfaction:75,  lungDamage:15, color:'#87B0E5' },
-  A: { name:'외제 시가',      satisfaction:95,  lungDamage:20, color:'#D0A0F0' },
-  S: { name:'전설의 쿠바산',  satisfaction:150, lungDamage:35, color:'#F4C430' }
+  F: { name:'비에 젖은 꽁초', satisfaction:15,  lungDamage:3,  color:'#888'    },
+  D: { name:'길거리 꽁초',    satisfaction:30,  lungDamage:5,  color:'#B0B080' },
+  C: { name:'편의점 절도',    satisfaction:55,  lungDamage:8,  color:'#B0C080' },
+  B: { name:'정품 한 갑',     satisfaction:80,  lungDamage:11, color:'#87B0E5' },
+  A: { name:'외제 시가',      satisfaction:100, lungDamage:15, color:'#D0A0F0' },
+  S: { name:'전설의 쿠바산',  satisfaction:150, lungDamage:25, color:'#F4C430' }
 };
 
 const HUNT_TABLE = {
@@ -3470,15 +3470,19 @@ function advanceTime(slept=false) {
   // wave guests goodbye after this turn
   for (const g of GUESTS) { g.life = Math.min(g.life, 60); g.targetX = -0.2; g.arrived = false; }
   RUN.actionsThisDay++;
-  // passive stat drift each turn (harsher to make balancing meaningful)
-  changeStat('craving', +9, {silent:true});
-  changeStat('stress', +5, {silent:true});
-  changeStat('flight', -1, {silent:true});
-  changeStat('hunger', -2, {silent:true});  // hunger drops every turn (was -4 — too brutal)
-  // auto-eat when hungry and food available
-  if (RUN.stats.hunger < 35 && RUN.foodCount > 0) {
+  // passive stat drift each turn — tuned so 30-day runs are realistically completable
+  const cravingDrift = 5 - (META.metaBonus_cravingReduce || 0);
+  const hungerDrift  = 1.3 - (META.metaBonus_hungerReduce || 0);
+  changeStat('craving', cravingDrift, {silent:true});
+  changeStat('stress',  +3, {silent:true});
+  changeStat('flight',  -0.6, {silent:true});
+  changeStat('hunger',  -hungerDrift, {silent:true});
+  // small lung self-repair when not actively smoking today
+  if (!RUN.flags.smokedToday) changeStat('lung', +0.4, {silent:true});
+  // auto-eat — try a wider window (40 instead of 35) to prevent close-call deaths
+  if (RUN.stats.hunger < 40 && RUN.foodCount > 0) {
     RUN.foodCount--;
-    changeStat('hunger', +30, {silent:true});
+    changeStat('hunger', +35, {silent:true});
     logLine('🍖 배가 고파 챙겨둔 먹이를 먹었다.');
   }
   // hunger 0 → starve. skeleton costume gets one free pass.
@@ -3582,9 +3586,9 @@ function onNewDay() {
     saveMeta();
   }
   // check endings tied to days (Day 30 specific)
-  if (RUN.day >= 25) {
-    if (RUN.flags.consecutiveCleanDays >= 20 && RUN.stats.reputation >= 50) { triggerEnding(6); return; }   // 30/50 → 20/50
-    if (RUN.flags.normalDayStreak >= 18) { triggerEnding(10); return; }                                      // 30 → 18
+  if (RUN.day >= 22) {
+    if (RUN.flags.consecutiveCleanDays >= 18 && RUN.stats.reputation >= 50) { triggerEnding(6); return; }   // 20 → 18
+    if (RUN.flags.normalDayStreak >= 14) { triggerEnding(10); return; }                                      // 18 → 14
   }
   // hard cap: nobody outlives the dock past day 30
   if (RUN.day > 30) {
@@ -3627,12 +3631,12 @@ function checkEndings() {
   if (s.reputation <= 0 && RUN.flags.daysWithoutInteraction >= 10) return triggerEnding(8);       // 14 → 10
   if (RUN.flags.consecutiveCleanDays >= 15 && s.reputation <= 15) return triggerEnding(11);       // 20/10 → 15/15
   if (s.reputation >= 95 && RUN.flags.underlings >= 5 && RUN.flags.sCigarettesSmoked >= 2) return triggerEnding(12); // 100/8/3 → 95/5/2
-  // 14~20 new endings
-  if (RUN.flags.humanAffinity >= 70 && s.reputation >= 60 && RUN.day >= 8 && !RUN.flags.ceoMet) return triggerEnding(14); // 프린세스
-  if (s.flight >= 95 && RUN.flags.pegasusAchieved) return triggerEnding(15);                              // 천마
-  if (RUN.flags.underlings >= 6 && s.reputation >= 60) return triggerEnding(16);                          // 사부
-  if (RUN.flags.fireworkStageDone && s.reputation >= 75) return triggerEnding(17);                        // 록스타
-  if (RUN.flags.photoCount >= 3 && RUN.flags.humanAffinity >= 55) return triggerEnding(18);               // 화가
+  // 14~20 new endings (slightly relaxed for 30-day completability)
+  if (RUN.flags.humanAffinity >= 65 && s.reputation >= 55 && RUN.day >= 7 && !RUN.flags.ceoMet) return triggerEnding(14); // 프린세스
+  if (s.flight >= 90 && RUN.flags.pegasusAchieved) return triggerEnding(15);                              // 천마
+  if (RUN.flags.underlings >= 4 && s.reputation >= 55) return triggerEnding(16);                          // 사부 (6 → 4)
+  if (RUN.flags.fireworkStageDone && s.reputation >= 70) return triggerEnding(17);                        // 록스타
+  if (RUN.flags.photoCount >= 3 && RUN.flags.humanAffinity >= 50) return triggerEnding(18);               // 화가
   if (RUN.flags.killCount >= 3) return triggerEnding(19);                                                  // 살인마
   // 갈매기 신 — 다른 엔딩 1~19 모두 해금된 사용자에게만
   const others = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
@@ -3781,11 +3785,11 @@ function showInventory() {
     { id:11, label:'부둣가의 시인 🔒',   cur:`금연 ${f.consecutiveCleanDays}/15 · 평판 ${Math.round(s.reputation)}≤15` },
     { id:12, label:'갈매기왕 🔒',        cur:`평판 ${Math.round(s.reputation)}/95 · 부하 ${f.underlings}/5 · S ${f.sCigarettesSmoked}/2` },
     { id:13, label:'굶어 죽음',          cur:`배고픔 ${Math.round(s.hunger)} · 음식 ${RUN.foodCount}` },
-    { id:14, label:'프린세스',           cur:`호감 ${f.humanAffinity}/70 · 평판 ${Math.round(s.reputation)}/60 · CEO 미접촉` },
-    { id:15, label:'천마 갈매기 🔒',     cur:`비행 ${Math.round(s.flight)}/95 · 천공 자격 ${f.pegasusAchieved?'✓':'✗'}` },
-    { id:16, label:'사부 갈매기',        cur:`부하 ${f.underlings}/6 · 평판 ${Math.round(s.reputation)}/60` },
-    { id:17, label:'록스타',             cur:`폭죽 무대 ${f.fireworkStageDone?'✓':'✗'} · 평판 ${Math.round(s.reputation)}/75` },
-    { id:18, label:'화가',               cur:`사진 ${f.photoCount||0}/3 · 호감 ${f.humanAffinity}/55` },
+    { id:14, label:'프린세스',           cur:`호감 ${f.humanAffinity}/65 · 평판 ${Math.round(s.reputation)}/55 · CEO 미접촉` },
+    { id:15, label:'천마 갈매기 🔒',     cur:`비행 ${Math.round(s.flight)}/90 · 천공 자격 ${f.pegasusAchieved?'✓':'✗'}` },
+    { id:16, label:'사부 갈매기',        cur:`부하 ${f.underlings}/4 · 평판 ${Math.round(s.reputation)}/55` },
+    { id:17, label:'록스타',             cur:`폭죽 무대 ${f.fireworkStageDone?'✓':'✗'} · 평판 ${Math.round(s.reputation)}/70` },
+    { id:18, label:'화가',               cur:`사진 ${f.photoCount||0}/3 · 호감 ${f.humanAffinity}/50` },
     { id:19, label:'살인마',             cur:`격투 승 ${f.killCount||0}/3` },
     { id:20, label:'갈매기 신 🔒',       cur:`다른 모든 엔딩 해금 후 자동` }
   ];
@@ -3795,6 +3799,13 @@ function showInventory() {
     html += `<div class="stats-detail-row"><span>${got}${escapeHtml(r.label)}</span><span class="dim">${escapeHtml(r.cur)}</span></div>`;
   }
   html += '<div class="dim" style="font-size:10px;margin-top:6px">조건 충족 즉시 자동 트리거 · Day 30이 지나면 가장 가까운 엔딩으로 자동 종료</div>';
+  // Meta bonus list
+  const n = META.endingsUnlocked.length;
+  html += `<hr><p><b>✨ 메타 진행 보너스 (엔딩 ${n}개 해금)</b></p>`;
+  for (const b of META_BONUSES) {
+    const got = (n >= b.req) ? '<span class="tag good">✓</span>' : '<span class="tag">🔒</span>';
+    html += `<div class="stats-detail-row"><span>${got}엔딩 ${b.req}개</span><span class="dim">${escapeHtml(b.desc)}</span></div>`;
+  }
   openModal('🚬 인벤토리 / 상태', html);
   const eat = document.getElementById('invEat');
   if (eat) {
@@ -4025,6 +4036,7 @@ function newGame() {
   RUN = defaultRun();
   RUN.costume = META.costumesUnlocked.includes(wanted) ? wanted : 'default';
   applyCostumeEffects();
+  const earnedBonuses = applyMetaBonuses();
   saveRun();
   hideTitle();
   document.getElementById('endingScreen').classList.remove('show');
@@ -4037,8 +4049,12 @@ function newGame() {
     const def = ENDING_DEFS.find(d => d && d.costume === RUN.costume);
     if (def) toast('🎩 코스튬 적용: ' + def.costumeName, 'good');
   }
-  // current title from META
   if (META.selectedTitle) toast('🏆 칭호: ' + META.selectedTitle, 'good');
+  if (earnedBonuses && earnedBonuses.length > 0) {
+    setTimeout(() => {
+      toast(`✨ 메타 보너스 ${earnedBonuses.length}개 적용됨 (인벤 모달에서 확인)`, 'good');
+    }, 2200);
+  }
   showControlHint();
 }
 
@@ -4052,6 +4068,38 @@ function showControlHint() {
   hint.classList.add('show');
   clearTimeout(showControlHint._t);
   showControlHint._t = setTimeout(() => hint.classList.remove('show'), 6000);
+}
+
+// Permanent bonuses earned by unlocking endings. Applied at run start AFTER costume,
+// also exposed via META.metaBonus_* for use during the run (per-turn drift tuning).
+const META_BONUSES = [
+  { req: 1,  desc:'시작 동전 +5',                         apply:(R)=>{ R.money += 5; } },
+  { req: 2,  desc:'시작 음식 +1',                         apply:(R)=>{ R.foodCount += 1; } },
+  { req: 3,  desc:'시작 폐 +5',                           apply:(R)=>{ R.stats.lung = clamp(R.stats.lung+5,0,100); } },
+  { req: 4,  desc:'시작 인벤 D급 ×1',                     apply:(R)=>{ R.inventory.D += 1; } },
+  { req: 5,  desc:'매 턴 욕구 누적 -0.5',                  apply:(R,M)=>{ M.metaBonus_cravingReduce = (M.metaBonus_cravingReduce||0) + 0.5; } },
+  { req: 6,  desc:'시작 비행 +5',                         apply:(R)=>{ R.stats.flight = clamp(R.stats.flight+5,0,100); } },
+  { req: 7,  desc:'시작 평판 +5',                         apply:(R)=>{ R.stats.reputation = clamp(R.stats.reputation+5,0,100); } },
+  { req: 8,  desc:'매 턴 배고픔 누적 -0.4',                apply:(R,M)=>{ M.metaBonus_hungerReduce = (M.metaBonus_hungerReduce||0) + 0.4; } },
+  { req: 9,  desc:'시작 동전 +15, 음식 +2',                apply:(R)=>{ R.money += 15; R.foodCount += 2; } },
+  { req: 10, desc:'시작 모든 스탯 +5',                     apply:(R)=>{ for (const k of ['lung','flight','reputation']) R.stats[k] = clamp(R.stats[k]+5,0,100); R.stats.hunger = clamp(R.stats.hunger+5,0,100); } },
+  { req: 12, desc:'시작 인벤 C급 ×2',                     apply:(R)=>{ R.inventory.C += 2; } },
+  { req: 14, desc:'시작 폐 +10, 매 턴 욕구 -0.5 추가',     apply:(R,M)=>{ R.stats.lung = clamp(R.stats.lung+10,0,100); M.metaBonus_cravingReduce = (M.metaBonus_cravingReduce||0) + 0.5; } },
+  { req: 16, desc:'시작 인벤 B급 ×1',                     apply:(R)=>{ R.inventory.B += 1; } },
+  { req: 18, desc:'시작 모든 스탯 +10',                    apply:(R)=>{ for (const k of ['lung','flight','reputation']) R.stats[k] = clamp(R.stats[k]+10,0,100); R.stats.hunger = clamp(R.stats.hunger+10,0,100); } },
+  { req: 20, desc:'전설의 갈매기: 모든 보너스 강화 + A급 ×1', apply:(R,M)=>{ R.inventory.A += 1; M.metaBonus_cravingReduce = (M.metaBonus_cravingReduce||0) + 0.5; M.metaBonus_hungerReduce = (M.metaBonus_hungerReduce||0) + 0.3; } }
+];
+
+function applyMetaBonuses() {
+  // Reset per-run multipliers; META object holds the active values
+  META.metaBonus_cravingReduce = 0;
+  META.metaBonus_hungerReduce = 0;
+  const n = META.endingsUnlocked.length;
+  const earned = [];
+  for (const b of META_BONUSES) {
+    if (n >= b.req) { b.apply(RUN, META); earned.push(b); }
+  }
+  return earned;
 }
 
 function applyCostumeEffects() {
