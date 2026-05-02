@@ -1148,7 +1148,8 @@ function defaultRun() {
       pegasusAchieved: false,
       shopMet: false,
       metMate: false,
-      sunsetCount: 0
+      sunsetCount: 0,
+      humanChaseCount: 0
     },
     cigarettesSmokedTotal: 0,
     foodCount: 0,
@@ -1925,6 +1926,55 @@ function drawSeagull(ctx, cx, cy, costume, opt) {
     ctx.fillRect(13, -17, 2, 2);
     ctx.fillStyle = '#F4C430';
     ctx.fillRect(13, -19, 2, 2);
+  } else if (costume === 'influencer') {
+    // pink jacket + huge sunglasses + bling
+    ctx.fillStyle = '#f070b0';
+    ctx.fillRect(-18, 4, 30, 14);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(-2, 6, 6, 10);  // white tank top
+    // gold chain
+    ctx.fillStyle = '#F4C430';
+    ctx.fillRect(-3, 4, 8, 1);
+    ctx.fillRect(0, 6, 2, 2);   // pendant
+    // huge oversized sunglasses (cover most of head)
+    ctx.fillStyle = '#000';
+    ctx.fillRect(5, -12, 8, 5);
+    ctx.fillRect(15, -12, 8, 5);
+    ctx.fillRect(12, -10, 4, 1);
+    // tiny pink bow
+    ctx.fillStyle = '#ff6090';
+    ctx.fillRect(11, -19, 6, 2);
+    ctx.fillRect(13, -21, 2, 2);
+    // sparkle (animated)
+    if (animFrame % 30 < 15) {
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(-12, 8, 2, 2);
+      ctx.fillRect(20, 14, 2, 2);
+    }
+  } else if (costume === 'catlike') {
+    // confused identity — cat ears on a seagull
+    ctx.fillStyle = bodyColor;
+    // left ear
+    ctx.beginPath();
+    ctx.moveTo(7, -17); ctx.lineTo(11, -23); ctx.lineTo(13, -16); ctx.closePath(); ctx.fill();
+    // right ear
+    ctx.beginPath();
+    ctx.moveTo(15, -16); ctx.lineTo(19, -23); ctx.lineTo(21, -17); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = outline; ctx.lineWidth = 1;
+    // inner ear pink
+    ctx.fillStyle = '#f0a8b8';
+    ctx.fillRect(10, -19, 2, 2);
+    ctx.fillRect(18, -19, 2, 2);
+    // whiskers (3 lines from cheek)
+    ctx.fillStyle = outline;
+    ctx.fillRect(22, -2, 6, 1);
+    ctx.fillRect(22, 0, 6, 1);
+    ctx.fillRect(22, 2, 6, 1);
+    // collar with bell
+    ctx.fillStyle = '#a82020';
+    ctx.fillRect(3, -2, 12, 2);
+    ctx.fillStyle = '#F4C430';
+    ctx.fillRect(8, 1, 3, 3);
   } else if (costume === 'sage') {
     // earthy robe + long beard
     ctx.fillStyle = '#9b7a4a';
@@ -2767,7 +2817,10 @@ function triggerRisk(loc) {
       // Human chase
       logLine('🚨 인간이 빗자루를 들고 쫓아온다!', 'bad');
       toast('인간 추격!', 'bad');
-      const dodge = (RUN.stats.flight/100) * (RUN.costume === 'pet' ? 0.85 : 1);
+      RUN.flags.humanChaseCount = (RUN.flags.humanChaseCount||0) + 1;
+      let dodgeMult = (RUN.costume === 'pet' ? 0.85 : 1);
+      if (RUN.costume === 'catlike') dodgeMult += 0.3;
+      const dodge = (RUN.stats.flight/100) * dodgeMult;
       if (chance(dodge)) {
         logLine('아슬하게 피했다.', 'good');
       } else {
@@ -3988,6 +4041,10 @@ function checkEndings() {
   if (RUN.flags.consecutiveCleanDays >= 8 && (s.charm||0) >= 50 && RUN.flags.metMate) return triggerEnding(21);
   // 22 현자 — 지능 + 감수성 + 무흡연
   if ((s.intel||0) >= 75 && (s.sense||0) >= 75 && RUN.flags.consecutiveCleanDays >= 10) return triggerEnding(22);
+  // 23 인플루언서 — 매력 + 사진 + 인간 호감
+  if ((s.charm||0) >= 70 && (RUN.flags.photoCount||0) >= 4 && (RUN.flags.humanAffinity||0) >= 60) return triggerEnding(23);
+  // 24 정체성 혼란 — 인간 호감 폭주 + 추격 자주 받음 + 며칠 살아남음
+  if ((RUN.flags.humanAffinity||0) >= 90 && (RUN.flags.humanChaseCount||0) >= 3 && RUN.day >= 12) return triggerEnding(24);
   // 갈매기 신 — 다른 엔딩 1~19 모두 해금된 사용자에게만
   const others = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
   if (others.every(id => META.endingsUnlocked.includes(id)) && RUN.day >= 10) return triggerEnding(20);
@@ -4019,7 +4076,9 @@ const ENDING_DEFS = [
   { id:19, name:'거리의 깡패',     flavor:'부두는 조용해졌다. 다들 너를 피했다.',                       costume:'killer',   costumeName:'거리의 깡패',  title:'부두의 깡패',       hidden:false },
   { id:20, name:'갈매기 신',       flavor:'모든 길을 본 너는 끄어억의 본질이 됐다.',                    costume:'god',      costumeName:'갈매기 신',    title:'끄어억 자체',       hidden:true  },
   { id:21, name:'갈매기 짝꿍',     flavor:'금연 끝에 새 짝을 만났다. 부둣가에 작은 둥지가 생겼다.',     costume:'lover',    costumeName:'사랑꾼 갈매기',title:'사랑꾼',           hidden:false },
-  { id:22, name:'깨달은 갈매기',   flavor:'책과 노을과 금연 끝에 너는 무언가를 깨달았다. 아무도 안 물었지만.', costume:'sage',  costumeName:'현자 갈매기', title:'부둣가의 현자',     hidden:true  }
+  { id:22, name:'깨달은 갈매기',   flavor:'책과 노을과 금연 끝에 너는 무언가를 깨달았다. 아무도 안 물었지만.', costume:'sage',  costumeName:'현자 갈매기', title:'부둣가의 현자',     hidden:true  },
+  { id:23, name:'갈매기 인플루언서', flavor:'팔로워 100만. 너의 모든 끄어억이 클립으로 박제됐다.',       costume:'influencer', costumeName:'인플루언서',  title:'100만 갈매기',     hidden:false },
+  { id:24, name:'정체성 혼란',     flavor:'인간이 너무 좋았다. 어느 날부터 너는 야옹거렸다.',           costume:'catlike',  costumeName:'갈매고양이',  title:'야옹 갈매기',       hidden:true  }
 ];
 
 // Backfill titles for endings 1-10 too
@@ -4045,6 +4104,8 @@ function triggerEnding(id) {
   if (id === 1 || id === 4 || id === 13) { AUDIO.sfx('death'); screenFlash('rgba(0,0,0,0.7)', 36); }
   else if (id === 8) { AUDIO.sfx('kkeuh'); screenFlash('rgba(180,180,200,0.5)', 30); }
   else if (id === 20) { AUDIO.sfx('success'); spawnFireworks(20); screenFlash('rgba(255,240,180,0.7)', 50); }
+  else if (id === 23) { AUDIO.sfx('coin'); spawnFireworks(15); screenFlash('rgba(244,196,48,0.5)', 30); spawnHearts(cv.width*0.5, cv.height*0.5, 20); }
+  else if (id === 24) { AUDIO.sfx('kkeuh'); AUDIO.beep(700,0.3,'sine',0.3,-300); screenFlash('rgba(255,150,200,0.4)', 40); }
   else { AUDIO.sfx('success'); spawnFireworks(8); screenFlash('rgba(255,255,255,0.5)', 24); }
   // unlock title
   if (def.title) {
@@ -4153,7 +4214,9 @@ function showInventory() {
     { id:19, label:'거리의 깡패',        cur:`라이벌 격투 승리 ${f.killCount||0}/2회` },
     { id:20, label:'갈매기 신 🔒',       cur:`엔딩 1~19 모두 해금 후 다음 회차 Day 10+에 자동` },
     { id:21, label:'갈매기 짝꿍',        cur:`연속 무흡연 ${f.consecutiveCleanDays}/8일 + 매력 ${Math.round(s.charm||0)}/50 + 짝 만남 ${f.metMate?'✓':'✗'}` },
-    { id:22, label:'깨달은 갈매기 🔒',   cur:`지능 ${Math.round(s.intel||0)}/75 + 감수성 ${Math.round(s.sense||0)}/75 + 연속 무흡연 ${f.consecutiveCleanDays}/10일` }
+    { id:22, label:'깨달은 갈매기 🔒',   cur:`지능 ${Math.round(s.intel||0)}/75 + 감수성 ${Math.round(s.sense||0)}/75 + 연속 무흡연 ${f.consecutiveCleanDays}/10일` },
+    { id:23, label:'갈매기 인플루언서',  cur:`매력 ${Math.round(s.charm||0)}/70 + 사진 ${f.photoCount||0}/4회 + 인간 호감 ${f.humanAffinity}/60` },
+    { id:24, label:'정체성 혼란 🔒',     cur:`인간 호감 ${f.humanAffinity}/90 + 인간 추격 받음 ${f.humanChaseCount||0}/3회 + Day 12+` }
   ];
   const unlockedSet = new Set(META.endingsUnlocked);
   for (const r of rows) {
@@ -4304,12 +4367,14 @@ const COSTUME_EFFECTS = {
   killer:       { name:'거리의 깡패',   effect:'라이벌 격투 자동 승리',                            tradeoff:'시작 평판 -40, 잡담 불가' },
   god:          { name:'갈매기 신',     effect:'모든 스탯 100, 죽지 않음',                         tradeoff:'엔딩 도달 시까지 자동 진행' },
   lover:        { name:'사랑꾼 갈매기', effect:'시작 매력 +30, 짝 만남 이벤트 +확률',              tradeoff:'시작 평판 -10' },
-  sage:         { name:'현자 갈매기',   effect:'시작 지능 +30, 감수성 +20, 스트레스 자연 감소',     tradeoff:'시작 비행 -15' }
+  sage:         { name:'현자 갈매기',   effect:'시작 지능 +30, 감수성 +20, 스트레스 자연 감소',     tradeoff:'시작 비행 -15' },
+  influencer:   { name:'인플루언서',   effect:'시작 매력 +25, 인간 호감 +20, 사진작가 보상 +50%',  tradeoff:'시작 폐 -10 (성형의 흔적)' },
+  catlike:      { name:'갈매고양이',   effect:'인간 추격 회피 +30%, 인간 호감 +30',                 tradeoff:'다른 갈매기 평판 -25 (배신자 취급)' }
 };
 
 function showCostumes() {
   let html = '<p class="dim">회차 시작 시 적용. 효과는 한 번 적용되며 트레이드오프가 따른다.</p><div class="album-grid">';
-  const order = ['default','patient','cigar_master','suit','zombie','pet','thinker','wedding','fog','sailor','salaryman','poet','king','skeleton','princess','pegasus','master','rockstar','painter','killer','god','lover','sage'];
+  const order = ['default','patient','cigar_master','suit','zombie','pet','thinker','wedding','fog','sailor','salaryman','poet','king','skeleton','princess','pegasus','master','rockstar','painter','killer','god','lover','sage','influencer','catlike'];
   for (const cosId of order) {
     if (!META.costumesUnlocked.includes(cosId)) continue;
     const eff = COSTUME_EFFECTS[cosId];
@@ -4627,6 +4692,15 @@ function applyCostumeEffects() {
       RUN.stats.intel = clamp((RUN.stats.intel||0)+30,0,100);
       RUN.stats.sense = clamp((RUN.stats.sense||0)+20,0,100);
       RUN.stats.flight = clamp(RUN.stats.flight-15,0,100);
+      break;
+    case 'influencer':
+      RUN.stats.charm = clamp((RUN.stats.charm||0)+25,0,100);
+      RUN.flags.humanAffinity = clamp((RUN.flags.humanAffinity||0)+20,0,100);
+      RUN.stats.lung = clamp(RUN.stats.lung-10,0,100);
+      break;
+    case 'catlike':
+      RUN.flags.humanAffinity = clamp((RUN.flags.humanAffinity||0)+30,0,100);
+      RUN.stats.reputation = clamp(RUN.stats.reputation-25,0,100);
       break;
   }
 }
