@@ -542,18 +542,23 @@ button { font-family: inherit; font-size: inherit; color: inherit; cursor: point
   inset: 0;
   background: linear-gradient(180deg,#1c1f29 0%,#2E5C6E 100%);
   z-index: 100;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 24px 18px calc(48px + var(--safe-bot));
-  gap: 14px;
   text-align: center;
-  overflow-y: scroll;             /* always scroll on mobile if needed */
+  overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
 }
-.title-screen > * { flex-shrink: 0; }
+/* Inner wrapper: centers content vertically when it fits, scrolls when it doesn't */
+.title-screen .title-inner {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 18px calc(36px + var(--safe-bot));
+  gap: 14px;
+}
+.title-screen > *, .title-screen .title-inner > * { flex-shrink: 0; }
 @media (max-height: 720px) {
   .title-screen { padding-top: 14px; gap: 10px; }
   .title-screen h1 { font-size: 36px !important; }
@@ -588,7 +593,8 @@ button { font-family: inherit; font-size: inherit; color: inherit; cursor: point
   flex-direction: column;
   gap: 8px;
   width: 100%;
-  max-width: 260px;
+  max-width: 280px;
+  margin: 0 auto;
 }
 .title-screen .menu button {
   background: var(--c-panel-2);
@@ -926,19 +932,21 @@ hr { border: none; border-top: 1px solid var(--c-line); margin: 8px 0; }
 
   <!-- Title screen -->
   <div class="title-screen" id="titleScreen">
-    <div>
-      <canvas id="titleCanvas" width="160" height="120"></canvas>
-      <h1>끄어억</h1>
-      <div class="sub">부둣가 골초 갈매기 시뮬레이터</div>
-      <div class="by">"끼룩이 아니라 끄어억" <span class="rating-mark">19</span></div>
+    <div class="title-inner">
+      <div>
+        <canvas id="titleCanvas" width="160" height="120"></canvas>
+        <h1>끄어억</h1>
+        <div class="sub">부둣가 골초 갈매기 시뮬레이터</div>
+        <div class="by">"끼룩이 아니라 끄어억" <span class="rating-mark">19</span></div>
+      </div>
+      <div class="menu">
+        <button id="newGameBtn">＋ 새 갈매기 시작</button>
+        <button id="continueBtn" class="hidden-init">▶ 이어하기</button>
+        <button id="albumOpenBtn">📔 꽁초의 일대기</button>
+        <button id="creditsBtn">크레딧</button>
+      </div>
+      <div class="footer">청소년이용불가. 그래야 할 만한 이유가 있다.</div>
     </div>
-    <div class="menu">
-      <button id="continueBtn" class="hidden-init">▶ 이어하기</button>
-      <button id="newGameBtn">＋ 새 갈매기 시작</button>
-      <button id="albumOpenBtn">📔 꽁초의 일대기</button>
-      <button id="creditsBtn">크레딧</button>
-    </div>
-    <div class="footer">청소년이용불가. 그래야 할 만한 이유가 있다.</div>
   </div>
 
   <!-- Ending screen -->
@@ -5025,8 +5033,21 @@ document.getElementById('muteBtn').addEventListener('click', () => {
   document.getElementById('muteBtn').textContent = on ? '🔊' : '🔇';
   toast(on ? '🔊 사운드 ON' : '🔇 사운드 OFF', '');
 });
-// Title screen "Continue" / "New Game" both open the slot picker modal.
-document.getElementById('newGameBtn').addEventListener('click', () => { showSlotPicker('new'); });
+// Title: "이어하기" → slot picker. "새 갈매기" → first empty slot, fallback to picker if all full.
+document.getElementById('newGameBtn').addEventListener('click', () => {
+  let emptySlot = -1;
+  for (let i=0;i<SLOT_COUNT;i++) {
+    if (!loadRunFromSlot(i)) { emptySlot = i; break; }
+  }
+  if (emptySlot >= 0) {
+    META.currentSlot = emptySlot;
+    saveMeta();
+    newGame();
+  } else {
+    // all 3 slots in use — let player pick one to overwrite
+    showSlotPicker('new');
+  }
+});
 document.getElementById('continueBtn').addEventListener('click', () => { showSlotPicker('continue'); });
 document.getElementById('albumOpenBtn').addEventListener('click', showAlbum);
 document.getElementById('creditsBtn').addEventListener('click', () => {
