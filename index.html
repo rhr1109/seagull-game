@@ -974,6 +974,7 @@ hr { border: none; border-top: 1px solid var(--c-line); margin: 8px 0; }
     <div class="frame"><canvas id="endingCanvas" width="200" height="160"></canvas></div>
     <div class="reward" id="endingReward" style="display:none"></div>
     <div class="ending-actions">
+      <button id="endingShareBtn">📤 공유</button>
       <button id="endingAlbumBtn">앨범 보기</button>
       <button id="endingRestartBtn">다시 시작</button>
       <button id="endingTitleBtn">타이틀로</button>
@@ -1322,9 +1323,26 @@ function migrateLegacySave() {
     if (legacy) localStorage.removeItem(SAVE_KEY_RUN_LEGACY);
   } catch(e){}
 }
+const SAVE_KEY_META_BACKUP = 'kkeuh_meta_v1_backup';
 function saveMeta() {
-  try { localStorage.setItem(SAVE_KEY_META, JSON.stringify(META)); return true; }
-  catch(e) { console.error('saveMeta failed:', e); _notifyStorageFailure(); return false; }
+  try {
+    const json = JSON.stringify(META);
+    localStorage.setItem(SAVE_KEY_META, json);
+    // verify readback — guards against silent storage corruption
+    const back = localStorage.getItem(SAVE_KEY_META);
+    if (back !== json) {
+      console.warn('saveMeta readback mismatch');
+      _notifyStorageFailure();
+      return false;
+    }
+    // secondary backup key (in case main key gets cleared by an extension etc.)
+    try { localStorage.setItem(SAVE_KEY_META_BACKUP, json); } catch(e){}
+    return true;
+  } catch(e) {
+    console.error('saveMeta failed:', e);
+    _notifyStorageFailure();
+    return false;
+  }
 }
 let _storageFailureNotified = false;
 function _notifyStorageFailure() {
@@ -1335,12 +1353,20 @@ function _notifyStorageFailure() {
   }, 100);
 }
 function loadMeta() {
+  let raw = null;
+  try { raw = localStorage.getItem(SAVE_KEY_META); } catch(e){}
+  if (!raw) {
+    // try backup key
+    try { raw = localStorage.getItem(SAVE_KEY_META_BACKUP); } catch(e){}
+  }
+  if (!raw) return defaultMeta();
   try {
-    const raw = localStorage.getItem(SAVE_KEY_META);
-    if (!raw) return defaultMeta();
     const obj = JSON.parse(raw);
     return Object.assign(defaultMeta(), obj);
-  } catch(e) { return defaultMeta(); }
+  } catch(e) {
+    console.error('loadMeta parse failed:', e);
+    return defaultMeta();
+  }
 }
 
 // ============================================================
@@ -4201,6 +4227,7 @@ function changeStatSafe(key, delta) {
 function triggerEnding(id) {
   if (RUN.finished) return;
   RUN.finished = true;
+  window._lastEndingId = id;
   const def = ENDING_DEFS[id];
   if (!def) return;
   closeModal();
@@ -4281,6 +4308,9 @@ document.getElementById('endingRestartBtn').addEventListener('click', () => {
 });
 document.getElementById('endingAlbumBtn').addEventListener('click', () => {
   showAlbum({ allowOverEnding: true });
+});
+document.getElementById('endingShareBtn').addEventListener('click', () => {
+  shareProgress({ endingId: window._lastEndingId });
 });
 
 // ============================================================
@@ -4398,6 +4428,7 @@ function showAlbum(opts={}) {
   }
   html += '</div>';
   html += `<hr><div class="dim">해금: ${META.endingsUnlocked.length}/${totalEndings} · 총 회차: ${META.totalRuns} · 최장수: ${META.longestLife}일 · 총 흡연: ${META.totalCigSmoked}</div>`;
+  html += `<div style="margin-top:8px"><button id="albumShareBtn" style="width:100%;padding:8px;background:var(--c-panel-2);border:1px solid var(--c-line);color:var(--c-text);border-radius:6px;font-size:12px;cursor:pointer">📤 SNS 공유</button></div>`;
   // milestone
   let milestoneHtml = '<hr><div class="dim">누적 마일스톤</div>';
   const mls = [
@@ -4417,6 +4448,8 @@ function showAlbum(opts={}) {
   }
   html += milestoneHtml;
   openModal('📔 꽁초의 일대기', html, { allowOverEnding: opts.allowOverEnding });
+  const sBtn = document.getElementById('albumShareBtn');
+  if (sBtn) sBtn.addEventListener('click', () => shareProgress());
   // draw portraits
   document.querySelectorAll('#modalBody canvas').forEach(c => {
     const ec = c.getContext('2d');
@@ -4444,6 +4477,8 @@ function showMenu() {
   html += '<button id="m_save">💾 수동 저장</button>';
   html += '<button id="m_swap">🔄 슬롯 전환 (현재: 슬롯 ' + ((META.currentSlot|0)+1) + ')</button>';
   html += '<button id="m_stats">📈 누적 통계</button>';
+  html += '<button id="m_share">📤 진행 공유</button>';
+  html += '<button id="m_backup">💾 데이터 백업/복원</button>';
   html += '<button id="m_controls">🎮 조작법 다시 보기</button>';
   html += '<button id="m_costume">🎩 코스튬 변경</button>';
   html += '<button id="m_titles">🏆 칭호 변경 (' + ((META.titlesUnlocked||[]).length) + ' 보유)</button>';
@@ -4457,6 +4492,8 @@ function showMenu() {
   document.getElementById('m_save').onclick = () => { saveRun(); toast('저장됨','good'); closeModal(); };
   document.getElementById('m_swap').onclick = () => { showSlotSwitch(); };
   document.getElementById('m_stats').onclick = () => { showStats(); };
+  document.getElementById('m_share').onclick = () => { closeModal(); shareProgress(); };
+  document.getElementById('m_backup').onclick = () => { showBackup(); };
   document.getElementById('m_controls').onclick = () => { closeModal(); showControlHint(); };
   document.getElementById('m_costume').onclick = () => { showCostumes(); };
   document.getElementById('m_titles').onclick = () => { showTitles(); };
@@ -4650,6 +4687,84 @@ function showSlotSwitch() {
     }
     list.appendChild(btn);
   }
+}
+
+function showBackup() {
+  const json = JSON.stringify(META, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const today = new Date().toISOString().slice(0,10);
+  let html = `
+    <p class="dim">엔딩/코스튬/칭호 등 메타 데이터를 파일로 백업하거나 복원합니다. 새 기기로 옮길 때, 또는 브라우저 데이터가 사라질 위험에 대비.</p>
+    <div class="menu-list">
+      <a href="${url}" download="kkeuh-meta-${today}.json" id="bkDownload" style="text-decoration:none">
+        <button style="width:100%">💾 메타 데이터 내보내기 (JSON 다운로드)</button>
+      </a>
+      <button id="bkImport">📥 백업 파일 불러오기</button>
+      <button id="bkCopy">📋 클립보드로 복사 (작은 데이터용)</button>
+    </div>
+    <hr>
+    <p class="dim">현재 메타 데이터 미리보기</p>
+    <textarea readonly style="width:100%;height:120px;background:#14181F;color:var(--c-text-dim);border:1px solid var(--c-line);border-radius:6px;padding:6px;font-size:10px;font-family:monospace">${escapeHtml(json)}</textarea>
+    <input type="file" id="bkFile" accept=".json,application/json" style="display:none">`;
+  openModal('💾 데이터 백업 / 복원', html);
+  document.getElementById('bkImport').onclick = () => document.getElementById('bkFile').click();
+  document.getElementById('bkCopy').onclick = async () => {
+    try { await navigator.clipboard.writeText(json); toast('📋 복사됐다','good'); }
+    catch(e) { toast('복사 실패','bad'); }
+  };
+  document.getElementById('bkFile').onchange = (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const obj = JSON.parse(reader.result);
+        if (!obj || typeof obj !== 'object' || !Array.isArray(obj.endingsUnlocked)) throw new Error('format');
+        if (!confirm(`백업을 복원할까? 현재 메타 데이터는 덮어쓰여집니다.\n해금된 엔딩: ${(obj.endingsUnlocked||[]).length}개`)) return;
+        META = Object.assign(defaultMeta(), obj);
+        saveMeta();
+        closeModal();
+        toast('✅ 복원 완료','good');
+        showTitle();
+      } catch(err) {
+        alert('파일 형식 오류: ' + err.message);
+      }
+    };
+    reader.readAsText(f);
+  };
+}
+
+function shareProgress(opts={}) {
+  const totalEndings = ENDING_DEFS.length - 1;
+  const unlocked = META.endingsUnlocked.length;
+  let text;
+  if (opts.endingId && ENDING_DEFS[opts.endingId]) {
+    const def = ENDING_DEFS[opts.endingId];
+    text = `🚬🐦 끄어억에서 [${def.name}] 엔딩에 도달했다! (${unlocked}/${totalEndings} 해금)\n"끼룩이 아니라 끄어억"\nhttps://seagull-game-rhr1109.vercel.app`;
+  } else {
+    text = `🚬🐦 끄어억 — ${unlocked}/${totalEndings} 엔딩 해금 / 최장수 ${META.longestLife||0}일 / 총 회차 ${META.totalRuns||0}회\nhttps://seagull-game-rhr1109.vercel.app`;
+  }
+  const data = {
+    title: '끄어억 — 부둣가 골초 갈매기',
+    text,
+    url: 'https://seagull-game-rhr1109.vercel.app'
+  };
+  if (navigator.share) {
+    navigator.share(data).catch(e => {
+      if (e && e.name !== 'AbortError') console.warn('share failed', e);
+    });
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(
+      () => toast('📋 클립보드에 복사됐다','good'),
+      () => promptCopyFallback(text)
+    );
+  } else {
+    promptCopyFallback(text);
+  }
+}
+function promptCopyFallback(text) {
+  prompt('아래 텍스트를 복사해서 공유:', text);
 }
 
 function showStats() {
