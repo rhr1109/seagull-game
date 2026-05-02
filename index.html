@@ -2686,11 +2686,13 @@ function showCry(forceText) {
 // MODAL HELPERS
 // ============================================================
 function openModal(title, html, opts={}) {
-  // never let a modal stack on top of an active ending screen
+  // Block modal only while the ending screen is actually visible.
+  // RUN.finished alone shouldn't block — the title screen may be open with finished=true (slot picker etc).
   const endingShown = document.getElementById('endingScreen').classList.contains('show');
-  const isMenuLike = opts && opts.allowOverEnding;
-  if (RUN.finished && !isMenuLike) return;
-  if (endingShown && !isMenuLike) return;
+  const titleVisible = document.getElementById('titleScreen').style.display !== 'none';
+  const allowOver = opts && opts.allowOverEnding;
+  if (endingShown && !allowOver) return;
+  if (RUN.finished && !allowOver && !titleVisible) return;
   document.getElementById('modalTitle').firstChild.textContent = title + ' ';
   document.getElementById('modalBody').innerHTML = html;
   document.getElementById('modalBg').classList.add('show');
