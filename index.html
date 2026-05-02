@@ -771,7 +771,7 @@ hr { border: none; border-top: 1px solid var(--c-line); margin: 8px 0; }
     <div class="stat" data-key="craving"><span class="label">🚬 욕구</span><div class="bar"><div class="fill craving" id="cravingBar"></div></div><span class="num" id="cravingNum">30</span></div>
     <div class="stat" data-key="flight"><span class="label">✈️ 비행</span><div class="bar"><div class="fill" id="flightBar"></div></div><span class="num" id="flightNum">100</span></div>
     <div class="stat" data-key="reputation"><span class="label">👥 평판</span><div class="bar"><div class="fill" id="repBar"></div></div><span class="num" id="repNum">50</span></div>
-    <div class="stat" data-key="hunger"><span class="label">🍖 배고픔</span><div class="bar"><div class="fill hunger" id="hungerBar"></div></div><span class="num" id="hungerNum">80</span></div>
+    <div class="stat" data-key="hunger"><span class="label">🍖 포만감</span><div class="bar"><div class="fill hunger" id="hungerBar"></div></div><span class="num" id="hungerNum">90</span></div>
     <div class="stat" data-key="stress"><span class="label">😤 스트레스</span><div class="bar"><div class="fill stress" id="stressBar"></div></div><span class="num" id="stressNum">30</span></div>
   </div>
 
@@ -1227,6 +1227,55 @@ const INPUT = { left:false, right:false, up:false, down:false, jump:false };
 // On-canvas guests (for events)
 let GUESTS = [];  // { kind, x, y, vx, vy, life, ... }
 let CUTSCENE = null; // active cutscene { type, t, dur, onDone }
+let SCREEN_FX = []; // { type, t, dur, color?, intensity?, ... }
+
+function screenFlash(color='rgba(255,255,255,0.85)', dur=18) {
+  SCREEN_FX.push({ type:'flash', t:0, dur, color });
+}
+function screenShake(intensity=4, dur=18) {
+  SCREEN_FX.push({ type:'shake', t:0, dur, intensity });
+}
+function spawnFireworks(count=8) {
+  // Big colorful particle burst on canvas (added to smokeParticles channel for life)
+  for (let i=0;i<count;i++) {
+    const cx = cv.width * (0.2 + Math.random()*0.6);
+    const cy = cv.height * (0.15 + Math.random()*0.25);
+    const colors = ['255,80,80','255,200,80','120,200,255','220,120,255','120,255,140','255,255,120'];
+    const col = colors[Math.floor(Math.random()*colors.length)];
+    for (let j=0;j<14;j++) {
+      const ang = Math.random()*Math.PI*2;
+      const sp = 0.7 + Math.random()*1.6;
+      smokeParticles.push({
+        x: cx, y: cy,
+        vx: Math.cos(ang)*sp, vy: Math.sin(ang)*sp,
+        size: 2, alpha: 1, life: 50 + Math.random()*20,
+        firework: true, color: col
+      });
+    }
+  }
+}
+function spawnImpactStars(x, y) {
+  for (let i=0;i<10;i++) {
+    const ang = Math.random()*Math.PI*2;
+    const sp = 0.6 + Math.random()*1.2;
+    smokeParticles.push({
+      x: x + Math.cos(ang)*4, y: y + Math.sin(ang)*4,
+      vx: Math.cos(ang)*sp, vy: Math.sin(ang)*sp - 0.3,
+      size: 2, alpha: 1, life: 28,
+      impact: true
+    });
+  }
+}
+function spawnHearts(x, y, count=6) {
+  for (let i=0;i<count;i++) {
+    smokeParticles.push({
+      x: x + (Math.random()*16-8), y: y + (Math.random()*8-4),
+      vx: (Math.random()-0.5)*0.4, vy: -0.5 - Math.random()*0.4,
+      size: 3, alpha: 1, life: 60,
+      heart: true
+    });
+  }
+}
 
 // Title screen idle animation state
 let titleSmokeParticles = [];
@@ -1251,6 +1300,17 @@ function drawScene(targetCtx, targetCv, opt={}) {
   const W = targetCv.width, H = targetCv.height;
   ctx.imageSmoothingEnabled = false;
   ctx.clearRect(0, 0, W, H);
+
+  // active screen shake offsets context
+  let shakeX = 0, shakeY = 0;
+  for (const fx of SCREEN_FX) {
+    if (fx.type === 'shake') {
+      const k = 1 - fx.t/fx.dur;
+      shakeX = (Math.random()-0.5) * fx.intensity * k * 2;
+      shakeY = (Math.random()-0.5) * fx.intensity * k * 2;
+    }
+  }
+  if (shakeX || shakeY) ctx.translate(shakeX, shakeY);
 
   const time = TIMES[opt.timeIdx ?? RUN.timeIdx];
   // sky gradient
@@ -1362,10 +1422,27 @@ function drawScene(targetCtx, targetCv, opt={}) {
     }
   }
 
-  // smoke particles
+  // particles (smoke / firework / impact / hearts share this pool)
   for (const p of smokeParticles) {
-    ctx.fillStyle = `rgba(220,220,220,${p.alpha})`;
-    ctx.fillRect(Math.floor(p.x), Math.floor(p.y), p.size, p.size);
+    if (p.firework) {
+      ctx.fillStyle = `rgba(${p.color},${p.alpha})`;
+      ctx.fillRect(Math.floor(p.x), Math.floor(p.y), 3, 3);
+    } else if (p.impact) {
+      ctx.fillStyle = `rgba(255,230,80,${p.alpha})`;
+      ctx.fillRect(Math.floor(p.x), Math.floor(p.y), 3, 1);
+      ctx.fillRect(Math.floor(p.x)+1, Math.floor(p.y)-1, 1, 3);
+    } else if (p.heart) {
+      ctx.fillStyle = `rgba(240,120,150,${p.alpha})`;
+      // tiny pixel heart
+      ctx.fillRect(Math.floor(p.x), Math.floor(p.y), 1, 1);
+      ctx.fillRect(Math.floor(p.x)+2, Math.floor(p.y), 1, 1);
+      ctx.fillRect(Math.floor(p.x)-1, Math.floor(p.y)+1, 5, 1);
+      ctx.fillRect(Math.floor(p.x), Math.floor(p.y)+2, 3, 1);
+      ctx.fillRect(Math.floor(p.x)+1, Math.floor(p.y)+3, 1, 1);
+    } else {
+      ctx.fillStyle = `rgba(220,220,220,${p.alpha})`;
+      ctx.fillRect(Math.floor(p.x), Math.floor(p.y), p.size, p.size);
+    }
   }
   for (const a of ashParticles) {
     ctx.fillStyle = `rgba(140,90,60,${a.alpha})`;
@@ -1385,6 +1462,25 @@ function drawScene(targetCtx, targetCv, opt={}) {
     ctx.fillStyle = 'rgba(40,40,50,0.18)';
     ctx.fillRect(0,0,W,H);
   }
+
+  // screen flash overlay
+  for (let i=SCREEN_FX.length-1;i>=0;i--) {
+    const fx = SCREEN_FX[i];
+    fx.t++;
+    if (fx.type === 'flash') {
+      const a = (1 - fx.t/fx.dur);
+      const m = fx.color.match(/rgba?\((\d+),(\d+),(\d+)(?:,([0-9.]+))?\)/);
+      if (m) {
+        const baseA = m[4] ? parseFloat(m[4]) : 1;
+        ctx.fillStyle = `rgba(${m[1]},${m[2]},${m[3]},${baseA*a})`;
+        ctx.fillRect(0,0,W,H);
+      }
+    }
+    if (fx.t >= fx.dur) SCREEN_FX.splice(i,1);
+  }
+
+  // restore translate from shake
+  if (shakeX || shakeY) ctx.translate(-shakeX, -shakeY);
 }
 
 function drawSeagull(ctx, cx, cy, costume, opt) {
@@ -2494,6 +2590,7 @@ function actionHunt() {
 }
 
 function resolveHunt(loc) {
+  RUN.flags.huntedThisTurn = true;
   let msg = `${loc.loc}으로 출동.`;
   // success chance scaled by flight
   const flight = RUN.stats.flight;
@@ -2807,6 +2904,9 @@ function eventRivalGull() {
       text:'거절한다 (전투!)',
       onPick:()=>{
         const auto = (RUN.costume === 'killer');
+        screenShake(5, 20);
+        spawnImpactStars(cv.width*0.5, cv.height*0.5);
+        AUDIO.sfx('hit');
         if (auto || (RUN.stats.flight > 60 && chance(0.5))) {
           changeStat('reputation', +12);
           changeStat('flight', -8);
@@ -2817,6 +2917,7 @@ function eventRivalGull() {
           changeStat('flight', -10);
           changeStat('reputation', -5);
           toast('🩸 두들겨 맞았다.','bad');
+          screenShake(8, 30);
           if (RUN.stats.lung <= 0) { triggerEnding(1); return; }
         }
         advanceTime();
@@ -3140,6 +3241,9 @@ function eventPhotographer() {
         RUN.money = (RUN.money|0) + 2;
         toast('📸 찰칵! 인스타에 박제됐다. (사진 ' + RUN.flags.photoCount + ')','good');
         AUDIO.sfx('coin');
+        // camera flash + heart particles for visual oomph
+        screenFlash('rgba(255,255,255,0.95)', 12);
+        spawnHearts(cv.width*0.5, cv.height*0.5, 8);
         advanceTime();
       } },
     { text:'담배 연기를 뱉는다', sub:'평판 +5, 인간 호감 -10',
@@ -3238,18 +3342,21 @@ function eventFireworks() {
       sub:'평판 +15, 위험',
       onPick:()=>{
         const auto = (RUN.costume === 'rockstar');
+        spawnFireworks(10);
         if (auto || (RUN.stats.flight > 50 && chance(0.55))) {
           changeStat('reputation', +15);
           changeStat('flight', -10);
           RUN.flags.fireworkStageDone = true;
           toast('🎆 폭죽 사이를 가로질렀다. 부두의 록스타가 됐다.','good');
-          // pegasus path: high flight + firework rush
+          screenFlash('rgba(255,200,80,0.6)', 24);
           if (RUN.stats.flight >= 90) RUN.flags.pegasusAchieved = true;
         } else {
           changeStat('lung', -12);
           changeStat('flight', -15);
           toast('💥 폭죽에 깃털이 그을렸다.','bad');
           AUDIO.sfx('hit');
+          screenShake(8, 30);
+          screenFlash('rgba(255,80,40,0.5)', 16);
         }
         advanceTime();
       } },
@@ -3276,6 +3383,7 @@ function eventFireworks() {
 
 function eventTyphoon() {
   RUN.weather = 'rain';
+  screenShake(3, 60);
   presentChoices('🌪️ 태풍 경보', '태풍 전야. 부두가 흔들린다. 보통 갈매기는 피한다.', [
     { text:'안전한 곳으로',
       onPick:()=>{
@@ -3406,6 +3514,8 @@ function slotSpin(level) {
     changeStat('reputation', +10);
     foot = `<p class="tag good">💎💎💎 잭팟! S급 시가 ${level*2}개 + 평판 +10</p>`;
     AUDIO.sfx('success');
+    spawnFireworks(12);
+    screenFlash('rgba(244,196,48,0.6)', 24);
   } else if (result === 'match3') {
     if (level >= 3) { RUN.inventory.A += 1; foot = '<p class="tag good">🎉 트리플! A급 시가 1개</p>'; }
     else { RUN.inventory.C += 2; foot = '<p class="tag good">🎉 트리플! C급 ×2</p>'; }
@@ -3475,7 +3585,9 @@ function advanceTime(slept=false) {
   const hungerDrift  = 1.3 - (META.metaBonus_hungerReduce || 0);
   changeStat('craving', cravingDrift, {silent:true});
   changeStat('stress',  +3, {silent:true});
-  changeStat('flight',  -0.6, {silent:true});
+  // flight: hunting drains it (handled in resolveHunt). Outside hunts, slowly recover.
+  if (!RUN.flags.huntedThisTurn) changeStat('flight', +0.5, {silent:true});
+  RUN.flags.huntedThisTurn = false;
   changeStat('hunger',  -hungerDrift, {silent:true});
   // small lung self-repair when not actively smoking today
   if (!RUN.flags.smokedToday) changeStat('lung', +0.4, {silent:true});
@@ -3624,7 +3736,7 @@ function checkEndings() {
   const s = RUN.stats;
   if (s.lung <= 0) return triggerEnding(1);
   if (RUN.flags.sCigarettesSmoked >= 5) return triggerEnding(2);                                  // 10 → 5
-  if (s.reputation >= 95 && RUN.flags.underlings >= 3) return triggerEnding(3);                   // 100/5 → 95/3
+  if (s.reputation >= 100 && RUN.flags.underlings >= 5) return triggerEnding(3);                  // restored harder: 100/5 (was 95/3 — too easy)
   if (RUN.flags.overdose) return triggerEnding(4);
   if (RUN.flags.humanAffinity >= 80 && RUN.flags.injuredCritical) return triggerEnding(5);        // 100 → 80
   if (RUN.flags.ceoMet && RUN.flags.aPlusSmokedTotal >= 8) return triggerEnding(7);               // 30 → 15 → 8
@@ -3635,7 +3747,7 @@ function checkEndings() {
   if (RUN.flags.humanAffinity >= 65 && s.reputation >= 55 && RUN.day >= 7 && !RUN.flags.ceoMet) return triggerEnding(14); // 프린세스
   if (s.flight >= 90 && RUN.flags.pegasusAchieved) return triggerEnding(15);                              // 천마
   if (RUN.flags.underlings >= 4 && s.reputation >= 55) return triggerEnding(16);                          // 사부 (6 → 4)
-  if (RUN.flags.fireworkStageDone && s.reputation >= 70) return triggerEnding(17);                        // 록스타
+  if (RUN.flags.fireworkStageDone && s.reputation >= 80 && s.flight >= 70) return triggerEnding(17);     // 록스타 강화: +비행 70
   if (RUN.flags.photoCount >= 3 && RUN.flags.humanAffinity >= 50) return triggerEnding(18);               // 화가
   if (RUN.flags.killCount >= 3) return triggerEnding(19);                                                  // 살인마
   // 갈매기 신 — 다른 엔딩 1~19 모두 해금된 사용자에게만
@@ -3679,14 +3791,14 @@ function triggerEnding(id) {
   RUN.finished = true;
   const def = ENDING_DEFS[id];
   if (!def) return;
-  // Close any pending modal/event before showing ending screen
   closeModal();
-  // Reset input so player isn't holding any key into the next run
   INPUT.left = INPUT.right = INPUT.up = INPUT.down = INPUT.jump = false;
   AUDIO.stopBgm();
-  if (id === 1 || id === 4) AUDIO.sfx('death');
-  else if (id === 8) AUDIO.sfx('kkeuh');
-  else AUDIO.sfx('success');
+  // ending-specific reactions
+  if (id === 1 || id === 4 || id === 13) { AUDIO.sfx('death'); screenFlash('rgba(0,0,0,0.7)', 36); }
+  else if (id === 8) { AUDIO.sfx('kkeuh'); screenFlash('rgba(180,180,200,0.5)', 30); }
+  else if (id === 20) { AUDIO.sfx('success'); spawnFireworks(20); screenFlash('rgba(255,240,180,0.7)', 50); }
+  else { AUDIO.sfx('success'); spawnFireworks(8); screenFlash('rgba(255,255,255,0.5)', 24); }
   // unlock title
   if (def.title) {
     META.titlesUnlocked = META.titlesUnlocked || [];
@@ -3741,7 +3853,7 @@ document.getElementById('endingRestartBtn').addEventListener('click', () => {
   newGame();
 });
 document.getElementById('endingAlbumBtn').addEventListener('click', () => {
-  showAlbum();
+  showAlbum({ allowOverEnding: true });
 });
 
 // ============================================================
@@ -3772,26 +3884,26 @@ function showInventory() {
   const s = RUN.stats;
   const f = RUN.flags;
   const rows = [
-    { id:1,  label:'폐사 (자연/30일+)',  cur:`Day ${RUN.day}, 폐 ${Math.round(s.lung)}` },
-    { id:2,  label:'전설의 골초',        cur:`S급 흡연 ${f.sCigarettesSmoked}/5` },
-    { id:3,  label:'마피아 보스',        cur:`평판 ${Math.round(s.reputation)}/95 · 부하 ${f.underlings}/3` },
-    { id:4,  label:'약물 과다',          cur:f.overdose?'발생':'미발생' },
-    { id:5,  label:'인간 입양',          cur:`호감 ${f.humanAffinity}/80 + 부상` },
-    { id:6,  label:'철학자',             cur:`금연 ${f.consecutiveCleanDays}/20 · 평판 ${Math.round(s.reputation)}` },
-    { id:7,  label:'CEO와 결혼',         cur:`${f.ceoMet?'CEO ✓':'CEO 미접촉'} · A+ ${f.aPlusSmokedTotal}/8` },
-    { id:8,  label:'어느 날 사라짐',     cur:`평판 ${Math.round(s.reputation)} · 단절 ${f.daysWithoutInteraction}/10` },
-    { id:9,  label:'돌고래와 떠남 🔒',   cur:`청취 ${f.dolphinChats}/5 · 금연 ${f.consecutiveCleanDays}/7` },
-    { id:10, label:'평범한 삶 🔒',       cur:`평범연속 ${f.normalDayStreak}/18` },
-    { id:11, label:'부둣가의 시인 🔒',   cur:`금연 ${f.consecutiveCleanDays}/15 · 평판 ${Math.round(s.reputation)}≤15` },
-    { id:12, label:'갈매기왕 🔒',        cur:`평판 ${Math.round(s.reputation)}/95 · 부하 ${f.underlings}/5 · S ${f.sCigarettesSmoked}/2` },
-    { id:13, label:'굶어 죽음',          cur:`배고픔 ${Math.round(s.hunger)} · 음식 ${RUN.foodCount}` },
-    { id:14, label:'프린세스',           cur:`호감 ${f.humanAffinity}/65 · 평판 ${Math.round(s.reputation)}/55 · CEO 미접촉` },
-    { id:15, label:'천마 갈매기 🔒',     cur:`비행 ${Math.round(s.flight)}/90 · 천공 자격 ${f.pegasusAchieved?'✓':'✗'}` },
-    { id:16, label:'사부 갈매기',        cur:`부하 ${f.underlings}/4 · 평판 ${Math.round(s.reputation)}/55` },
-    { id:17, label:'록스타',             cur:`폭죽 무대 ${f.fireworkStageDone?'✓':'✗'} · 평판 ${Math.round(s.reputation)}/70` },
-    { id:18, label:'화가',               cur:`사진 ${f.photoCount||0}/3 · 호감 ${f.humanAffinity}/50` },
-    { id:19, label:'살인마',             cur:`격투 승 ${f.killCount||0}/3` },
-    { id:20, label:'갈매기 신 🔒',       cur:`다른 모든 엔딩 해금 후 자동` }
+    { id:1,  label:'폐사',              cur:`폐 ${Math.round(s.lung)}/100 → 0이면 사망 (또는 30일 자연사)` },
+    { id:2,  label:'전설의 골초',        cur:`S급 시가 ${f.sCigarettesSmoked}개 흡연 (5개 필요)` },
+    { id:3,  label:'마피아 보스',        cur:`평판 ${Math.round(s.reputation)}/100 + 부하 갈매기 ${f.underlings}/5명` },
+    { id:4,  label:'약물 과다',          cur:f.overdose?'✓ 발생':`인벤 S급 5개 보유 시 흡연 모달의 "한입에 5개"로 발동` },
+    { id:5,  label:'인간 입양',          cur:`인간 호감 ${f.humanAffinity}/80 + 폐 5 이하로 부상 시` },
+    { id:6,  label:'철학자',             cur:`연속 무흡연 ${f.consecutiveCleanDays}일/18일 + 평판 50 이상 + Day 22+` },
+    { id:7,  label:'CEO와 결혼',         cur:`${f.ceoMet?'✓ CEO 만남':'CEO 만남 (정장 갈매기 명함 받기)'} + A급↑ ${f.aPlusSmokedTotal}/8개` },
+    { id:8,  label:'어느 날 사라짐',     cur:`평판 ${Math.round(s.reputation)}=0 + 무상호작용 ${f.daysWithoutInteraction}일/10일` },
+    { id:9,  label:'돌고래와 떠남 🔒',   cur:`돌고래 충고 ${f.dolphinChats}/5회 청취 + 연속 무흡연 ${f.consecutiveCleanDays}/7일` },
+    { id:10, label:'평범한 삶 🔒',       cur:`모든 스탯 50~70 유지 ${f.normalDayStreak}일/14일 + Day 22+` },
+    { id:11, label:'부둣가의 시인 🔒',   cur:`연속 무흡연 ${f.consecutiveCleanDays}/15일 + 평판 ${Math.round(s.reputation)}/15 이하` },
+    { id:12, label:'갈매기왕 🔒',        cur:`평판 ${Math.round(s.reputation)}/95 + 부하 ${f.underlings}/5명 + S급 ${f.sCigarettesSmoked}/2개` },
+    { id:13, label:'굶어 죽음',          cur:`포만감 ${Math.round(s.hunger)}/100 → 0이면 사망 · 음식 ${RUN.foodCount}개 보유` },
+    { id:14, label:'프린세스',           cur:`인간 호감 ${f.humanAffinity}/65 + 평판 ${Math.round(s.reputation)}/55 + Day 7+ + CEO 안 만남` },
+    { id:15, label:'천마 갈매기 🔒',     cur:`비행 ${Math.round(s.flight)}/90 + 폭죽/태풍 이벤트에서 비행 90↑로 강풍 돌파 ${f.pegasusAchieved?'✓':'✗'}` },
+    { id:16, label:'사부 갈매기',        cur:`부하 갈매기 ${f.underlings}/4명 + 평판 ${Math.round(s.reputation)}/55` },
+    { id:17, label:'록스타',             cur:`폭죽 무대 통과 ${f.fireworkStageDone?'✓':'✗'} + 평판 ${Math.round(s.reputation)}/80 + 비행 ${Math.round(s.flight)}/70` },
+    { id:18, label:'화가',               cur:`사진작가 이벤트 ${f.photoCount||0}/3회 포즈 + 인간 호감 ${f.humanAffinity}/50` },
+    { id:19, label:'살인마',             cur:`라이벌 격투 승리 ${f.killCount||0}/3회` },
+    { id:20, label:'갈매기 신 🔒',       cur:`엔딩 1~19 모두 해금 후 다음 회차 Day 10+에 자동` }
   ];
   const unlockedSet = new Set(META.endingsUnlocked);
   for (const r of rows) {
@@ -3814,7 +3926,7 @@ function showInventory() {
       RUN.foodCount--;
       changeStat('hunger', +30);
       AUDIO.sfx('coin');
-      toast('🍖 먹었다. 배고픔 +30','good');
+      toast('🍖 먹었다. 포만감 +30','good');
       closeModal();
       saveRun();
       updateUI();
@@ -3825,7 +3937,7 @@ function showInventory() {
 // ============================================================
 // ALBUM
 // ============================================================
-function showAlbum() {
+function showAlbum(opts={}) {
   const totalEndings = ENDING_DEFS.length - 1; // entry 0 is null
   let html = '<div class="album-grid">';
   for (let i=1;i<=totalEndings;i++) {
@@ -3856,7 +3968,7 @@ function showAlbum() {
     milestoneHtml += `<div class="dim">${met?'✅':'⬜'} ${n}개 — ${label}</div>`;
   }
   html += milestoneHtml;
-  openModal('📔 꽁초의 일대기', html);
+  openModal('📔 꽁초의 일대기', html, { allowOverEnding: opts.allowOverEnding });
   // draw portraits
   document.querySelectorAll('#modalBody canvas').forEach(c => {
     const ec = c.getContext('2d');
@@ -4015,11 +4127,20 @@ function showHelp() {
 function showTitle() {
   document.getElementById('titleScreen').style.display = '';
   closeModal();
-  // continue button — class-based to avoid inline style edge cases
+  // continue button — class-based AND inline style for double-safe handling
   const cb = document.getElementById('continueBtn');
-  const hasSave = !!loadRun();
-  cb.classList.toggle('hidden', !hasSave);
-  cb.style.display = hasSave ? '' : 'none';
+  const saved = loadRun();
+  const hasSave = !!saved;
+  cb.classList.remove('hidden-init','hidden');
+  if (hasSave) {
+    cb.classList.remove('hidden');
+    cb.style.display = '';
+    cb.style.visibility = 'visible';
+    cb.textContent = `이어하기 (Day ${saved.day || 1})`;
+  } else {
+    cb.classList.add('hidden');
+    cb.style.display = 'none';
+  }
   // reset title-only particles so we don't carry over from prior session
   titleSmokeParticles.length = 0;
   titleAshParticles.length = 0;
