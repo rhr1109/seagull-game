@@ -4259,8 +4259,11 @@ function triggerEnding(id) {
   META.endingsReachedCount[id] = (META.endingsReachedCount[id]||0) + 1;
   const ok = saveMeta();
   console.log('[ending]', id, def.name, 'unlocked total:', META.endingsUnlocked.length, 'saved:', ok);
-  if (wasNew && ok) {
-    setTimeout(() => toast(`📔 새 엔딩 해금: ${def.name}`, 'good'), 600);
+  if (ok) {
+    if (wasNew) setTimeout(() => toast(`📔 새 엔딩 해금: ${def.name} · 자동 저장됨`, 'good'), 600);
+    else setTimeout(() => toast(`✅ ${def.name} 도달 (자동 저장됨)`, 'good'), 600);
+  } else {
+    setTimeout(() => toast('⚠ 저장 실패 — 메뉴 → 백업으로 수동 저장 권장', 'bad'), 600);
   }
   clearRun();
 
@@ -4691,27 +4694,61 @@ function showSlotSwitch() {
 
 function showBackup() {
   const json = JSON.stringify(META, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
   const today = new Date().toISOString().slice(0,10);
+  const unlocked = (META.endingsUnlocked||[]).length;
+  const titleCount = (META.titlesUnlocked||[]).length;
+  const cosCount = (META.costumesUnlocked||[]).length;
   let html = `
-    <p class="dim">엔딩/코스튬/칭호 등 메타 데이터를 파일로 백업하거나 복원합니다. 새 기기로 옮길 때, 또는 브라우저 데이터가 사라질 위험에 대비.</p>
+    <div style="background:rgba(123,196,127,0.1);border:1px solid rgba(123,196,127,0.3);padding:8px 10px;border-radius:6px;font-size:12px;margin-bottom:10px">
+      ✅ <b>엔딩 자동 로컬 저장됨</b><br>
+      <span class="dim">엔딩 ${unlocked}/${ENDING_DEFS.length-1} · 칭호 ${titleCount} · 코스튬 ${cosCount} · 회차 ${META.totalRuns||0}</span>
+    </div>
+    <p class="dim">localStorage 메인 키 + 백업 키 동시 보관. 캐시가 날아갈 위험에 대비해 아래 백업 사용.</p>
     <div class="menu-list">
-      <a href="${url}" download="kkeuh-meta-${today}.json" id="bkDownload" style="text-decoration:none">
-        <button style="width:100%">💾 메타 데이터 내보내기 (JSON 다운로드)</button>
-      </a>
+      <button id="bkDownload">💾 JSON 파일로 다운로드</button>
       <button id="bkImport">📥 백업 파일 불러오기</button>
-      <button id="bkCopy">📋 클립보드로 복사 (작은 데이터용)</button>
+      <button id="bkCopy">📋 클립보드로 복사</button>
     </div>
     <hr>
     <p class="dim">현재 메타 데이터 미리보기</p>
-    <textarea readonly style="width:100%;height:120px;background:#14181F;color:var(--c-text-dim);border:1px solid var(--c-line);border-radius:6px;padding:6px;font-size:10px;font-family:monospace">${escapeHtml(json)}</textarea>
+    <textarea id="bkPreview" readonly style="width:100%;height:120px;background:#14181F;color:var(--c-text-dim);border:1px solid var(--c-line);border-radius:6px;padding:6px;font-size:10px;font-family:monospace">${escapeHtml(json)}</textarea>
     <input type="file" id="bkFile" accept=".json,application/json" style="display:none">`;
   openModal('💾 데이터 백업 / 복원', html);
+  // Programmatic download (a-tag with button child was breaking on some browsers)
+  document.getElementById('bkDownload').onclick = () => {
+    try {
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `kkeuh-meta-${today}.json`;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      toast('💾 파일 저장됨', 'good');
+    } catch(e) {
+      console.error('download failed', e);
+      const dataUrl = 'data:application/json;charset=utf-8,' + encodeURIComponent(json);
+      const a2 = document.createElement('a');
+      a2.href = dataUrl;
+      a2.download = `kkeuh-meta-${today}.json`;
+      a2.click();
+      toast('💾 파일 저장됨 (대체 모드)', 'warn');
+    }
+  };
   document.getElementById('bkImport').onclick = () => document.getElementById('bkFile').click();
   document.getElementById('bkCopy').onclick = async () => {
-    try { await navigator.clipboard.writeText(json); toast('📋 복사됐다','good'); }
-    catch(e) { toast('복사 실패','bad'); }
+    try {
+      await navigator.clipboard.writeText(json);
+      toast('📋 클립보드에 복사됐다','good');
+    } catch(e) {
+      const ta = document.getElementById('bkPreview');
+      ta.select(); ta.setSelectionRange(0, 999999);
+      try { document.execCommand('copy'); toast('📋 복사됐다','good'); }
+      catch(e2) { toast('복사 실패 — 박스에서 직접 복사하세요','warn'); }
+    }
   };
   document.getElementById('bkFile').onchange = (e) => {
     const f = e.target.files && e.target.files[0];
