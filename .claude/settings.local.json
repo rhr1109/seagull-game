@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"const fs=require\\('fs'\\); const html=fs.readFileSync\\('index.html','utf8'\\); const start=html.indexOf\\('<script>'\\)+8; const end=html.lastIndexOf\\('</script>'\\); const js=html.slice\\(start,end\\); try { new Function\\(js\\); console.log\\('SYNTAX OK'\\); } catch\\(e\\) { console.log\\('SYNTAX ERROR:', e.message\\); }\")",
+      "Bash(node -e ' *)",
+      "Bash(gh auth *)",
+      "Bash(vercel --version)",
+      "Bash(git config *)",
+      "Bash(npm init *)",
+      "Bash(npm install *)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(npm install *)",
+      "PowerShell(winget install *)",
+      "Bash(export PATH=\"/c/Program Files/GitHub CLI:$PATH\")",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ]
+  }
+}
