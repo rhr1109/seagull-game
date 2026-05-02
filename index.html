@@ -3580,21 +3580,21 @@ function advanceTime(slept=false) {
   // wave guests goodbye after this turn
   for (const g of GUESTS) { g.life = Math.min(g.life, 60); g.targetX = -0.2; g.arrived = false; }
   RUN.actionsThisDay++;
-  // passive stat drift each turn — tuned so 30-day runs are realistically completable
-  const cravingDrift = 5 - (META.metaBonus_cravingReduce || 0);
-  const hungerDrift  = 1.3 - (META.metaBonus_hungerReduce || 0);
+  // passive stat drift each turn — tuned for 30-day runs with multiple ending tries
+  const cravingDrift = Math.max(2, 4 - (META.metaBonus_cravingReduce || 0));
+  const hungerDrift  = Math.max(0.5, 1.0 - (META.metaBonus_hungerReduce || 0));
   changeStat('craving', cravingDrift, {silent:true});
-  changeStat('stress',  +3, {silent:true});
+  changeStat('stress',  +2, {silent:true});
   // flight: hunting drains it (handled in resolveHunt). Outside hunts, slowly recover.
-  if (!RUN.flags.huntedThisTurn) changeStat('flight', +0.5, {silent:true});
+  if (!RUN.flags.huntedThisTurn) changeStat('flight', +0.7, {silent:true});
   RUN.flags.huntedThisTurn = false;
   changeStat('hunger',  -hungerDrift, {silent:true});
-  // small lung self-repair when not actively smoking today
-  if (!RUN.flags.smokedToday) changeStat('lung', +0.4, {silent:true});
-  // auto-eat — try a wider window (40 instead of 35) to prevent close-call deaths
-  if (RUN.stats.hunger < 40 && RUN.foodCount > 0) {
+  // lung self-repair when not actively smoking today
+  if (!RUN.flags.smokedToday) changeStat('lung', +0.6, {silent:true});
+  // auto-eat — generous window so casual play doesn't starve
+  if (RUN.stats.hunger < 50 && RUN.foodCount > 0) {
     RUN.foodCount--;
-    changeStat('hunger', +35, {silent:true});
+    changeStat('hunger', +40, {silent:true});
     logLine('🍖 배가 고파 챙겨둔 먹이를 먹었다.');
   }
   // hunger 0 → starve. skeleton costume gets one free pass.
@@ -3735,21 +3735,21 @@ function checkEndings() {
   if (RUN.finished) return;
   const s = RUN.stats;
   if (s.lung <= 0) return triggerEnding(1);
-  if (RUN.flags.sCigarettesSmoked >= 5) return triggerEnding(2);                                  // 10 → 5
-  if (s.reputation >= 100 && RUN.flags.underlings >= 5) return triggerEnding(3);                  // restored harder: 100/5 (was 95/3 — too easy)
+  if (RUN.flags.sCigarettesSmoked >= 3) return triggerEnding(2);                                  // 5 → 3
+  if (s.reputation >= 100 && RUN.flags.underlings >= 5) return triggerEnding(3);                  // 마피아 — 의도적으로 어려운 채로
   if (RUN.flags.overdose) return triggerEnding(4);
-  if (RUN.flags.humanAffinity >= 80 && RUN.flags.injuredCritical) return triggerEnding(5);        // 100 → 80
-  if (RUN.flags.ceoMet && RUN.flags.aPlusSmokedTotal >= 8) return triggerEnding(7);               // 30 → 15 → 8
-  if (s.reputation <= 0 && RUN.flags.daysWithoutInteraction >= 10) return triggerEnding(8);       // 14 → 10
-  if (RUN.flags.consecutiveCleanDays >= 15 && s.reputation <= 15) return triggerEnding(11);       // 20/10 → 15/15
-  if (s.reputation >= 95 && RUN.flags.underlings >= 5 && RUN.flags.sCigarettesSmoked >= 2) return triggerEnding(12); // 100/8/3 → 95/5/2
-  // 14~20 new endings (slightly relaxed for 30-day completability)
-  if (RUN.flags.humanAffinity >= 65 && s.reputation >= 55 && RUN.day >= 7 && !RUN.flags.ceoMet) return triggerEnding(14); // 프린세스
-  if (s.flight >= 90 && RUN.flags.pegasusAchieved) return triggerEnding(15);                              // 천마
-  if (RUN.flags.underlings >= 4 && s.reputation >= 55) return triggerEnding(16);                          // 사부 (6 → 4)
-  if (RUN.flags.fireworkStageDone && s.reputation >= 80 && s.flight >= 70) return triggerEnding(17);     // 록스타 강화: +비행 70
-  if (RUN.flags.photoCount >= 3 && RUN.flags.humanAffinity >= 50) return triggerEnding(18);               // 화가
-  if (RUN.flags.killCount >= 3) return triggerEnding(19);                                                  // 살인마
+  if (RUN.flags.humanAffinity >= 70 && RUN.flags.injuredCritical) return triggerEnding(5);        // 80 → 70
+  if (RUN.flags.ceoMet && RUN.flags.aPlusSmokedTotal >= 5) return triggerEnding(7);               // 8 → 5
+  if (s.reputation <= 5 && RUN.flags.daysWithoutInteraction >= 8) return triggerEnding(8);        // 0/10 → 5/8
+  if (RUN.flags.consecutiveCleanDays >= 12 && s.reputation <= 20) return triggerEnding(11);       // 15/15 → 12/20
+  if (s.reputation >= 90 && RUN.flags.underlings >= 4 && RUN.flags.sCigarettesSmoked >= 1) return triggerEnding(12); // 95/5/2 → 90/4/1
+  // 14~20 new endings
+  if (RUN.flags.humanAffinity >= 55 && s.reputation >= 45 && RUN.day >= 6 && !RUN.flags.ceoMet) return triggerEnding(14); // 프린세스: 65/55 → 55/45
+  if (s.flight >= 85 && RUN.flags.pegasusAchieved) return triggerEnding(15);                              // 천마: 90 → 85
+  if (RUN.flags.underlings >= 3 && s.reputation >= 50) return triggerEnding(16);                          // 사부: 4/55 → 3/50
+  if (RUN.flags.fireworkStageDone && s.reputation >= 80 && s.flight >= 70) return triggerEnding(17);     // 록스타 — 의도적으로 약간 어려움
+  if (RUN.flags.photoCount >= 2 && RUN.flags.humanAffinity >= 40) return triggerEnding(18);               // 화가: 3/50 → 2/40
+  if (RUN.flags.killCount >= 2) return triggerEnding(19);                                                  // 살인마: 3 → 2
   // 갈매기 신 — 다른 엔딩 1~19 모두 해금된 사용자에게만
   const others = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
   if (others.every(id => META.endingsUnlocked.includes(id)) && RUN.day >= 10) return triggerEnding(20);
@@ -3885,24 +3885,24 @@ function showInventory() {
   const f = RUN.flags;
   const rows = [
     { id:1,  label:'폐사',              cur:`폐 ${Math.round(s.lung)}/100 → 0이면 사망 (또는 30일 자연사)` },
-    { id:2,  label:'전설의 골초',        cur:`S급 시가 ${f.sCigarettesSmoked}개 흡연 (5개 필요)` },
-    { id:3,  label:'마피아 보스',        cur:`평판 ${Math.round(s.reputation)}/100 + 부하 갈매기 ${f.underlings}/5명` },
-    { id:4,  label:'약물 과다',          cur:f.overdose?'✓ 발생':`인벤 S급 5개 보유 시 흡연 모달의 "한입에 5개"로 발동` },
-    { id:5,  label:'인간 입양',          cur:`인간 호감 ${f.humanAffinity}/80 + 폐 5 이하로 부상 시` },
-    { id:6,  label:'철학자',             cur:`연속 무흡연 ${f.consecutiveCleanDays}일/18일 + 평판 50 이상 + Day 22+` },
-    { id:7,  label:'CEO와 결혼',         cur:`${f.ceoMet?'✓ CEO 만남':'CEO 만남 (정장 갈매기 명함 받기)'} + A급↑ ${f.aPlusSmokedTotal}/8개` },
-    { id:8,  label:'어느 날 사라짐',     cur:`평판 ${Math.round(s.reputation)}=0 + 무상호작용 ${f.daysWithoutInteraction}일/10일` },
-    { id:9,  label:'돌고래와 떠남 🔒',   cur:`돌고래 충고 ${f.dolphinChats}/5회 청취 + 연속 무흡연 ${f.consecutiveCleanDays}/7일` },
-    { id:10, label:'평범한 삶 🔒',       cur:`모든 스탯 50~70 유지 ${f.normalDayStreak}일/14일 + Day 22+` },
-    { id:11, label:'부둣가의 시인 🔒',   cur:`연속 무흡연 ${f.consecutiveCleanDays}/15일 + 평판 ${Math.round(s.reputation)}/15 이하` },
-    { id:12, label:'갈매기왕 🔒',        cur:`평판 ${Math.round(s.reputation)}/95 + 부하 ${f.underlings}/5명 + S급 ${f.sCigarettesSmoked}/2개` },
-    { id:13, label:'굶어 죽음',          cur:`포만감 ${Math.round(s.hunger)}/100 → 0이면 사망 · 음식 ${RUN.foodCount}개 보유` },
-    { id:14, label:'프린세스',           cur:`인간 호감 ${f.humanAffinity}/65 + 평판 ${Math.round(s.reputation)}/55 + Day 7+ + CEO 안 만남` },
-    { id:15, label:'천마 갈매기 🔒',     cur:`비행 ${Math.round(s.flight)}/90 + 폭죽/태풍 이벤트에서 비행 90↑로 강풍 돌파 ${f.pegasusAchieved?'✓':'✗'}` },
-    { id:16, label:'사부 갈매기',        cur:`부하 갈매기 ${f.underlings}/4명 + 평판 ${Math.round(s.reputation)}/55` },
+    { id:2,  label:'전설의 골초',        cur:`S급 시가 ${f.sCigarettesSmoked}/3개 흡연` },
+    { id:3,  label:'마피아 보스',        cur:`평판 ${Math.round(s.reputation)}/100 + 부하 ${f.underlings}/5명` },
+    { id:4,  label:'약물 과다',          cur:f.overdose?'✓ 발생':`S급 5개 보유 후 흡연 모달의 "한입에 5개"` },
+    { id:5,  label:'인간 입양',          cur:`인간 호감 ${f.humanAffinity}/70 + 폐 5 이하로 부상 시` },
+    { id:6,  label:'철학자',             cur:`연속 무흡연 ${f.consecutiveCleanDays}/18일 + 평판 50+ + Day 22+` },
+    { id:7,  label:'CEO와 결혼',         cur:`${f.ceoMet?'✓ CEO 만남':'CEO 만남 (정장 갈매기)'} + A급↑ ${f.aPlusSmokedTotal}/5개` },
+    { id:8,  label:'어느 날 사라짐',     cur:`평판 ${Math.round(s.reputation)}≤5 + 무상호작용 ${f.daysWithoutInteraction}/8일` },
+    { id:9,  label:'돌고래와 떠남 🔒',   cur:`돌고래 충고 ${f.dolphinChats}/5회 + 연속 무흡연 ${f.consecutiveCleanDays}/7일` },
+    { id:10, label:'평범한 삶 🔒',       cur:`모든 스탯 50~70 유지 ${f.normalDayStreak}/14일 + Day 22+` },
+    { id:11, label:'부둣가의 시인 🔒',   cur:`연속 무흡연 ${f.consecutiveCleanDays}/12일 + 평판 ${Math.round(s.reputation)}≤20` },
+    { id:12, label:'갈매기왕 🔒',        cur:`평판 ${Math.round(s.reputation)}/90 + 부하 ${f.underlings}/4명 + S급 ${f.sCigarettesSmoked}/1개` },
+    { id:13, label:'굶어 죽음',          cur:`포만감 ${Math.round(s.hunger)}/100 → 0이면 사망 · 음식 ${RUN.foodCount}개` },
+    { id:14, label:'프린세스',           cur:`호감 ${f.humanAffinity}/55 + 평판 ${Math.round(s.reputation)}/45 + Day 6+ + CEO 안 만남` },
+    { id:15, label:'천마 갈매기 🔒',     cur:`비행 ${Math.round(s.flight)}/85 + 폭죽/태풍에서 비행 90+로 강풍 돌파 ${f.pegasusAchieved?'✓':'✗'}` },
+    { id:16, label:'사부 갈매기',        cur:`부하 ${f.underlings}/3명 + 평판 ${Math.round(s.reputation)}/50` },
     { id:17, label:'록스타',             cur:`폭죽 무대 통과 ${f.fireworkStageDone?'✓':'✗'} + 평판 ${Math.round(s.reputation)}/80 + 비행 ${Math.round(s.flight)}/70` },
-    { id:18, label:'화가',               cur:`사진작가 이벤트 ${f.photoCount||0}/3회 포즈 + 인간 호감 ${f.humanAffinity}/50` },
-    { id:19, label:'살인마',             cur:`라이벌 격투 승리 ${f.killCount||0}/3회` },
+    { id:18, label:'화가',               cur:`사진작가 ${f.photoCount||0}/2회 + 인간 호감 ${f.humanAffinity}/40` },
+    { id:19, label:'살인마',             cur:`라이벌 격투 승리 ${f.killCount||0}/2회` },
     { id:20, label:'갈매기 신 🔒',       cur:`엔딩 1~19 모두 해금 후 다음 회차 Day 10+에 자동` }
   ];
   const unlockedSet = new Set(META.endingsUnlocked);
@@ -3962,7 +3962,17 @@ function showAlbum(opts={}) {
   html += `<hr><div class="dim">해금: ${META.endingsUnlocked.length}/${totalEndings} · 총 회차: ${META.totalRuns} · 최장수: ${META.longestLife}일 · 총 흡연: ${META.totalCigSmoked}</div>`;
   // milestone
   let milestoneHtml = '<hr><div class="dim">누적 마일스톤</div>';
-  const mls = [[3,'신규 사냥터: 도시 옥상 (점심/저녁)'],[5,'신규 사냥터: 지하철 입구'],[8,'신규 BGM 트랙'],[10,'진엔딩 + 색상 변형']];
+  const mls = [
+    [3,  '신규 사냥터: 도시 옥상 (점심/저녁)'],
+    [5,  '신규 사냥터: 지하철 입구'],
+    [8,  '신규 BGM 트랙 + 매 턴 욕구/포만감 누적 감소'],
+    [10, '시작 모든 스탯 +5 메타 보너스'],
+    [13, '인벤 C급 ×2 시작 보너스'],
+    [16, '시작 인벤 B급 ×1'],
+    [18, '시작 모든 스탯 +10'],
+    [19, '진엔딩 #20 "갈매기 신" 트리거 해금'],
+    [21, '전체 도달 — 모든 코스튬에 색상 변형 추가 (예정)']
+  ];
   for (const [n, label] of mls) {
     const met = META.endingsUnlocked.length >= n;
     milestoneHtml += `<div class="dim">${met?'✅':'⬜'} ${n}개 — ${label}</div>`;
@@ -4375,15 +4385,16 @@ document.getElementById('creditsBtn').addEventListener('click', () => {
 
 // auto-save before close
 window.addEventListener('beforeunload', () => { if (!RUN.finished) saveRun(); });
+// Only react to actual screen-off / tab-hidden, not random window blurs
+// (D-pad buttons and modal interactions can fire blur on PC; we don't want to kill BGM there)
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
     if (!RUN.finished) saveRun();
-    // mute completely while screen is off / tab is hidden
     AUDIO.stopBgm();
     if (AUDIO.master) try { AUDIO.master.gain.value = 0; } catch(e){}
   } else {
     if (AUDIO.master && AUDIO.enabled) try { AUDIO.master.gain.value = 0.7; } catch(e){}
-    // resume bgm only while a run is active and not on title/ending screens
+    AUDIO.resume();
     const titleVisible = document.getElementById('titleScreen').style.display !== 'none';
     const endingVisible = document.getElementById('endingScreen').classList.contains('show');
     if (!RUN.finished && !titleVisible && !endingVisible && AUDIO.bgmEnabled && AUDIO.enabled) {
@@ -4391,9 +4402,6 @@ document.addEventListener('visibilitychange', () => {
     }
   }
 });
-// mobile pageshow/pagehide also fire on screen lock for some browsers
-window.addEventListener('pagehide', () => { AUDIO.stopBgm(); if (AUDIO.master) try { AUDIO.master.gain.value = 0; } catch(e){} });
-window.addEventListener('blur', () => { AUDIO.stopBgm(); });
 
 // resize
 window.addEventListener('resize', setCanvasSize);
