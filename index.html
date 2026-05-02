@@ -68,10 +68,21 @@ button { font-family: inherit; font-size: inherit; color: inherit; cursor: point
   background: rgba(0,0,0,0.35);
   border-bottom: 1px solid var(--c-line);
   font-size: 13px;
-  flex-wrap: wrap;
   gap: 6px;
 }
-.topbar .left { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.topbar .left {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  flex: 1;
+  min-width: 0;
+}
+.topbar .left::-webkit-scrollbar { display: none; }
+.topbar .pill { flex-shrink: 0; }
+.topbar .icons { flex-shrink: 0; }
 .topbar .day { font-weight: 700; font-size: 15px; }
 .topbar .pill {
   background: var(--c-panel);
@@ -472,6 +483,26 @@ button { font-family: inherit; font-size: inherit; color: inherit; cursor: point
 .grade-B { color: #87B0E5; }
 .grade-A { color: #D0A0F0; }
 .grade-S { color: var(--c-accent); text-shadow: 0 0 6px rgba(244,196,48,0.5); }
+/* ====== Collapsible details inside modal ====== */
+.modal details { margin-top: 8px; }
+.modal details > summary {
+  cursor: pointer;
+  list-style: none;
+  background: var(--c-panel-2);
+  border: 1px solid var(--c-line);
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  user-select: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal details > summary::-webkit-details-marker { display: none; }
+.modal details > summary::after { content: '▾'; color: var(--c-text-dim); font-size: 12px; }
+.modal details[open] > summary::after { content: '▴'; }
+.modal details > div { padding: 8px 4px; }
 /* ====== Album ====== */
 .album-grid {
   display: grid;
@@ -562,7 +593,11 @@ button { font-family: inherit; font-size: inherit; color: inherit; cursor: point
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
   text-align: left;
+  font-family: inherit;
+  color: inherit;
+  width: 100%;
 }
+.slot-card:focus-visible { outline: 2px solid var(--c-accent); outline-offset: 2px; }
 .slot-card:hover { background: var(--c-panel-2); border-color: #5a6580; }
 .slot-card.empty { color: var(--c-text-dim); border-style: dashed; }
 .slot-card.active-slot { border-color: var(--c-accent); background: rgba(244,196,48,0.08); }
@@ -4188,8 +4223,11 @@ function showInventory() {
   html += `<div class="dim">총 흡연량: ${RUN.cigarettesSmokedTotal} · S급 흡연: ${RUN.flags.sCigarettesSmoked}</div>`;
   html += `<div class="dim">🧠 지능 ${Math.round(RUN.stats.intel||0)} · 💋 매력 ${Math.round(RUN.stats.charm||0)} · 💧 감수성 ${Math.round(RUN.stats.sense||0)}</div>`;
 
-  // === Ending progress ===
-  html += '<hr><p><b>🎯 엔딩 진행도</b></p>';
+  // === Ending progress (collapsible) ===
+  const unlockedSetForCount = new Set(META.endingsUnlocked);
+  let unlockedCount = 0;
+  for (let i=1;i<=ENDING_DEFS.length-1;i++) if (unlockedSetForCount.has(i)) unlockedCount++;
+  html += `<details><summary>🎯 엔딩 진행도 (${unlockedCount}/${ENDING_DEFS.length-1} 해금)</summary><div>`;
   const s = RUN.stats;
   const f = RUN.flags;
   const rows = [
@@ -4223,14 +4261,17 @@ function showInventory() {
     const got = unlockedSet.has(r.id) ? '<span class="tag good">✓</span>' : '<span class="tag">진행</span>';
     html += `<div class="stats-detail-row"><span>${got}${escapeHtml(r.label)}</span><span class="dim">${escapeHtml(r.cur)}</span></div>`;
   }
-  html += '<div class="dim" style="font-size:10px;margin-top:6px">조건 충족 즉시 자동 트리거 · Day 30이 지나면 가장 가까운 엔딩으로 자동 종료</div>';
-  // Meta bonus list
+  html += '<div class="dim" style="font-size:10px;margin-top:6px">조건 충족 즉시 자동 트리거 · Day 30이 지나면 자동 종료</div>';
+  html += `</div></details>`;
+  // Meta bonus list (collapsible)
   const n = META.endingsUnlocked.length;
-  html += `<hr><p><b>✨ 메타 진행 보너스 (엔딩 ${n}개 해금)</b></p>`;
+  let metaActive = 0; for (const b of META_BONUSES) if (n >= b.req) metaActive++;
+  html += `<details><summary>✨ 메타 진행 보너스 (${metaActive}/${META_BONUSES.length} 활성)</summary><div>`;
   for (const b of META_BONUSES) {
     const got = (n >= b.req) ? '<span class="tag good">✓</span>' : '<span class="tag">🔒</span>';
     html += `<div class="stats-detail-row"><span>${got}엔딩 ${b.req}개</span><span class="dim">${escapeHtml(b.desc)}</span></div>`;
   }
+  html += `</div></details>`;
   openModal('🚬 인벤토리 / 상태', html);
   const eat = document.getElementById('invEat');
   if (eat) {
@@ -4317,16 +4358,18 @@ function showAlbum(opts={}) {
 function showMenu() {
   let html = '<div class="menu-list">';
   html += '<button id="m_save">💾 수동 저장</button>';
+  html += '<button id="m_controls">🎮 조작법 다시 보기</button>';
   html += '<button id="m_costume">🎩 코스튬 변경</button>';
   html += '<button id="m_titles">🏆 칭호 변경 (' + ((META.titlesUnlocked||[]).length) + ' 보유)</button>';
   html += '<button id="m_album">📔 엔딩 앨범</button>';
-  html += '<button id="m_help">❓ 어떻게 노냐</button>';
+  html += '<button id="m_help">❓ 도움말</button>';
   html += '<button id="m_title" class="danger">🚪 타이틀로 (현재 진행 저장)</button>';
   html += '<button id="m_reset" class="danger">🗑 모든 메타 초기화</button>';
   html += '</div>';
   html += `<hr><div class="dim">청소년이용불가. 그래야 할 만한 이유가 있다.</div>`;
   openModal('≡ 메뉴', html);
   document.getElementById('m_save').onclick = () => { saveRun(); toast('저장됨','good'); closeModal(); };
+  document.getElementById('m_controls').onclick = () => { closeModal(); showControlHint(); };
   document.getElementById('m_costume').onclick = () => { showCostumes(); };
   document.getElementById('m_titles').onclick = () => { showTitles(); };
   document.getElementById('m_album').onclick = () => { showAlbum(); };
@@ -4438,17 +4481,27 @@ function showTitles() {
 function showHelp() {
   let html = `
   <p><b>🎮 조작</b></p>
-  <p class="dim">PC: ←/→ 또는 A/D 이동 · ↑/W (비행 중) 위로 · Space 점프/날갯짓 · 1~5 액션 단축키</p>
-  <p class="dim">모바일: 캔버스를 누르고 끌어서 이동 · 더블탭으로 점프 · 하단 버튼으로 액션</p>
+  <p class="dim">PC: ← → 이동 · Space 점프/날갯짓 · 1~5 액션 단축키</p>
+  <p class="dim">모바일: 화면 하단 ◀ ▶ 이동 · ▲ 점프 · 5개 액션 버튼</p>
   <hr>
-  <p><b>5대 스탯</b></p>
-  <p class="dim">🫁 폐 0이 되면 죽음 / 🚬 욕구 안 채우면 발작 / ✈️ 비행은 폐와 함께 망가짐 / 😤 스트레스 흡연으로만 풀림 / 👥 평판 무리 활동에 영향</p>
+  <p><b>📊 핵심 6대 스탯</b></p>
+  <p class="dim">🫁 폐 0이면 사망 · 🚬 욕구 안 채우면 발작 · ✈️ 비행 (사냥 안 할 때 자연 회복) · 😤 스트레스 (흡연/노을로 회복) · 👥 평판 · 🍖 포만감 0이면 굶어죽음 (음식 자동 소비)</p>
+  <p><b>📊 보조 3대 스탯</b></p>
+  <p class="dim">🧠 지능 (책/돌고래/사색) · 💋 매력 (그루밍/사진/평판) · 💧 감수성 (노을/시/금연)</p>
   <hr>
-  <p><b>액션</b></p>
-  <p class="dim">사냥: 비행해서 시간대별 사냥터 / 흡연: 인벤에서 등급 선택 / 탐험: 랜덤 이벤트 / 상호작용: 다른 새/CEO/돌고래 / 수면: 시간 진행</p>
+  <p><b>🎯 액션</b></p>
+  <p class="dim"><b>사냥</b>: 시간대별 사냥터 (담배/음식 획득)<br>
+  <b>흡연</b>: 등급별 만족/폐손상<br>
+  <b>탐험</b>: 랜덤 이벤트 (📚책 · 🪞그루밍 · 🌅노을 · 🎰슬롯 · 🐬돌고래 · 🎆폭죽 · 🌪️태풍 · 🛒상점 …)<br>
+  <b>상호작용</b>: 다른 갈매기·돌고래·CEO 등<br>
+  <b>수면</b>: 시간 진행, 스트레스 회복</p>
   <hr>
-  <p><b>엔딩</b></p>
-  <p class="dim">10종. 어떤 길로 가도 부두는 그대로다.</p>
+  <p><b>📔 엔딩 24종</b></p>
+  <p class="dim">어떤 길로 가도 부두는 그대로다. 도달 조건은 🚬 인벤토리 → 엔딩 진행도에서 실시간 확인.</p>
+  <p class="dim">⚠ Day 30이 지나면 가장 가까운 엔딩으로 자동 종료.</p>
+  <hr>
+  <p><b>✨ 메타 진행</b></p>
+  <p class="dim">엔딩 해금 누적 시 시작 보너스 + 매 턴 욕구/포만감 감소. 회차 거듭할수록 쉬워진다.</p>
   <hr>
   <p class="dim">청소년이용불가. 그래야 할 만한 이유가 있다.</p>`;
   openModal('❓ 도움말', html);
@@ -4480,9 +4533,11 @@ function renderSlotList() {
   list.innerHTML = '';
   for (let i=0;i<SLOT_COUNT;i++) {
     const data = loadRunFromSlot(i);
-    const card = document.createElement('div');
+    const card = document.createElement('button');
+    card.type = 'button';
     const isActive = (META.currentSlot === i);
     card.className = 'slot-card' + (data ? '' : ' empty') + (isActive && data ? ' active-slot' : '');
+    card.setAttribute('aria-label', data ? `슬롯 ${i+1} 이어하기` : `슬롯 ${i+1} 새 시작`);
     if (data) {
       const cosName = (COSTUME_EFFECTS[data.costume] || {}).name || '기본 꽁초';
       const t = TIMES[data.timeIdx || 0];
