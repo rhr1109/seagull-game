@@ -552,6 +552,23 @@ button { font-family: inherit; font-size: inherit; color: inherit; cursor: point
 .album-card.locked .frame { opacity: 0.3; }
 .album-card .id { position: absolute; top: 4px; left: 5px; font-size: 9px; color: var(--c-text-dim); }
 .album-card .hidden-tag { position: absolute; top: 4px; right: 5px; font-size: 9px; color: var(--c-accent); }
+.album-card .album-dl {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  width: 24px; height: 24px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  padding: 0;
+}
+.album-card .album-dl:hover { background: rgba(244,196,48,0.25); border-color: var(--c-accent); }
+.album-card { position: relative; }
 /* ====== Title screen ====== */
 .title-screen {
   position: absolute;
@@ -974,8 +991,9 @@ hr { border: none; border-top: 1px solid var(--c-line); margin: 8px 0; }
     <div class="frame"><canvas id="endingCanvas" width="200" height="160"></canvas></div>
     <div class="reward" id="endingReward" style="display:none"></div>
     <div class="ending-actions">
+      <button id="endingImageBtn">🖼️ 이미지</button>
       <button id="endingShareBtn">📤 공유</button>
-      <button id="endingAlbumBtn">앨범 보기</button>
+      <button id="endingAlbumBtn">앨범</button>
       <button id="endingRestartBtn">다시 시작</button>
       <button id="endingTitleBtn">타이틀로</button>
     </div>
@@ -4315,6 +4333,9 @@ document.getElementById('endingAlbumBtn').addEventListener('click', () => {
 document.getElementById('endingShareBtn').addEventListener('click', () => {
   shareProgress({ endingId: window._lastEndingId });
 });
+document.getElementById('endingImageBtn').addEventListener('click', () => {
+  if (window._lastEndingId) showEndingShareModal(window._lastEndingId);
+});
 
 // ============================================================
 // INVENTORY MODAL (top-bar)
@@ -4420,9 +4441,10 @@ function showAlbum(opts={}) {
     const showName = unlocked || !def.hidden;
     const displayName = showName ? def.name : '🔒 ???';
     const displayTitle = (def.title && (unlocked || !def.hidden)) ? def.title : null;
-    html += `<div class="album-card ${cls}">
+    html += `<div class="album-card ${cls}" data-eid="${i}">
       <div class="id">${('0'+i).slice(-2)}</div>
       ${def.hidden ? '<div class="hidden-tag">HIDDEN</div>' : ''}
+      ${unlocked ? `<button class="album-dl" data-dl="${i}" title="이미지 저장">🖼️</button>` : ''}
       <div class="frame"><canvas data-cos="${def.costume}" data-locked="${!unlocked}" width="120" height="100"></canvas></div>
       <div class="name">${escapeHtml(displayName)}</div>
       ${displayTitle ? `<div style="font-size:10px;color:var(--c-accent);margin:2px 0 3px">🏆 ${escapeHtml(displayTitle)}</div>` : ''}
@@ -4453,6 +4475,14 @@ function showAlbum(opts={}) {
   openModal('📔 꽁초의 일대기', html, { allowOverEnding: opts.allowOverEnding });
   const sBtn = document.getElementById('albumShareBtn');
   if (sBtn) sBtn.addEventListener('click', () => shareProgress());
+  // album per-ending download buttons
+  document.querySelectorAll('#modalBody .album-dl').forEach(b => {
+    b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = parseInt(b.dataset.dl);
+      showEndingShareModal(id);
+    });
+  });
   // draw portraits
   document.querySelectorAll('#modalBody canvas').forEach(c => {
     const ec = c.getContext('2d');
@@ -4770,6 +4800,168 @@ function showBackup() {
     };
     reader.readAsText(f);
   };
+}
+
+// Render a 720×720 SNS-friendly card for an ending
+function makeEndingShareImage(endingId) {
+  const def = ENDING_DEFS[endingId];
+  if (!def) return null;
+  const c = document.createElement('canvas');
+  c.width = 720; c.height = 720;
+  const ctx = c.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+
+  // Sky/sea gradient (matching the in-game scene)
+  const grad = ctx.createLinearGradient(0,0,0,720);
+  grad.addColorStop(0, '#3a4358');
+  grad.addColorStop(0.45, '#9c5a3a');
+  grad.addColorStop(0.7, '#3D7088');
+  grad.addColorStop(1, '#5b4a3a');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,720,720);
+
+  // Stars/sun depending on ending mood
+  if ([1,4,8,13,19,24].includes(endingId)) {
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    for (let i=0;i<25;i++) ctx.fillRect((i*53)%720, (i*37)%280, 2, 2);
+  } else {
+    // sun
+    ctx.fillStyle = '#F4C430';
+    ctx.beginPath(); ctx.arc(560, 200, 30, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(244,196,48,0.25)';
+    ctx.beginPath(); ctx.arc(560, 200, 50, 0, Math.PI*2); ctx.fill();
+  }
+
+  // Dock plank near bottom
+  ctx.fillStyle = '#5b4a3a';
+  ctx.fillRect(0, 540, 720, 180);
+  ctx.fillStyle = '#3a2d20';
+  ctx.fillRect(0, 540, 720, 6);
+  for (let x=0;x<720;x+=60) { ctx.fillRect(x, 546, 2, 174); }
+
+  // Header: game title
+  ctx.fillStyle = '#D4A574';
+  ctx.font = 'bold 56px "Malgun Gothic","Apple SD Gothic Neo",sans-serif';
+  ctx.textAlign = 'center';
+  ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowOffsetX = 4; ctx.shadowOffsetY = 4;
+  ctx.fillText('끄어억', 360, 90);
+  ctx.shadowColor = 'transparent';
+  ctx.fillStyle = 'rgba(166,174,192,0.9)';
+  ctx.font = '18px "Malgun Gothic","Apple SD Gothic Neo",sans-serif';
+  ctx.fillText('부둣가 골초 갈매기 시뮬레이터', 360, 120);
+
+  // Big seagull (5x scale)
+  ctx.save();
+  ctx.translate(360, 420);
+  ctx.scale(5, 5);
+  const oldFrame = animFrame;
+  animFrame = 12; // stable frame
+  drawSeagull(ctx, 0, 0, def.costume, { facing: 1, forceCig: true });
+  animFrame = oldFrame;
+  ctx.restore();
+
+  // Ending name + number
+  ctx.fillStyle = '#F2EDE2';
+  ctx.font = 'bold 36px "Malgun Gothic","Apple SD Gothic Neo",sans-serif';
+  ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2;
+  const numberLabel = `#${('0'+endingId).slice(-2)}. ${def.name}`;
+  ctx.fillText(numberLabel, 360, 580);
+  ctx.shadowColor = 'transparent';
+
+  // Title pill
+  if (def.title) {
+    ctx.fillStyle = '#F4C430';
+    ctx.font = 'bold 22px "Malgun Gothic","Apple SD Gothic Neo",sans-serif';
+    ctx.fillText('🏆 ' + def.title, 360, 615);
+  }
+
+  // Flavor text — wrapped
+  ctx.fillStyle = '#E8E2D4';
+  ctx.font = '17px "Malgun Gothic","Apple SD Gothic Neo",sans-serif';
+  const words = def.flavor.split(/(\s+)/);
+  let line = '';
+  let y = 650;
+  const maxWidth = 600;
+  for (const w of words) {
+    if (ctx.measureText(line + w).width > maxWidth) {
+      ctx.fillText(line.trim(), 360, y);
+      line = w;
+      y += 22;
+      if (y > 690) break;
+    } else {
+      line += w;
+    }
+  }
+  if (line.trim()) ctx.fillText(line.trim(), 360, y);
+
+  // Footer URL
+  ctx.fillStyle = 'rgba(255,255,255,0.65)';
+  ctx.font = '12px "Malgun Gothic",sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('seagull-game-rhr1109.vercel.app', 18, 710);
+
+  // 19+ rating mark
+  ctx.fillStyle = '#D9534F';
+  ctx.fillRect(660, 686, 44, 22);
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 14px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('19+', 682, 702);
+  return c;
+}
+
+function downloadEndingImage(endingId) {
+  const def = ENDING_DEFS[endingId];
+  if (!def) return;
+  const c = makeEndingShareImage(endingId);
+  if (!c) return;
+  const safeName = (def.name||'ending').replace(/\s+/g,'').replace(/[\/\\?*:"<>|]/g,'');
+  const filename = `kkeuh-${('0'+endingId).slice(-2)}-${safeName}.png`;
+  if (c.toBlob) {
+    c.toBlob(blob => {
+      if (!blob) { _fallbackDataUrl(c, filename); return; }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      toast(`🖼️ ${def.name} 이미지 저장됨`, 'good');
+    }, 'image/png');
+  } else {
+    _fallbackDataUrl(c, filename);
+  }
+}
+function _fallbackDataUrl(c, filename) {
+  try {
+    const url = c.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    toast(`🖼️ 이미지 저장됨`, 'good');
+  } catch(e) {
+    console.error('image download failed', e);
+    toast('이미지 저장 실패', 'bad');
+  }
+}
+
+// Optional: pop a preview modal showing the share card before downloading
+function showEndingShareModal(endingId) {
+  const def = ENDING_DEFS[endingId];
+  if (!def) return;
+  const c = makeEndingShareImage(endingId);
+  const dataUrl = c.toDataURL('image/png');
+  let html = `
+    <p class="dim">SNS 공유용 카드. 길게 눌러 저장하거나 아래 버튼을 누르세요.</p>
+    <img src="${dataUrl}" alt="ending share" style="width:100%;border-radius:8px;border:1px solid var(--c-line);background:#000">
+    <div class="menu-list" style="margin-top:10px">
+      <button id="esDownload">🖼️ PNG 다운로드</button>
+      <button id="esShare">📤 공유</button>
+    </div>`;
+  openModal(`🖼️ ${def.name} — 공유 카드`, html);
+  document.getElementById('esDownload').onclick = () => downloadEndingImage(endingId);
+  document.getElementById('esShare').onclick = () => shareProgress({ endingId });
 }
 
 function shareProgress(opts={}) {
