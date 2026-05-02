@@ -545,15 +545,28 @@ button { font-family: inherit; font-size: inherit; color: inherit; cursor: point
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 20px calc(28px + var(--safe-bot));
-  gap: 18px;
+  padding: 24px 18px calc(48px + var(--safe-bot));
+  gap: 14px;
   text-align: center;
-  overflow-y: auto;
+  overflow-y: scroll;             /* always scroll on mobile if needed */
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 .title-screen > * { flex-shrink: 0; }
+@media (max-height: 720px) {
+  .title-screen { padding-top: 14px; gap: 10px; }
+  .title-screen h1 { font-size: 36px !important; }
+  .title-screen canvas#titleCanvas { width: 180px !important; height: 135px !important; }
+  .title-screen .menu button { padding: 10px !important; font-size: 13px !important; }
+}
+@media (max-height: 600px) {
+  .title-screen h1 { font-size: 28px !important; }
+  .title-screen canvas#titleCanvas { width: 140px !important; height: 105px !important; }
+  .title-screen .sub { font-size: 12px !important; }
+}
 .title-screen h1 {
-  font-size: 48px;
+  font-size: 42px;
   font-weight: 900;
   letter-spacing: -2px;
   margin: 0;
@@ -585,6 +598,23 @@ button { font-family: inherit; font-size: inherit; color: inherit; cursor: point
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.06s;
+}
+.title-screen .menu button:hover { background: #3b465e; }
+.title-screen .menu button:active { transform: scale(0.97); }
+/* Primary actions (continue / new game) get accent treatment */
+.title-screen .menu button#continueBtn,
+.title-screen .menu button#newGameBtn {
+  background: linear-gradient(180deg, #4a5874, #2c374b);
+  border-color: var(--c-accent);
+  color: var(--c-accent);
+  padding: 16px;
+  font-size: 16px;
+}
+.title-screen .menu button#continueBtn:hover,
+.title-screen .menu button#newGameBtn:hover {
+  background: linear-gradient(180deg, #5a6884, #3c475d);
 }
 .slot-list { display: flex; flex-direction: column; gap: 6px; width: 100%; }
 .slot-card {
@@ -618,8 +648,8 @@ button { font-family: inherit; font-size: inherit; color: inherit; cursor: point
 .slot-card .slot-del:hover { color: var(--c-bad); border-color: var(--c-bad); }
 .title-screen .menu button:hover { background: #3b465e; }
 .title-screen canvas#titleCanvas {
-  width: 240px;
-  height: 180px;
+  width: 220px;
+  height: 165px;
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
