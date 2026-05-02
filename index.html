@@ -544,11 +544,14 @@ button { font-family: inherit; font-size: inherit; color: inherit; cursor: point
   z-index: 100;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  padding: 40px 20px calc(30px + var(--safe-bot));
+  padding: 32px 20px calc(28px + var(--safe-bot));
+  gap: 18px;
   text-align: center;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
+.title-screen > * { flex-shrink: 0; }
 .title-screen h1 {
   font-size: 48px;
   font-weight: 900;
@@ -893,7 +896,6 @@ hr { border: none; border-top: 1px solid var(--c-line); margin: 8px 0; }
 
   <!-- Title screen -->
   <div class="title-screen" id="titleScreen">
-    <div></div>
     <div>
       <canvas id="titleCanvas" width="160" height="120"></canvas>
       <h1>끄어억</h1>
@@ -901,9 +903,8 @@ hr { border: none; border-top: 1px solid var(--c-line); margin: 8px 0; }
       <div class="by">"끼룩이 아니라 끄어억" <span class="rating-mark">19</span></div>
     </div>
     <div class="menu">
-      <div id="slotList" class="slot-list"></div>
-      <button id="newGameBtn" class="hidden-init">새 갈매기 시작</button>
-      <button id="continueBtn" class="hidden-init">이어하기</button>
+      <button id="continueBtn" class="hidden-init">▶ 이어하기</button>
+      <button id="newGameBtn">＋ 새 갈매기 시작</button>
       <button id="albumOpenBtn">📔 꽁초의 일대기</button>
       <button id="creditsBtn">크레딧</button>
     </div>
@@ -4458,6 +4459,71 @@ function showCostumes() {
   });
 }
 
+// Title-screen slot chooser. mode: 'continue' (saved only), 'new' (any slot, warn on overwrite)
+function showSlotPicker(mode) {
+  let html;
+  if (mode === 'continue') {
+    html = '<p class="dim">이어할 갈매기를 선택하세요.</p>';
+  } else {
+    html = '<p class="dim">새 갈매기를 시작할 슬롯. 진행 중 슬롯을 고르면 덮어쓸지 확인합니다.</p>';
+  }
+  html += '<div class="slot-list" id="pickList"></div>';
+  openModal(mode === 'continue' ? '▶ 이어하기' : '＋ 새 갈매기 시작', html);
+  const list = document.getElementById('pickList');
+  let visible = 0;
+  for (let i=0;i<SLOT_COUNT;i++) {
+    const data = loadRunFromSlot(i);
+    if (mode === 'continue' && !data) continue;
+    visible++;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'slot-card' + (data ? '' : ' empty');
+    btn.setAttribute('aria-label', data ? `슬롯 ${i+1} ${mode==='continue'?'이어하기':'덮어쓰기'}` : `슬롯 ${i+1} 새 시작`);
+    if (data) {
+      const cosName = (COSTUME_EFFECTS[data.costume]||{}).name || '기본 꽁초';
+      const t = TIMES[data.timeIdx||0];
+      btn.innerHTML = `
+        <div class="slot-info">
+          <b>슬롯 ${i+1} · Day ${data.day} ${escapeHtml(t.icon||'')}</b>
+          <span class="meta">${escapeHtml(cosName)} · 폐 ${Math.round(data.stats.lung)} · 평판 ${Math.round(data.stats.reputation)}</span>
+        </div>`;
+      btn.addEventListener('click', () => {
+        if (mode === 'new') {
+          if (!confirm(`슬롯 ${i+1}의 Day ${data.day} 갈매기를 덮어쓸까? (되돌릴 수 없음)`)) return;
+          clearSlot(i);
+          META.currentSlot = i; saveMeta();
+          closeModal();
+          newGame();
+        } else {
+          META.currentSlot = i; saveMeta();
+          RUN = loadRunFromSlot(i);
+          closeModal();
+          hideTitle();
+          document.getElementById('endingScreen').classList.remove('show');
+          AUDIO.resume(); AUDIO.startBgm();
+          updateUI();
+          logLine(`▶ 슬롯 ${i+1} 이어하기 (Day ${RUN.day})`);
+        }
+      });
+    } else {
+      btn.innerHTML = `
+        <div class="slot-info">
+          <b>슬롯 ${i+1} · 빈 슬롯</b>
+          <span class="meta">＋ 새 갈매기</span>
+        </div>`;
+      btn.addEventListener('click', () => {
+        META.currentSlot = i; saveMeta();
+        closeModal();
+        newGame();
+      });
+    }
+    list.appendChild(btn);
+  }
+  if (visible === 0) {
+    list.innerHTML = '<p class="dim">진행 중인 갈매기가 없습니다. "새 갈매기 시작"으로 시작해주세요.</p>';
+  }
+}
+
 function showSlotSwitch() {
   // Save current run before switching
   if (RUN && !RUN.finished) saveRun();
@@ -4613,12 +4679,23 @@ function showHelp() {
 function showTitle() {
   document.getElementById('titleScreen').style.display = '';
   closeModal();
-  renderSlotList();
-  // legacy single-button — hidden because slot list replaces it
+  // 이어하기 버튼은 저장된 슬롯이 하나라도 있을 때만 노출
   const cb = document.getElementById('continueBtn');
   const ng = document.getElementById('newGameBtn');
-  if (cb) cb.classList.add('hidden');
-  if (ng) ng.classList.add('hidden');
+  let savedCount = 0, latestSave = null;
+  for (let i=0;i<SLOT_COUNT;i++) {
+    const d = loadRunFromSlot(i);
+    if (d) { savedCount++; if (!latestSave || (d.day||0) > (latestSave.day||0)) latestSave = d; }
+  }
+  if (cb) {
+    cb.classList.toggle('hidden', savedCount === 0);
+    cb.style.display = savedCount > 0 ? '' : 'none';
+    cb.textContent = savedCount > 0 ? `▶ 이어하기 (${savedCount}개 진행 중)` : '▶ 이어하기';
+  }
+  if (ng) {
+    ng.classList.remove('hidden');
+    ng.style.display = '';
+  }
   // reset title-only particles
   titleSmokeParticles.length = 0;
   titleAshParticles.length = 0;
@@ -4898,13 +4975,9 @@ document.getElementById('muteBtn').addEventListener('click', () => {
   document.getElementById('muteBtn').textContent = on ? '🔊' : '🔇';
   toast(on ? '🔊 사운드 ON' : '🔇 사운드 OFF', '');
 });
-// Slot card list now drives both new game and continue. These legacy handlers stay as
-// safety fallbacks if the buttons are ever shown.
-document.getElementById('newGameBtn').addEventListener('click', () => { newGame(); });
-document.getElementById('continueBtn').addEventListener('click', () => {
-  const r = loadRun();
-  if (r) { RUN = r; hideTitle(); AUDIO.resume(); AUDIO.startBgm(); updateUI(); logLine('이어하기.'); }
-});
+// Title screen "Continue" / "New Game" both open the slot picker modal.
+document.getElementById('newGameBtn').addEventListener('click', () => { showSlotPicker('new'); });
+document.getElementById('continueBtn').addEventListener('click', () => { showSlotPicker('continue'); });
 document.getElementById('albumOpenBtn').addEventListener('click', showAlbum);
 document.getElementById('creditsBtn').addEventListener('click', () => {
   openModal('크레딧', `
