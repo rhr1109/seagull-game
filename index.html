@@ -1230,7 +1230,8 @@ function activeSlot() {
 }
 
 function saveRun() {
-  try { localStorage.setItem(slotKey(activeSlot()), JSON.stringify(RUN)); } catch(e){}
+  try { localStorage.setItem(slotKey(activeSlot()), JSON.stringify(RUN)); return true; }
+  catch(e) { console.error('saveRun failed:', e); _notifyStorageFailure(); return false; }
 }
 function loadRun() {
   try {
@@ -1267,7 +1268,16 @@ function migrateLegacySave() {
   } catch(e){}
 }
 function saveMeta() {
-  try { localStorage.setItem(SAVE_KEY_META, JSON.stringify(META)); } catch(e){}
+  try { localStorage.setItem(SAVE_KEY_META, JSON.stringify(META)); return true; }
+  catch(e) { console.error('saveMeta failed:', e); _notifyStorageFailure(); return false; }
+}
+let _storageFailureNotified = false;
+function _notifyStorageFailure() {
+  if (_storageFailureNotified) return;
+  _storageFailureNotified = true;
+  setTimeout(() => {
+    try { toast('⚠ 저장 실패 — 시크릿/프라이빗 모드인지 확인하세요', 'bad'); } catch(e){}
+  }, 100);
 }
 function loadMeta() {
   try {
@@ -2686,13 +2696,8 @@ function showCry(forceText) {
 // MODAL HELPERS
 // ============================================================
 function openModal(title, html, opts={}) {
-  // Block modal only while the ending screen is actually visible.
-  // RUN.finished alone shouldn't block — the title screen may be open with finished=true (slot picker etc).
-  const endingShown = document.getElementById('endingScreen').classList.contains('show');
-  const titleVisible = document.getElementById('titleScreen').style.display !== 'none';
-  const allowOver = opts && opts.allowOverEnding;
-  if (endingShown && !allowOver) return;
-  if (RUN.finished && !allowOver && !titleVisible) return;
+  // No more eager blocking — modal z-index (250) sits above ending screen (90) and title (100),
+  // so opening it on top is always safe. Caller decides what to render.
   document.getElementById('modalTitle').firstChild.textContent = title + ' ';
   document.getElementById('modalBody').innerHTML = html;
   document.getElementById('modalBg').classList.add('show');
@@ -4155,12 +4160,18 @@ function triggerEnding(id) {
     META.selectedCostume = def.costume;
   }
   // record meta
-  if (!META.endingsUnlocked.includes(id)) META.endingsUnlocked.push(id);
-  if (!META.costumesUnlocked.includes(def.costume)) META.costumesUnlocked.push(def.costume);
-  META.totalRuns++;
-  META.totalCigSmoked += RUN.cigarettesSmokedTotal;
+  const wasNew = !META.endingsUnlocked.includes(id);
+  if (wasNew) META.endingsUnlocked.push(id);
+  if (def.costume && !META.costumesUnlocked.includes(def.costume)) META.costumesUnlocked.push(def.costume);
+  META.totalRuns = (META.totalRuns|0) + 1;
+  META.totalCigSmoked = (META.totalCigSmoked|0) + (RUN.cigarettesSmokedTotal|0);
+  META.endingsReachedCount = META.endingsReachedCount || {};
   META.endingsReachedCount[id] = (META.endingsReachedCount[id]||0) + 1;
-  saveMeta();
+  const ok = saveMeta();
+  console.log('[ending]', id, def.name, 'unlocked total:', META.endingsUnlocked.length, 'saved:', ok);
+  if (wasNew && ok) {
+    setTimeout(() => toast(`📔 새 엔딩 해금: ${def.name}`, 'good'), 600);
+  }
   clearRun();
 
   // show ending screen
@@ -4189,13 +4200,20 @@ function drawEndingPortrait(canvas, costume) {
   animFrame = oldFrame; bobTime = oldBob;
 }
 
-// ending screen buttons
+// ending screen buttons — close ending overlay + close any modal first
+function _hideEnding() {
+  closeModal();
+  const es = document.getElementById('endingScreen');
+  es.classList.remove('show');
+  es.style.display = 'none';
+  setTimeout(() => { es.style.display = ''; }, 50); // restore for next ending
+}
 document.getElementById('endingTitleBtn').addEventListener('click', () => {
-  document.getElementById('endingScreen').classList.remove('show');
+  _hideEnding();
   showTitle();
 });
 document.getElementById('endingRestartBtn').addEventListener('click', () => {
-  document.getElementById('endingScreen').classList.remove('show');
+  _hideEnding();
   newGame();
 });
 document.getElementById('endingAlbumBtn').addEventListener('click', () => {
