@@ -4358,6 +4358,8 @@ function showAlbum(opts={}) {
 function showMenu() {
   let html = '<div class="menu-list">';
   html += '<button id="m_save">💾 수동 저장</button>';
+  html += '<button id="m_swap">🔄 슬롯 전환 (현재: 슬롯 ' + ((META.currentSlot|0)+1) + ')</button>';
+  html += '<button id="m_stats">📈 누적 통계</button>';
   html += '<button id="m_controls">🎮 조작법 다시 보기</button>';
   html += '<button id="m_costume">🎩 코스튬 변경</button>';
   html += '<button id="m_titles">🏆 칭호 변경 (' + ((META.titlesUnlocked||[]).length) + ' 보유)</button>';
@@ -4369,6 +4371,8 @@ function showMenu() {
   html += `<hr><div class="dim">청소년이용불가. 그래야 할 만한 이유가 있다.</div>`;
   openModal('≡ 메뉴', html);
   document.getElementById('m_save').onclick = () => { saveRun(); toast('저장됨','good'); closeModal(); };
+  document.getElementById('m_swap').onclick = () => { showSlotSwitch(); };
+  document.getElementById('m_stats').onclick = () => { showStats(); };
   document.getElementById('m_controls').onclick = () => { closeModal(); showControlHint(); };
   document.getElementById('m_costume').onclick = () => { showCostumes(); };
   document.getElementById('m_titles').onclick = () => { showTitles(); };
@@ -4452,6 +4456,102 @@ function showCostumes() {
       showCostumes();
     });
   });
+}
+
+function showSlotSwitch() {
+  // Save current run before switching
+  if (RUN && !RUN.finished) saveRun();
+  let html = '<p class="dim">현재 슬롯의 진행은 자동 저장됨. 다른 슬롯으로 이동:</p><div class="slot-list" id="swapList"></div>';
+  openModal('🔄 슬롯 전환', html);
+  const list = document.getElementById('swapList');
+  for (let i=0;i<SLOT_COUNT;i++) {
+    const data = loadRunFromSlot(i);
+    const isActive = (META.currentSlot === i);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'slot-card' + (data ? '' : ' empty') + (isActive ? ' active-slot' : '');
+    if (data) {
+      const cosName = (COSTUME_EFFECTS[data.costume] || {}).name || '기본 꽁초';
+      const t = TIMES[data.timeIdx || 0];
+      btn.innerHTML = `
+        <div class="slot-info">
+          <b>슬롯 ${i+1} · Day ${data.day} ${escapeHtml(t.icon||'')}${isActive?' (현재)':''}</b>
+          <span class="meta">${escapeHtml(cosName)} · 폐 ${Math.round(data.stats.lung)} · 평판 ${Math.round(data.stats.reputation)}</span>
+        </div>`;
+      btn.addEventListener('click', () => {
+        if (isActive) { closeModal(); return; }
+        META.currentSlot = i; saveMeta();
+        RUN = loadRunFromSlot(i);
+        closeModal();
+        AUDIO.startBgm();
+        updateUI();
+        toast(`▶ 슬롯 ${i+1}로 전환 (Day ${RUN.day})`,'good');
+      });
+    } else {
+      btn.innerHTML = `
+        <div class="slot-info">
+          <b>슬롯 ${i+1} · 빈 슬롯${isActive?' (현재)':''}</b>
+          <span class="meta">+ 새 갈매기 시작</span>
+        </div>`;
+      btn.addEventListener('click', () => {
+        META.currentSlot = i; saveMeta();
+        closeModal();
+        newGame();
+      });
+    }
+    list.appendChild(btn);
+  }
+}
+
+function showStats() {
+  const totalEndings = ENDING_DEFS.length - 1;
+  const unlockedCount = META.endingsUnlocked.length;
+  const costumeCount = (META.costumesUnlocked||[]).length;
+  const titleCount = (META.titlesUnlocked||[]).length;
+  const reached = META.endingsReachedCount || {};
+  let totalReaches = 0;
+  let topEndingId = null, topEndingCount = 0;
+  for (const id of Object.keys(reached)) {
+    const c = reached[id]||0;
+    totalReaches += c;
+    if (c > topEndingCount) { topEndingCount = c; topEndingId = parseInt(id); }
+  }
+  const topName = (topEndingId && ENDING_DEFS[topEndingId]) ? ENDING_DEFS[topEndingId].name : '없음';
+  let html = `
+    <p><b>📊 누적 진행</b></p>
+    <div class="stats-detail-row"><span>총 회차 수</span><span class="dim">${META.totalRuns || 0}회</span></div>
+    <div class="stats-detail-row"><span>최장 수명</span><span class="dim">${META.longestLife || 0}일</span></div>
+    <div class="stats-detail-row"><span>총 흡연량</span><span class="dim">${META.totalCigSmoked || 0}개비</span></div>
+    <div class="stats-detail-row"><span>총 엔딩 도달</span><span class="dim">${totalReaches}회 (중복 포함)</span></div>
+    <hr>
+    <p><b>🏆 컬렉션</b></p>
+    <div class="stats-detail-row"><span>해금된 엔딩</span><span class="dim">${unlockedCount}/${totalEndings} 종</span></div>
+    <div class="stats-detail-row"><span>보유 코스튬</span><span class="dim">${costumeCount}/25 종</span></div>
+    <div class="stats-detail-row"><span>보유 칭호</span><span class="dim">${titleCount}/${totalEndings} 종</span></div>
+    <div class="stats-detail-row"><span>활성 메타 보너스</span><span class="dim">${META_BONUSES.filter(b => unlockedCount >= b.req).length}/${META_BONUSES.length} 종</span></div>
+    <hr>
+    <p><b>👑 가장 많이 도달한 엔딩</b></p>
+    <div class="stats-detail-row"><span>${escapeHtml(topName)}</span><span class="dim">${topEndingCount}회 도달</span></div>`;
+
+  if (totalReaches > 0) {
+    html += `<details style="margin-top:8px"><summary>📈 엔딩별 도달 횟수</summary><div>`;
+    for (let i=1;i<=totalEndings;i++) {
+      const c = reached[i] || 0;
+      const def = ENDING_DEFS[i];
+      if (!def) continue;
+      const name = META.endingsUnlocked.includes(i) ? def.name : (def.hidden ? '🔒 ???' : '???');
+      html += `<div class="stats-detail-row"><span>#${i} ${escapeHtml(name)}</span><span class="dim">${c}회</span></div>`;
+    }
+    html += `</div></details>`;
+  }
+
+  // Current run snapshot
+  if (!RUN.finished && RUN.day) {
+    html += `<hr><p><b>📍 현재 회차</b></p>`;
+    html += `<div class="stats-detail-row"><span>슬롯 ${(META.currentSlot|0)+1} · Day ${RUN.day}/30</span><span class="dim">총 흡연 ${RUN.cigarettesSmokedTotal||0}개</span></div>`;
+  }
+
+  openModal('📈 누적 통계', html);
 }
 
 function showTitles() {
