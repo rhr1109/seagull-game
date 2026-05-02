@@ -256,6 +256,36 @@ button { font-family: inherit; font-size: inherit; color: inherit; cursor: point
   font-variant-numeric: tabular-nums;
   font-size: 11px;
 }
+/* ====== Sub-stats (지능/매력/감수성) ====== */
+.sub-stats {
+  background: var(--c-bg);
+  border-top: 1px solid var(--c-line);
+  padding: 6px 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--c-text-dim);
+}
+.sub-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  flex: 1;
+  text-align: center;
+}
+.sub-stat b {
+  color: var(--c-text);
+  font-weight: 600;
+  font-size: 11px;
+}
+.sub-stat span {
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  color: var(--c-accent);
+  font-weight: 600;
+}
 /* ====== Actions ====== */
 .actions {
   background: var(--c-bg);
@@ -800,6 +830,11 @@ hr { border: none; border-top: 1px solid var(--c-line); margin: 8px 0; }
     <div class="stat" data-key="hunger"><span class="label">🍖 포만감</span><div class="bar"><div class="fill hunger" id="hungerBar"></div></div><span class="num" id="hungerNum">90</span></div>
     <div class="stat" data-key="stress"><span class="label">😤 스트레스</span><div class="bar"><div class="fill stress" id="stressBar"></div></div><span class="num" id="stressNum">30</span></div>
   </div>
+  <div class="sub-stats" id="subStats">
+    <span class="sub-stat" title="책/사색/돌고래로 +"><b>🧠 지능</b><span id="intelNum">30</span></span>
+    <span class="sub-stat" title="그루밍/사진/평판으로 +"><b>💋 매력</b><span id="charmNum">30</span></span>
+    <span class="sub-stat" title="노을/시/금연으로 +"><b>💧 감수성</b><span id="senseNum">30</span></span>
+  </div>
 
   <!-- Actions -->
   <div class="actions" id="actions">
@@ -1089,7 +1124,7 @@ function defaultRun() {
     day: 1,
     timeIdx: 0,
     weather: 'clear',
-    stats: { lung:100, craving:30, flight:100, reputation:50, stress:30, hunger:90 },
+    stats: { lung:100, craving:30, flight:100, reputation:50, stress:30, hunger:90, intel:30, charm:30, sense:30 },
     inventory: { F:0,D:1,C:0,B:0,A:0,S:0 },
     flags: {
       sCigarettesSmoked: 0,
@@ -1111,7 +1146,9 @@ function defaultRun() {
       killCount: 0,
       fireworkStageDone: false,
       pegasusAchieved: false,
-      shopMet: false
+      shopMet: false,
+      metMate: false,
+      sunsetCount: 0
     },
     cigarettesSmokedTotal: 0,
     foodCount: 0,
@@ -1875,6 +1912,32 @@ function drawSeagull(ctx, cx, cy, costume, opt) {
     // red glowing eye is set via override later
     ctx.fillStyle = '#a02020';
     ctx.fillRect(17, -10, 4, 1);
+  } else if (costume === 'lover') {
+    // pink heart on chest + small flower on head
+    ctx.fillStyle = '#f06090';
+    ctx.fillRect(-4, 8, 2, 2); ctx.fillRect(0, 8, 2, 2);
+    ctx.fillRect(-5, 10, 8, 2);
+    ctx.fillRect(-4, 12, 6, 2);
+    ctx.fillRect(-2, 14, 2, 2);
+    // flower
+    ctx.fillStyle = '#ffc0d8';
+    ctx.fillRect(11, -19, 2, 2); ctx.fillRect(15, -19, 2, 2);
+    ctx.fillRect(13, -17, 2, 2);
+    ctx.fillStyle = '#F4C430';
+    ctx.fillRect(13, -19, 2, 2);
+  } else if (costume === 'sage') {
+    // earthy robe + long beard
+    ctx.fillStyle = '#9b7a4a';
+    ctx.fillRect(-18, 4, 30, 14);
+    ctx.fillStyle = '#cdb38e';
+    ctx.fillRect(-18, 4, 30, 2);
+    // long white beard
+    ctx.fillStyle = '#f0ece0';
+    ctx.fillRect(20, -3, 8, 8);
+    ctx.fillRect(22, 5, 5, 4);
+    // small halo
+    ctx.fillStyle = 'rgba(244,196,48,0.3)';
+    ctx.beginPath(); ctx.arc(14, -18, 11, 0, Math.PI*2); ctx.fill();
   } else if (costume === 'god') {
     // halo
     ctx.fillStyle = 'rgba(244,196,48,0.3)';
@@ -2501,6 +2564,9 @@ function updateUI() {
   setBar('stressBar','stressNum','stress');
   setBar('repBar','repNum','reputation');
   setBar('hungerBar','hungerNum','hunger');
+  document.getElementById('intelNum').textContent = Math.round(RUN.stats.intel||0);
+  document.getElementById('charmNum').textContent = Math.round(RUN.stats.charm||0);
+  document.getElementById('senseNum').textContent = Math.round(RUN.stats.sense||0);
   document.getElementById('moneyLabel').textContent = '💰 ' + (RUN.money|0);
   document.getElementById('foodLabel').textContent = '🍖 ' + (RUN.foodCount|0);
   document.getElementById('locText').textContent = RUN.locText || '부둣가';
@@ -3001,9 +3067,11 @@ function eventDolphin() {
   presentChoices('🐬 돌고래의 충고', '부둣가에 돌고래가 떠올라 인생 조언을 시작한다.', [
     {
       text:'들어준다',
-      sub:'아무것도 안 바뀜 (그러나…)',
+      sub:'지능 +6, 감수성 +6 (그리고 …)',
       onPick:()=>{
         RUN.flags.dolphinChats++;
+        changeStatSafe('intel', +6);
+        changeStatSafe('sense', +6);
         const lines = [
           '"바다는 넓다. 너는 좁다."',
           '"끼룩보다 끄어억이 솔직하다."',
@@ -3280,26 +3348,34 @@ function triggerRandomEvent() {
     { key:'photo',     fn: eventPhotographer,  weight:  8 },
     { key:'fish',      fn: eventFisherman,     weight:  7 },
     { key:'dog',       fn: eventStrayDog,      weight:  7 },
-    { key:'fireworks', fn: eventFireworks,     weight:  6 },
-    { key:'typhoon',   fn: eventTyphoon,       weight:  5 },
-    { key:'slot',      fn: eventSlotMachine,   weight:  6 }
+    { key:'fireworks', fn: eventFireworks,     weight:  5 },
+    { key:'typhoon',   fn: eventTyphoon,       weight:  4 },
+    { key:'slot',      fn: eventSlotMachine,   weight:  6 },
+    // new events that build sub-stats
+    { key:'book',      fn: eventBookshelf,     weight:  9 },
+    { key:'groom',     fn: eventGrooming,      weight:  8 },
+    { key:'sunset',    fn: eventSunset,        weight:  9 }
   ];
+  // Mate event only appears if player has decent charm AND is on a clean streak
+  if ((RUN.stats.charm||0) >= 30 && RUN.flags.consecutiveCleanDays >= 3 && !RUN.flags.metMate) {
+    table.push({ key:'mate', fn: eventMate, weight: 14 });
+  }
   pickEvent(table)();
 }
 
 function eventPhotographer() {
   spawnGuest('tourist', { targetX: 0.22, life: 480 });
   presentChoices('📷 사진작가', '"이 갈매기 표정 죽이네." 인스타 사진작가가 카메라를 들이댄다.', [
-    { text:'포즈를 취해준다', sub:'인간 호감 +15, 흡연 어필이면 +5 추가',
+    { text:'포즈를 취해준다', sub:'인간 호감 +15, 매력 +5',
       onPick:()=>{
         let bonus = (RUN.costume === 'painter' || RUN.costume === 'princess') ? 1.5 : 1;
         RUN.flags.humanAffinity = clamp(RUN.flags.humanAffinity + 15*bonus, 0, 100);
         if (RUN.flags.smokedToday) RUN.flags.humanAffinity = clamp(RUN.flags.humanAffinity + 5, 0, 100);
         RUN.flags.photoCount = (RUN.flags.photoCount||0) + 1;
         RUN.money = (RUN.money|0) + 2;
+        changeStatSafe('charm', +5);
         toast('📸 찰칵! 인스타에 박제됐다. (사진 ' + RUN.flags.photoCount + ')','good');
         AUDIO.sfx('coin');
-        // camera flash + heart particles for visual oomph
         screenFlash('rgba(255,255,255,0.95)', 12);
         spawnHearts(cv.width*0.5, cv.height*0.5, 8);
         advanceTime();
@@ -3529,6 +3605,106 @@ function eventShop() {
   }));
   choices.push({ text:'그냥 둘러본다', onPick:()=>advanceTime() });
   presentChoices('🛒 부둣가 구멍가게', `구멍가게 노인이 등을 보이고 졸고 있다. 돈을 내고 가져가면 들키지 않는다.\n💰 ${RUN.money|0} · 🍖 ${RUN.foodCount}`, choices);
+}
+
+// === New events that build sub-stats ===
+function eventBookshelf() {
+  spawnGuest('normal', { targetX: 0.22, life: 360 });
+  presentChoices('📚 도서관 창문 너머', '도서관 창가에 펼쳐진 책. 아무도 안 본다.', [
+    { text:'천천히 읽는다', sub:'지능 +12, 시간 1턴 소모',
+      onPick:()=>{
+        changeStatSafe('intel', +12);
+        changeStatSafe('stress', -3);
+        toast('🧠 한 페이지 읽었다.','good');
+        AUDIO.sfx('menu');
+        advanceTime();
+      } },
+    { text:'책장을 찢어 둥지로 가져간다', sub:'평판 -3, 인간 호감 -5',
+      onPick:()=>{
+        changeStat('reputation', -3);
+        RUN.flags.humanAffinity = clamp((RUN.flags.humanAffinity||0)-5, 0, 100);
+        toast('찢긴 책장. 도서관 사서가 운다.','warn');
+        advanceTime();
+      } },
+    { text:'관심없다', onPick:()=>{ advanceTime(); } }
+  ]);
+}
+
+function eventGrooming() {
+  presentChoices('🪞 그루밍 타임', '깃털을 정성스레 다듬는다. 부둣가 갈매기들이 흘끗 본다.', [
+    { text:'정성스레 손질', sub:'매력 +12, 스트레스 -5',
+      onPick:()=>{
+        changeStatSafe('charm', +12);
+        changeStatSafe('stress', -5);
+        toast('💋 깃털이 반짝인다.','good');
+        AUDIO.sfx('coin');
+        advanceTime();
+      } },
+    { text:'대충 한다', sub:'매력 +3',
+      onPick:()=>{ changeStatSafe('charm', +3); advanceTime(); } },
+    { text:'담배 한 모금부터',
+      sub:'욕구 -10, 매력 -5',
+      disabled: !Object.values(RUN.inventory).some(v=>v>0),
+      onPick:()=>{
+        for (const g of ['F','D','C']) if (RUN.inventory[g]>0) { RUN.inventory[g]--; changeStat('craving', -10); RUN.flags.smokedToday = true; break; }
+        changeStatSafe('charm', -5);
+        toast('🚬 담배 핀 갈매기는 매력적인가? (개취)','warn');
+        advanceTime();
+      } }
+  ]);
+}
+
+function eventSunset() {
+  spawnGuest('dolphin', { targetX: 0.15, y: 0, life: 200 });
+  RUN.flags.sunsetCount = (RUN.flags.sunsetCount||0) + 1;
+  presentChoices('🌅 부둣가 노을', '하늘이 분홍색이다. 누구한테는 그냥 하늘이지만, 너에게는…', [
+    { text:'한참 바라본다', sub:'감수성 +10, 스트레스 -8',
+      onPick:()=>{
+        changeStatSafe('sense', +10);
+        changeStatSafe('stress', -8);
+        toast('💧 가슴이 묘하게 시리다.','good');
+        screenFlash('rgba(233,116,81,0.35)', 30);
+        advanceTime();
+      } },
+    { text:'시 한 줄을 읊는다', sub:'감수성 +15, 지능 +5, 평판 -5',
+      onPick:()=>{
+        changeStatSafe('sense', +15);
+        changeStatSafe('intel', +5);
+        changeStat('reputation', -5);
+        toast('"끄어억은 사라지는 것이다." 다른 갈매기가 떠났다.','warn');
+        advanceTime();
+      } },
+    { text:'무시한다', onPick:()=>{ advanceTime(); } }
+  ]);
+}
+
+function eventMate() {
+  // 짝 만남 — only fires if matching profile
+  spawnGuest('normal', { targetX: 0.30, life: 480 });
+  spawnHearts(cv.width*0.5, cv.height*0.5, 4);
+  presentChoicesWithPortrait('normal', '💞 새 짝 후보', '하얀 깃털의 갈매기가 옆에 앉는다. 너를 빤히 본다.', [
+    { text:'정중히 다가간다', sub:'매력 시험 — 통과 시 짝 인연 (#21 트리거 가능)',
+      onPick:()=>{
+        if ((RUN.stats.charm||0) >= 40 && !RUN.flags.smokedToday) {
+          RUN.flags.metMate = true;
+          changeStat('reputation', +5);
+          changeStatSafe('sense', +5);
+          toast('💞 너희는 함께 노을을 봤다. 짝 인연 ✓','good');
+          spawnHearts(cv.width*0.5, cv.height*0.5, 10);
+        } else {
+          if (RUN.flags.smokedToday) toast('상대가 담배 냄새를 맡고 떠났다.','bad');
+          else toast(`매력 부족 (현재 ${Math.round(RUN.stats.charm||0)}/40). 다음 기회에…`,'warn');
+        }
+        advanceTime();
+      } },
+    { text:'끼룩끼룩 시끄럽게', sub:'평판 +3, 짝은 도망',
+      onPick:()=>{
+        changeStat('reputation', +3);
+        toast('상대는 귀를 막고 떠났다.','warn');
+        advanceTime();
+      } },
+    { text:'무시한다', onPick:()=>{ advanceTime(); } }
+  ]);
 }
 
 function eventSlotMachine() {
@@ -3808,6 +3984,10 @@ function checkEndings() {
   if (RUN.flags.fireworkStageDone && s.reputation >= 80 && s.flight >= 70) return triggerEnding(17);     // 록스타 — 의도적으로 약간 어려움
   if (RUN.flags.photoCount >= 2 && RUN.flags.humanAffinity >= 40) return triggerEnding(18);               // 화가: 3/50 → 2/40
   if (RUN.flags.killCount >= 2) return triggerEnding(19);                                                  // 거리의 깡패: 격투 2승
+  // 21 짝꿍 — 금연 + 매력 + 짝 만남
+  if (RUN.flags.consecutiveCleanDays >= 8 && (s.charm||0) >= 50 && RUN.flags.metMate) return triggerEnding(21);
+  // 22 현자 — 지능 + 감수성 + 무흡연
+  if ((s.intel||0) >= 75 && (s.sense||0) >= 75 && RUN.flags.consecutiveCleanDays >= 10) return triggerEnding(22);
   // 갈매기 신 — 다른 엔딩 1~19 모두 해금된 사용자에게만
   const others = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
   if (others.every(id => META.endingsUnlocked.includes(id)) && RUN.day >= 10) return triggerEnding(20);
@@ -3837,12 +4017,21 @@ const ENDING_DEFS = [
   { id:17, name:'갈매기 록스타',   flavor:'폭죽 무대 한가운데에서 너는 록스타가 됐다.',                costume:'rockstar', costumeName:'록스타',       title:'부둣가 록스타',     hidden:false },
   { id:18, name:'부둣가의 화가',   flavor:'갈매기 한 마리가 인스타에서 100만 팔로워를 찍었다.',         costume:'painter',  costumeName:'화가',         title:'인스타 갈매기',     hidden:false },
   { id:19, name:'거리의 깡패',     flavor:'부두는 조용해졌다. 다들 너를 피했다.',                       costume:'killer',   costumeName:'거리의 깡패',  title:'부두의 깡패',       hidden:false },
-  { id:20, name:'갈매기 신',       flavor:'모든 길을 본 너는 끄어억의 본질이 됐다.',                    costume:'god',      costumeName:'갈매기 신',    title:'끄어억 자체',       hidden:true  }
+  { id:20, name:'갈매기 신',       flavor:'모든 길을 본 너는 끄어억의 본질이 됐다.',                    costume:'god',      costumeName:'갈매기 신',    title:'끄어억 자체',       hidden:true  },
+  { id:21, name:'갈매기 짝꿍',     flavor:'금연 끝에 새 짝을 만났다. 부둣가에 작은 둥지가 생겼다.',     costume:'lover',    costumeName:'사랑꾼 갈매기',title:'사랑꾼',           hidden:false },
+  { id:22, name:'깨달은 갈매기',   flavor:'책과 노을과 금연 끝에 너는 무언가를 깨달았다. 아무도 안 물었지만.', costume:'sage',  costumeName:'현자 갈매기', title:'부둣가의 현자',     hidden:true  }
 ];
 
 // Backfill titles for endings 1-10 too
 ['전설의 폐사자','전설의 골초','부두의 보스','약쟁이','입양된 새','금연의 현자','담배회사 신부','안개의 갈매기','선원','회사원']
   .forEach((t, i) => { if (ENDING_DEFS[i+1]) ENDING_DEFS[i+1].title = t; });
+
+// Stats helper
+function changeStatSafe(key, delta) {
+  if (!RUN || !RUN.stats) return;
+  if (RUN.stats[key] == null) RUN.stats[key] = 0;
+  RUN.stats[key] = clamp(RUN.stats[key] + delta, 0, 100);
+}
 
 function triggerEnding(id) {
   if (RUN.finished) return;
@@ -3936,6 +4125,7 @@ function showInventory() {
   </div>`;
   html += `<div class="dim">자금: 💰${RUN.money} · Day ${RUN.day}/30 · 음식은 포만감 50 이하에서 자동 소비됨 (+40)</div>`;
   html += `<div class="dim">총 흡연량: ${RUN.cigarettesSmokedTotal} · S급 흡연: ${RUN.flags.sCigarettesSmoked}</div>`;
+  html += `<div class="dim">🧠 지능 ${Math.round(RUN.stats.intel||0)} · 💋 매력 ${Math.round(RUN.stats.charm||0)} · 💧 감수성 ${Math.round(RUN.stats.sense||0)}</div>`;
 
   // === Ending progress ===
   html += '<hr><p><b>🎯 엔딩 진행도</b></p>';
@@ -3961,7 +4151,9 @@ function showInventory() {
     { id:17, label:'록스타',             cur:`폭죽 무대 통과 ${f.fireworkStageDone?'✓':'✗'} + 평판 ${Math.round(s.reputation)}/80 + 비행 ${Math.round(s.flight)}/70` },
     { id:18, label:'화가',               cur:`사진작가 ${f.photoCount||0}/2회 + 인간 호감 ${f.humanAffinity}/40` },
     { id:19, label:'거리의 깡패',        cur:`라이벌 격투 승리 ${f.killCount||0}/2회` },
-    { id:20, label:'갈매기 신 🔒',       cur:`엔딩 1~19 모두 해금 후 다음 회차 Day 10+에 자동` }
+    { id:20, label:'갈매기 신 🔒',       cur:`엔딩 1~19 모두 해금 후 다음 회차 Day 10+에 자동` },
+    { id:21, label:'갈매기 짝꿍',        cur:`연속 무흡연 ${f.consecutiveCleanDays}/8일 + 매력 ${Math.round(s.charm||0)}/50 + 짝 만남 ${f.metMate?'✓':'✗'}` },
+    { id:22, label:'깨달은 갈매기 🔒',   cur:`지능 ${Math.round(s.intel||0)}/75 + 감수성 ${Math.round(s.sense||0)}/75 + 연속 무흡연 ${f.consecutiveCleanDays}/10일` }
   ];
   const unlockedSet = new Set(META.endingsUnlocked);
   for (const r of rows) {
@@ -4110,12 +4302,14 @@ const COSTUME_EFFECTS = {
   rockstar:     { name:'록스타',        effect:'폭죽 이벤트 자동 성공, 평판 +25',                  tradeoff:'시작 폐 -15' },
   painter:      { name:'화가',          effect:'사진작가 호감 +50%, 동전 획득 +30%',               tradeoff:'시작 비행 -10' },
   killer:       { name:'거리의 깡패',   effect:'라이벌 격투 자동 승리',                            tradeoff:'시작 평판 -40, 잡담 불가' },
-  god:          { name:'갈매기 신',     effect:'모든 스탯 100, 죽지 않음',                         tradeoff:'엔딩 도달 시까지 자동 진행' }
+  god:          { name:'갈매기 신',     effect:'모든 스탯 100, 죽지 않음',                         tradeoff:'엔딩 도달 시까지 자동 진행' },
+  lover:        { name:'사랑꾼 갈매기', effect:'시작 매력 +30, 짝 만남 이벤트 +확률',              tradeoff:'시작 평판 -10' },
+  sage:         { name:'현자 갈매기',   effect:'시작 지능 +30, 감수성 +20, 스트레스 자연 감소',     tradeoff:'시작 비행 -15' }
 };
 
 function showCostumes() {
   let html = '<p class="dim">회차 시작 시 적용. 효과는 한 번 적용되며 트레이드오프가 따른다.</p><div class="album-grid">';
-  const order = ['default','patient','cigar_master','suit','zombie','pet','thinker','wedding','fog','sailor','salaryman','poet','king','skeleton','princess','pegasus','master','rockstar','painter','killer','god'];
+  const order = ['default','patient','cigar_master','suit','zombie','pet','thinker','wedding','fog','sailor','salaryman','poet','king','skeleton','princess','pegasus','master','rockstar','painter','killer','god','lover','sage'];
   for (const cosId of order) {
     if (!META.costumesUnlocked.includes(cosId)) continue;
     const eff = COSTUME_EFFECTS[cosId];
@@ -4423,6 +4617,16 @@ function applyCostumeEffects() {
       RUN.stats.lung = 100; RUN.stats.flight = 100;
       RUN.stats.reputation = 100; RUN.stats.stress = 0;
       RUN.stats.craving = 0; RUN.stats.hunger = 100;
+      RUN.stats.intel = 100; RUN.stats.charm = 100; RUN.stats.sense = 100;
+      break;
+    case 'lover':
+      RUN.stats.charm = clamp((RUN.stats.charm||0)+30,0,100);
+      RUN.stats.reputation = clamp(RUN.stats.reputation-10,0,100);
+      break;
+    case 'sage':
+      RUN.stats.intel = clamp((RUN.stats.intel||0)+30,0,100);
+      RUN.stats.sense = clamp((RUN.stats.sense||0)+20,0,100);
+      RUN.stats.flight = clamp(RUN.stats.flight-15,0,100);
       break;
   }
 }
