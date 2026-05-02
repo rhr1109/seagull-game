@@ -69,9 +69,13 @@ button { font-family: inherit; font-size: inherit; color: inherit; cursor: point
   border-bottom: 1px solid var(--c-line);
   font-size: 13px;
   gap: 6px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;     /* never let topbar grow at the cost of scene */
+  height: 42px;       /* fixed height regardless of label length */
 }
 .topbar .left {
   display: flex;
+  flex-wrap: nowrap;
   gap: 6px;
   align-items: center;
   overflow-x: auto;
@@ -79,10 +83,22 @@ button { font-family: inherit; font-size: inherit; color: inherit; cursor: point
   scrollbar-width: none;
   flex: 1;
   min-width: 0;
+  height: 100%;
 }
 .topbar .left::-webkit-scrollbar { display: none; }
-.topbar .pill { flex-shrink: 0; }
+.topbar .pill, .topbar .day {
+  flex-shrink: 0;
+  white-space: nowrap;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .topbar .icons { flex-shrink: 0; }
+.topbar .title-pill {
+  background: rgba(244,196,48,0.12);
+  border-color: rgba(244,196,48,0.4);
+  color: var(--c-accent);
+}
 .topbar .day { font-weight: 700; font-size: 15px; }
 .topbar .pill {
   background: var(--c-panel);
@@ -864,6 +880,7 @@ hr { border: none; border-top: 1px solid var(--c-line); margin: 8px 0; }
   <div class="topbar" id="topbar">
     <div class="left">
       <span class="day" id="dayLabel">Day 1</span>
+      <span class="pill title-pill hidden-init" id="titlePill" title="현재 칭호"></span>
       <span class="pill" id="timeLabel">아침 ☀️</span>
       <span class="pill" id="weatherLabel">맑음</span>
       <span class="pill" id="moneyLabel" title="동전 — 상점에서 사용">💰 0</span>
@@ -2675,8 +2692,16 @@ function flashStat(key) {
 }
 
 function updateUI() {
-  const titlePrefix = META.selectedTitle ? `🏆${META.selectedTitle} · ` : '';
-  document.getElementById('dayLabel').textContent = `${titlePrefix}Day ${RUN.day}`;
+  document.getElementById('dayLabel').textContent = `Day ${RUN.day}`;
+  const titlePill = document.getElementById('titlePill');
+  if (META.selectedTitle) {
+    titlePill.textContent = '🏆 ' + META.selectedTitle;
+    titlePill.classList.remove('hidden-init', 'hidden');
+    titlePill.style.display = '';
+  } else {
+    titlePill.classList.add('hidden');
+    titlePill.style.display = 'none';
+  }
   const t = TIMES[RUN.timeIdx];
   document.getElementById('timeLabel').textContent = `${t.name} ${t.icon}`;
   const w = WEATHERS.find(x=>x.id===RUN.weather);
