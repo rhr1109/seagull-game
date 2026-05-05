@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#1E2A3A">
-<title>끄어억 — 부둣가 골초 갈매기 시뮬레이터</title>
+<title>Kkeueok — Dockside Chain-Smoking Seagull Simulator</title>
 <style>
 :root {
   --c-dock: #6B7280;
@@ -897,60 +897,60 @@ hr { border: none; border-top: 1px solid var(--c-line); margin: 8px 0; }
   <div class="topbar" id="topbar">
     <div class="left">
       <span class="day" id="dayLabel">Day 1</span>
-      <span class="pill title-pill hidden-init" id="titlePill" title="현재 칭호"></span>
-      <span class="pill" id="timeLabel">아침 ☀️</span>
-      <span class="pill" id="weatherLabel">맑음</span>
-      <span class="pill" id="moneyLabel" title="동전 — 상점에서 사용">💰 0</span>
-      <span class="pill" id="foodLabel" title="음식 — 포만감 자동 회복">🍖 0</span>
+      <span class="pill title-pill hidden-init" id="titlePill" data-i18n-title="ui.titlePill.title" title="Current title"></span>
+      <span class="pill" id="timeLabel">Morning ☀️</span>
+      <span class="pill" id="weatherLabel">Clear</span>
+      <span class="pill" id="moneyLabel" data-i18n-title="ui.money.title" title="Coins — spent at the shop">💰 0</span>
+      <span class="pill" id="foodLabel" data-i18n-title="ui.food.title" title="Food — auto-restores fullness">🍖 0</span>
     </div>
     <div class="icons">
-      <button class="icon-btn" id="muteBtn" title="음소거">🔊</button>
-      <button class="icon-btn" id="invBtn" title="인벤토리">🚬</button>
-      <button class="icon-btn" id="albumBtn" title="엔딩 앨범">📔</button>
-      <button class="icon-btn" id="menuBtn" title="메뉴">≡</button>
+      <button class="icon-btn" id="muteBtn" data-i18n-title="ui.mute.title" title="Mute">🔊</button>
+      <button class="icon-btn" id="invBtn" data-i18n-title="ui.inv.title" title="Inventory">🚬</button>
+      <button class="icon-btn" id="albumBtn" data-i18n-title="ui.album.title" title="Ending album">📔</button>
+      <button class="icon-btn" id="menuBtn" data-i18n-title="ui.menu.title" title="Menu">≡</button>
     </div>
   </div>
 
   <!-- Scene -->
   <div class="scene" id="scene">
     <canvas id="gameCanvas" width="320" height="240"></canvas>
-    <div class="cry" id="cry">끼룩</div>
-    <div class="control-hint" id="controlHint">PC: ← → · Space 점프 · 1~5 액션</div>
-    <div class="scene-overlay-text" id="locText">부둣가</div>
+    <div class="cry" id="cry" data-i18n="ui.cry.default">kkiruk</div>
+    <div class="control-hint" id="controlHint" data-i18n="ui.controlHint">PC: ← → · Space jump · 1~5 actions</div>
+    <div class="scene-overlay-text" id="locText" data-i18n="misc.locDefault">Dockside</div>
     <div class="log" id="log"></div>
     <div class="touch-controls" id="touchControls">
       <div class="dpad">
-        <button class="dbtn" id="btnLeft" aria-label="왼쪽">◀</button>
-        <button class="dbtn" id="btnRight" aria-label="오른쪽">▶</button>
+        <button class="dbtn" id="btnLeft" data-i18n-aria="ui.dpad.left" aria-label="Left">◀</button>
+        <button class="dbtn" id="btnRight" data-i18n-aria="ui.dpad.right" aria-label="Right">▶</button>
       </div>
       <div class="dpad">
-        <button class="dbtn" id="btnJump" aria-label="점프">▲</button>
+        <button class="dbtn" id="btnJump" data-i18n-aria="ui.dpad.jump" aria-label="Jump">▲</button>
       </div>
     </div>
   </div>
 
   <!-- Stats -->
   <div class="stats" id="statsBox">
-    <div class="stat" data-key="lung"><span class="label">🫁 폐</span><div class="bar"><div class="fill" id="lungBar"></div></div><span class="num" id="lungNum">100</span></div>
-    <div class="stat" data-key="craving"><span class="label">🚬 욕구</span><div class="bar"><div class="fill craving" id="cravingBar"></div></div><span class="num" id="cravingNum">30</span></div>
-    <div class="stat" data-key="flight"><span class="label">✈️ 비행</span><div class="bar"><div class="fill" id="flightBar"></div></div><span class="num" id="flightNum">100</span></div>
-    <div class="stat" data-key="reputation"><span class="label">👥 평판</span><div class="bar"><div class="fill" id="repBar"></div></div><span class="num" id="repNum">50</span></div>
-    <div class="stat" data-key="hunger"><span class="label">🍖 포만감</span><div class="bar"><div class="fill hunger" id="hungerBar"></div></div><span class="num" id="hungerNum">90</span></div>
-    <div class="stat" data-key="stress"><span class="label">😤 스트레스</span><div class="bar"><div class="fill stress" id="stressBar"></div></div><span class="num" id="stressNum">30</span></div>
+    <div class="stat" data-key="lung"><span class="label" data-i18n="ui.stat.lung">🫁 Lung</span><div class="bar"><div class="fill" id="lungBar"></div></div><span class="num" id="lungNum">100</span></div>
+    <div class="stat" data-key="craving"><span class="label" data-i18n="ui.stat.craving">🚬 Craving</span><div class="bar"><div class="fill craving" id="cravingBar"></div></div><span class="num" id="cravingNum">30</span></div>
+    <div class="stat" data-key="flight"><span class="label" data-i18n="ui.stat.flight">✈️ Flight</span><div class="bar"><div class="fill" id="flightBar"></div></div><span class="num" id="flightNum">100</span></div>
+    <div class="stat" data-key="reputation"><span class="label" data-i18n="ui.stat.reputation">👥 Reputation</span><div class="bar"><div class="fill" id="repBar"></div></div><span class="num" id="repNum">50</span></div>
+    <div class="stat" data-key="hunger"><span class="label" data-i18n="ui.stat.hunger">🍖 Fullness</span><div class="bar"><div class="fill hunger" id="hungerBar"></div></div><span class="num" id="hungerNum">90</span></div>
+    <div class="stat" data-key="stress"><span class="label" data-i18n="ui.stat.stress">😤 Stress</span><div class="bar"><div class="fill stress" id="stressBar"></div></div><span class="num" id="stressNum">30</span></div>
   </div>
   <div class="sub-stats" id="subStats">
-    <span class="sub-stat" title="책/사색/돌고래로 +"><b>🧠 지능</b><span id="intelNum">30</span></span>
-    <span class="sub-stat" title="그루밍/사진/평판으로 +"><b>💋 매력</b><span id="charmNum">30</span></span>
-    <span class="sub-stat" title="노을/시/금연으로 +"><b>💧 감수성</b><span id="senseNum">30</span></span>
+    <span class="sub-stat" data-i18n-title="ui.subStat.intel.title" title="Books / contemplation / dolphins +"><b data-i18n="ui.subStat.intel">🧠 Intel</b><span id="intelNum">30</span></span>
+    <span class="sub-stat" data-i18n-title="ui.subStat.charm.title" title="Grooming / photos / reputation +"><b data-i18n="ui.subStat.charm">💋 Charm</b><span id="charmNum">30</span></span>
+    <span class="sub-stat" data-i18n-title="ui.subStat.sense.title" title="Sunset / poetry / quitting smoking +"><b data-i18n="ui.subStat.sense">💧 Sense</b><span id="senseNum">30</span></span>
   </div>
 
   <!-- Actions -->
   <div class="actions" id="actions">
-    <button class="action-btn primary" data-action="hunt"><span class="key">1</span><span class="ico">🎯</span><span>사냥</span></button>
-    <button class="action-btn primary" data-action="smoke"><span class="key">2</span><span class="ico">🚬</span><span>흡연</span></button>
-    <button class="action-btn primary" data-action="explore"><span class="key">3</span><span class="ico">🗺️</span><span>탐험</span></button>
-    <button class="action-btn primary" data-action="interact"><span class="key">4</span><span class="ico">💬</span><span>상호작용</span></button>
-    <button class="action-btn primary" data-action="sleep"><span class="key">5</span><span class="ico">💤</span><span>수면</span></button>
+    <button class="action-btn primary" data-action="hunt"><span class="key">1</span><span class="ico">🎯</span><span data-i18n="ui.action.hunt">Hunt</span></button>
+    <button class="action-btn primary" data-action="smoke"><span class="key">2</span><span class="ico">🚬</span><span data-i18n="ui.action.smoke">Smoke</span></button>
+    <button class="action-btn primary" data-action="explore"><span class="key">3</span><span class="ico">🗺️</span><span data-i18n="ui.action.explore">Explore</span></button>
+    <button class="action-btn primary" data-action="interact"><span class="key">4</span><span class="ico">💬</span><span data-i18n="ui.action.interact">Interact</span></button>
+    <button class="action-btn primary" data-action="sleep"><span class="key">5</span><span class="ico">💤</span><span data-i18n="ui.action.sleep">Sleep</span></button>
   </div>
 
   <!-- Toast -->
@@ -959,7 +959,7 @@ hr { border: none; border-top: 1px solid var(--c-line); margin: 8px 0; }
   <!-- Modal -->
   <div class="modal-bg" id="modalBg">
     <div class="modal" id="modal">
-      <h2 id="modalTitle">제목 <button class="close" id="modalClose">×</button></h2>
+      <h2 id="modalTitle">Title <button class="close" id="modalClose">×</button></h2>
       <div class="body" id="modalBody"></div>
     </div>
   </div>
@@ -969,33 +969,34 @@ hr { border: none; border-top: 1px solid var(--c-line); margin: 8px 0; }
     <div class="title-inner">
       <div>
         <canvas id="titleCanvas" width="160" height="120"></canvas>
-        <h1>끄어억</h1>
-        <div class="sub">부둣가 골초 갈매기 시뮬레이터</div>
-        <div class="by">"끼룩이 아니라 끄어억" <span class="rating-mark">19</span></div>
+        <h1 data-i18n="ui.title.gameTitle">Kkeueok</h1>
+        <div class="sub" data-i18n="ui.title.subtitle">Dockside Chain-Smoking Seagull Simulator</div>
+        <div class="by"><span data-i18n="ui.title.tagline">"Not kkiruk — kkeueok"</span> <span class="rating-mark">19</span></div>
       </div>
       <div class="menu">
-        <button id="newGameBtn">＋ 새 갈매기 시작</button>
-        <button id="continueBtn" class="hidden-init">▶ 이어하기</button>
-        <button id="albumOpenBtn">📔 꽁초의 일대기</button>
-        <button id="creditsBtn">크레딧</button>
+        <button id="newGameBtn" data-i18n="ui.title.newGame">＋ New Seagull</button>
+        <button id="continueBtn" class="hidden-init" data-i18n="ui.title.continue">▶ Continue</button>
+        <button id="albumOpenBtn" data-i18n="ui.title.album">📔 Cigarette Butt Memoirs</button>
+        <button id="creditsBtn" data-i18n="ui.title.credits">Credits</button>
+        <button id="langToggleBtn" data-i18n="ui.lang.toggle" style="margin-top:6px;background:transparent;border:1px solid rgba(255,255,255,0.25);color:#aaa;font-size:12px;padding:6px 10px;border-radius:6px">🌐 Language: English</button>
       </div>
-      <div class="footer">청소년이용불가. 그래야 할 만한 이유가 있다.</div>
+      <div class="footer" data-i18n="ui.title.footer">Adults only. There is a good reason for that.</div>
     </div>
   </div>
 
   <!-- Ending screen -->
   <div class="ending-screen" id="endingScreen">
-    <div class="badge">— 엔 딩 —</div>
-    <h2 id="endingTitle">엔딩 이름</h2>
-    <div class="summary" id="endingSummary">설명</div>
+    <div class="badge" data-i18n="ui.ending.badge">— ENDING —</div>
+    <h2 id="endingTitle">Ending Name</h2>
+    <div class="summary" id="endingSummary">Summary</div>
     <div class="frame"><canvas id="endingCanvas" width="200" height="160"></canvas></div>
     <div class="reward" id="endingReward" style="display:none"></div>
     <div class="ending-actions">
-      <button id="endingImageBtn">🖼️ 이미지</button>
-      <button id="endingShareBtn">📤 공유</button>
-      <button id="endingAlbumBtn">앨범</button>
-      <button id="endingRestartBtn">다시 시작</button>
-      <button id="endingTitleBtn">타이틀로</button>
+      <button id="endingImageBtn" data-i18n="ui.ending.btnImage">🖼️ Image</button>
+      <button id="endingShareBtn" data-i18n="ui.ending.btnShare">📤 Share</button>
+      <button id="endingAlbumBtn" data-i18n="ui.ending.btnAlbum">Album</button>
+      <button id="endingRestartBtn" data-i18n="ui.ending.btnRestart">Restart</button>
+      <button id="endingTitleBtn" data-i18n="ui.ending.btnTitle">To Title</button>
     </div>
   </div>
 
@@ -1154,6 +1155,902 @@ const AUDIO = {
 };
 
 // ============================================================
+// I18N — language: 'en' (default) | 'ko'
+// ============================================================
+const LANG_KEY = 'kkeuh_lang_v1';
+let LANG = (function(){
+  try {
+    const v = localStorage.getItem(LANG_KEY);
+    if (v === 'ko' || v === 'en') return v;
+  } catch(e){}
+  return 'en';
+})();
+function setLang(lang) {
+  LANG = (lang === 'ko') ? 'ko' : 'en';
+  try { localStorage.setItem(LANG_KEY, LANG); } catch(e){}
+  try { document.documentElement.lang = (LANG === 'ko' ? 'ko' : 'en'); } catch(e){}
+  try { applyStaticI18n(); } catch(e){}
+  try { if (typeof updateUI === 'function' && RUN) updateUI(); } catch(e){}
+  try { if (typeof refreshTitleScreen === 'function') refreshTitleScreen(); } catch(e){}
+}
+const STR = {
+  // ===== Top bar / static UI =====
+  'ui.title.tab':            { en: 'Kkeueok — Dockside Chain-Smoking Seagull Simulator', ko: '끄어억 — 부둣가 골초 갈매기 시뮬레이터' },
+  'ui.titlePill.title':      { en: 'Current title', ko: '현재 칭호' },
+  'ui.timeLabel':            { en: 'Morning ☀️', ko: '아침 ☀️' },
+  'ui.weatherLabel':         { en: 'Clear', ko: '맑음' },
+  'ui.money.title':          { en: 'Coins — spent at the shop', ko: '동전 — 상점에서 사용' },
+  'ui.food.title':           { en: 'Food — auto-restores fullness', ko: '음식 — 포만감 자동 회복' },
+  'ui.mute.title':           { en: 'Mute', ko: '음소거' },
+  'ui.inv.title':            { en: 'Inventory', ko: '인벤토리' },
+  'ui.album.title':          { en: 'Ending album', ko: '엔딩 앨범' },
+  'ui.menu.title':           { en: 'Menu', ko: '메뉴' },
+  'ui.cry.default':          { en: 'kkiruk', ko: '끼룩' },
+  'ui.controlHint':          { en: 'PC: ← → · Space jump · 1~5 actions', ko: 'PC: ← → · Space 점프 · 1~5 액션' },
+  'ui.controlHint.touch':    { en: 'Touch: bottom ◀ ▶ to move · ▲ jump · 5 action buttons', ko: '터치: 하단 ◀ ▶ 버튼 이동 · ▲ 점프 · 5개 액션 버튼 누르기' },
+  'ui.controlHint.pc':       { en: 'PC: ← → move · Space jump · 1~5 action shortcuts', ko: 'PC: ← → 이동 · Space 점프 · 1~5 액션 단축키' },
+  'ui.dpad.left':            { en: 'Left', ko: '왼쪽' },
+  'ui.dpad.right':           { en: 'Right', ko: '오른쪽' },
+  'ui.dpad.jump':            { en: 'Jump', ko: '점프' },
+  'ui.stat.lung':            { en: '🫁 Lung', ko: '🫁 폐' },
+  'ui.stat.craving':         { en: '🚬 Craving', ko: '🚬 욕구' },
+  'ui.stat.flight':          { en: '✈️ Flight', ko: '✈️ 비행' },
+  'ui.stat.reputation':      { en: '👥 Reputation', ko: '👥 평판' },
+  'ui.stat.hunger':          { en: '🍖 Fullness', ko: '🍖 포만감' },
+  'ui.stat.stress':          { en: '😤 Stress', ko: '😤 스트레스' },
+  'ui.subStat.intel':        { en: '🧠 Intel', ko: '🧠 지능' },
+  'ui.subStat.charm':        { en: '💋 Charm', ko: '💋 매력' },
+  'ui.subStat.sense':        { en: '💧 Sense', ko: '💧 감수성' },
+  'ui.subStat.intel.title':  { en: 'Books / contemplation / dolphins +', ko: '책/사색/돌고래로 +' },
+  'ui.subStat.charm.title':  { en: 'Grooming / photos / reputation +', ko: '그루밍/사진/평판으로 +' },
+  'ui.subStat.sense.title':  { en: 'Sunset / poetry / quitting smoking +', ko: '노을/시/금연으로 +' },
+  'ui.action.hunt':          { en: 'Hunt', ko: '사냥' },
+  'ui.action.smoke':         { en: 'Smoke', ko: '흡연' },
+  'ui.action.explore':       { en: 'Explore', ko: '탐험' },
+  'ui.action.interact':      { en: 'Interact', ko: '상호작용' },
+  'ui.action.sleep':         { en: 'Sleep', ko: '수면' },
+  'ui.modal.titlePh':        { en: 'Title', ko: '제목' },
+  'ui.title.gameTitle':      { en: 'Kkeueok', ko: '끄어억' },
+  'ui.title.subtitle':       { en: 'Dockside Chain-Smoking Seagull Simulator', ko: '부둣가 골초 갈매기 시뮬레이터' },
+  'ui.title.tagline':        { en: '"Not kkiruk — kkeueok"', ko: '"끼룩이 아니라 끄어억"' },
+  'ui.title.newGame':        { en: '＋ New Seagull', ko: '＋ 새 갈매기 시작' },
+  'ui.title.continue':       { en: '▶ Continue', ko: '▶ 이어하기' },
+  'ui.title.continueWith':   { en: '▶ Continue ({n} in progress)', ko: '▶ 이어하기 ({n}개 진행 중)' },
+  'ui.title.album':          { en: '📔 Cigarette Butt Memoirs', ko: '📔 꽁초의 일대기' },
+  'ui.title.credits':        { en: 'Credits', ko: '크레딧' },
+  'ui.title.footer':         { en: 'Adults only. There is a good reason for that.', ko: '청소년이용불가. 그래야 할 만한 이유가 있다.' },
+  'ui.ending.badge':         { en: '— ENDING —', ko: '— 엔 딩 —' },
+  'ui.ending.titlePh':       { en: 'Ending Name', ko: '엔딩 이름' },
+  'ui.ending.summaryPh':     { en: 'Summary', ko: '설명' },
+  'ui.ending.btnImage':      { en: '🖼️ Image', ko: '🖼️ 이미지' },
+  'ui.ending.btnShare':      { en: '📤 Share', ko: '📤 공유' },
+  'ui.ending.btnAlbum':      { en: 'Album', ko: '앨범' },
+  'ui.ending.btnRestart':    { en: 'Restart', ko: '다시 시작' },
+  'ui.ending.btnTitle':      { en: 'To Title', ko: '타이틀로' },
+  'ui.lang.toggle':          { en: '🌐 Language: English', ko: '🌐 언어: 한국어' },
+
+  // ===== Time / Weather =====
+  'time.morning':  { en: 'Morning',  ko: '아침' },
+  'time.lunch':    { en: 'Noon',     ko: '점심' },
+  'time.evening':  { en: 'Evening',  ko: '저녁' },
+  'time.night':    { en: 'Night',    ko: '심야' },
+  'weather.clear': { en: 'Clear',    ko: '맑음' },
+  'weather.cloudy':{ en: 'Cloudy',   ko: '흐림' },
+  'weather.rain':  { en: 'Rain',     ko: '비' },
+  'weather.fog':   { en: 'Fog',      ko: '안개' },
+
+  // ===== Cigarette grades =====
+  'grade.F.name':  { en: 'Rain-Soaked Butt',     ko: '비에 젖은 꽁초' },
+  'grade.D.name':  { en: 'Street Butt',          ko: '길거리 꽁초' },
+  'grade.C.name':  { en: 'Convenience-Store Steal', ko: '편의점 절도' },
+  'grade.B.name':  { en: 'Genuine Pack',         ko: '정품 한 갑' },
+  'grade.A.name':  { en: 'Imported Cigar',       ko: '외제 시가' },
+  'grade.S.name':  { en: 'Legendary Cuban',      ko: '전설의 쿠바산' },
+
+  // ===== Hunt locations =====
+  'hunt.loc.beach':       { en: 'Beach Tourist Bag',         ko: '해변 관광객 가방' },
+  'hunt.loc.fishMarket':  { en: 'Dock Fish Market',          ko: '부둣가 어시장' },
+  'hunt.loc.parkSmoke':   { en: 'Park Smoking Area',         ko: '공원 흡연 구역' },
+  'hunt.loc.cafe':        { en: 'Cafe Terrace',              ko: '카페 테라스' },
+  'hunt.loc.barAlley':    { en: 'Alley by the Bar',          ko: '술집 앞 골목' },
+  'hunt.loc.nightMarket': { en: 'Night Market',              ko: '야시장' },
+  'hunt.loc.clubAlley':   { en: 'Club Back Alley',           ko: '클럽 뒷골목' },
+  'hunt.loc.warehouse':   { en: 'Dock Warehouse',            ko: '부둣가 창고' },
+  'hunt.loc.rooftop':     { en: 'City Rooftop',              ko: '도시 옥상' },
+  'hunt.loc.subway':      { en: 'Subway Entrance',           ko: '지하철 입구' },
+  'hunt.loc.ocean':       { en: 'Open Sea (Far)',            ko: '먼바다 (원해)' },
+
+  // ===== Hunt runtime =====
+  'hunt.flying':         { en: '✈️ Flying to {loc}…', ko: '✈️ {loc}로 비행…' },
+  'hunt.success':        { en: '🎯 Hunt success! Got {gained} at {loc}', ko: '🎯 사냥 성공! {loc}에서 {gained} 획득' },
+  'hunt.fail':           { en: '{loc}: Hunt failed. Empty beak only.', ko: '{loc}: 사냥 실패. 텅 빈 부리만 남았다.' },
+  'hunt.gainGrade':      { en: '{grade}-grade ×{n} ', ko: '{grade}급 ×{n} ' },
+  'hunt.gainFood':       { en: 'food ×{n}', ko: '먹이 ×{n}' },
+
+  // ===== Risk events =====
+  'risk.humanChase':     { en: '🚨 A human is chasing with a broom!', ko: '🚨 인간이 빗자루를 들고 쫓아온다!' },
+  'risk.humanChaseToast':{ en: 'Human chase!', ko: '인간 추격!' },
+  'risk.dodge':          { en: 'Just barely dodged it.', ko: '아슬하게 피했다.' },
+  'risk.broomHit':       { en: 'Got hit by the broom. Lung and reputation both wrecked.', ko: '빗자루에 한 대 맞았다. 폐와 평판 둘 다 터졌다.' },
+  'risk.foodStolen':     { en: '💸 Another seagull snatched the food!', ko: '💸 다른 갈매기가 먹이를 빼앗아 갔다!' },
+  'risk.spoiled':        { en: '🦴 Ate spoiled food… lungs trembling.', ko: '🦴 상한 음식을 먹었다… 폐가 흔들린다.' },
+
+  // ===== Smoking =====
+  'smoke.nothing':       { en: 'Nothing to smoke…', ko: '피울 게 없다…' },
+  'smoke.cryNothing':    { en: 'Kkeuueoeoeok', ko: '끄으어어억' },
+  'smoke.choosePrompt':  { en: 'What to smoke?', ko: '어떤 걸 피울까?' },
+  'smoke.meta':          { en: 'Sat +{sat} / Lung -{dmg}', ko: '만족 +{sat} / 폐 -{dmg}' },
+  'smoke.btnSmoke':      { en: 'Smoke', ko: '피우기' },
+  'smoke.od.warn':       { en: '⚠ 5 in one mouth', ko: '⚠ 한입에 5개' },
+  'smoke.od.meta':       { en: 'Five cigars at once. You should not.', ko: '시가 5개 한 번에. 이러면 안 된다.' },
+  'smoke.od.btn':        { en: 'Smoke 5', ko: '5개 흡연' },
+  'smoke.empty':         { en: 'Nothing to smoke at all… terrible.', ko: '피울 게 하나도 없다… 끔찍하다.' },
+  'smoke.modalTitle':    { en: '🚬 Smoke', ko: '🚬 흡연' },
+  'smoke.toast':         { en: '🚬 {name} smoked. Sat {sat} / Lung -{dmg}', ko: '🚬 {name} 흡연. 만족 {sat} / 폐 -{dmg}' },
+  'smoke.log':           { en: '{grade}-grade smoked: kkeueoeo… (Sat +{sat})', ko: '{grade}급 흡연: 끄어어… (만족 +{sat})' },
+  'smoke.od.toast':      { en: '💀 5 in one mouth… vision blurs.', ko: '💀 한입에 5개… 시야가 흐릿해진다.' },
+  'smoke.od.log':        { en: '5 cigars at once. The seagull is no longer a seagull.', ko: '시가 5개 동시 흡연. 갈매기는 더는 갈매기가 아니다.' },
+
+  // ===== Explore: stroll =====
+  'expl.stroll1':        { en: 'Wandered around. Nothing happened.', ko: '주변을 어슬렁거렸다. 별일 없음.' },
+  'expl.stroll.coin':    { en: '💡 Found a coin on the street.', ko: '💡 길에서 동전 발견.' },
+  'expl.stroll.butt':    { en: '💡 One rain-soaked butt.', ko: '💡 비에 젖은 꽁초 한 개.' },
+  'expl.stroll.bird':    { en: 'A strange bird stares from afar.', ko: '이상한 새가 멀리서 쳐다본다.' },
+  'expl.stroll.med':     { en: 'Meditated for a while. Turned out meaningless.', ko: '잠시 명상했다. 생각해보니 의미는 없었다.' },
+
+  // ===== Sleep =====
+  'sleep.clean':         { en: '💤 A day with no smoking. Lungs recovered a little.', ko: '💤 흡연 없는 하루. 폐가 약간 회복됐다.' },
+  'sleep.cry':           { en: 'kuhl…kuhl…', ko: '쿨…쿨…' },
+  'sleep.noSleep':       { en: 'A new day broke without sleeping.', ko: '자지 않은 채 새 날이 밝았다.' },
+
+  // ===== Day messages =====
+  'day.start':           { en: '📅 Day {day} begins.', ko: '📅 Day {day} 시작.' },
+  'day.day25':           { en: '🌅 Five days left. The seagull grows old.', ko: '🌅 5일 남았다. 갈매기는 늙어간다.' },
+  'day.day28':           { en: '⚠️ In two days the seagull is finished.', ko: '⚠️ 2일 후 갈매기는 끝난다.' },
+  'day.day30':           { en: '☠️ Last day. Sleeping today ends it.', ko: '☠️ 마지막 날. 오늘 잠들면 끝.' },
+  'day.endRun':          { en: '🌅 Thirty days have passed…', ko: '🌅 30일이 흘렀다…' },
+  'day.endRunLog':       { en: 'Thirty days passed. The seagull aged.', ko: '30일이 지났다. 갈매기는 늙었다.' },
+
+  // ===== Misc runtime =====
+  'misc.cantFly':        { en: 'Flight too low… cannot fly', ko: '비행 능력 부족… 못 난다' },
+  'misc.locDefault':     { en: 'Dockside', ko: '부둣가' },
+  'misc.savedToast':     { en: 'Saved', ko: '저장됨' },
+  'misc.resetToast':     { en: 'Reset', ko: '초기화됨' },
+  'misc.eatToast':       { en: '🍖 Ate. Fullness +30', ko: '🍖 먹었다. 포만감 +30' },
+  'misc.cravingBurst':   { en: '💥 Craving burst — the seagull convulses.', ko: '💥 욕구 폭발 — 갈매기가 발작한다.' },
+  'misc.atFood':         { en: '🍖 Hungry, ate stored food.', ko: '🍖 배가 고파 챙겨둔 먹이를 먹었다.' },
+  'misc.skeletonLives':  { en: '💀 Skeleton seagull does not die. Once.', ko: '💀 해골 갈매기는 죽지 않는다. 한 번은.' },
+  'misc.cryDefault':     { en: 'kkeueok…', ko: '끄어억…' },
+  'misc.voice.healthy':  { en: 'kkiruk-kkiruk', ko: '끼룩끼룩' },
+  'misc.voice.mid':      { en: 'kki…ruk…', ko: '끼…룩…' },
+  'misc.voice.low':      { en: 'kkeueok', ko: '끄어억' },
+  'misc.voice.dying':    { en: 'kehek…', ko: '케헥…' },
+  'misc.voice.craving':  { en: 'kkeuueoeoeok!!', ko: '끄으으어어억!!' },
+  'misc.storageFail':    { en: '⚠ Save failed — check incognito/private mode', ko: '⚠ 저장 실패 — 시크릿/프라이빗 모드인지 확인하세요' },
+
+  // ===== Interaction events =====
+  // Friend
+  'evt.friend.title':    { en: '💬 Dock Friend', ko: '💬 부둣가 친구' },
+  'evt.friend.intro':    { en: 'An ordinary seagull comes over and starts small talk.', ko: '평범한 갈매기가 다가와 잡담을 시작한다.' },
+  'evt.friend.chat':     { en: 'Chat with them', ko: '잡담을 받아준다' },
+  'evt.friend.chatSub':  { en: 'Reputation +5, Stress -3', ko: '평판 +5, 스트레스 -3' },
+  'evt.friend.chatToast':{ en: 'Chatted briefly. Nothing of substance.', ko: '잠깐 수다떨었다. 별 내용은 없었다.' },
+  'evt.friend.ignore':   { en: 'Ignore', ko: '무시한다' },
+  'evt.friend.ignoreSub':{ en: 'Reputation -3', ko: '평판 -3' },
+  'evt.friend.ignoreToast':{ en: '"Kkiruk!" and ignored them.', ko: '"끼룩"하고 무시했다.' },
+  'evt.friend.lend':     { en: 'Lend a smoke', ko: '한 대 빌려준다' },
+  'evt.friend.lendSub':  { en: '1 cig consumed, Reputation +10', ko: '담배 1개 소모, 평판 +10' },
+  'evt.friend.minion':   { en: '💪 Minion seagull +1 (total {n}/5)', ko: '💪 부하 갈매기 +1 (총 {n}/5)' },
+
+  // Rival
+  'evt.rival.title':     { en: '🦅 Rival Seagull', ko: '🦅 라이벌 갈매기' },
+  'evt.rival.intro':     { en: 'A big-brother seagull asks to bum a smoke.', ko: '큰형 갈매기가 다가와 한 대 빌려달라고 한다.' },
+  'evt.rival.give':      { en: 'Give in (Rep +8)', ko: '양보한다 (평판 +8)' },
+  'evt.rival.giveToast': { en: 'Big bro: "Thanks kkiruk"', ko: '큰형: "고맙다 끼룩"' },
+  'evt.rival.fight':     { en: 'Refuse (Fight!)', ko: '거절한다 (전투!)' },
+  'evt.rival.win':       { en: '🦅 Beat big bro. A street legend now. (Wins {n})', ko: '🦅 큰형을 이겼다. 거리의 전설이 됐다. (격투 승리 {n})' },
+  'evt.rival.loseToast': { en: '🩸 Got beaten down.', ko: '🩸 두들겨 맞았다.' },
+  'evt.rival.lie':       { en: 'Lie ("none")', ko: '거짓말한다 ("없다")' },
+  'evt.rival.lieFail':   { en: 'Big bro: "What is in your pocket then?" Caught.', ko: '큰형: "주머니에 있는 거 뭐냐?" 들켰다.' },
+  'evt.rival.lieGo':     { en: 'Big bro just left.', ko: '큰형은 그냥 갔다.' },
+
+  // Dolphin
+  'evt.dolphin.title':   { en: '🐬 Dolphin\'s Advice', ko: '🐬 돌고래의 충고' },
+  'evt.dolphin.intro':   { en: 'A dolphin surfaces by the dock and starts giving life advice.', ko: '부둣가에 돌고래가 떠올라 인생 조언을 시작한다.' },
+  'evt.dolphin.listen':  { en: 'Listen', ko: '들어준다' },
+  'evt.dolphin.listenSub':{ en: 'Intel +6, Sense +6 (and …)', ko: '지능 +6, 감수성 +6 (그리고 …)' },
+  'evt.dolphin.q1':      { en: '"The sea is wide. You are narrow."', ko: '"바다는 넓다. 너는 좁다."' },
+  'evt.dolphin.q2':      { en: '"Kkeueok is more honest than kkiruk."', ko: '"끼룩보다 끄어억이 솔직하다."' },
+  'evt.dolphin.q3':      { en: '"Cigarettes ruin a seagull. But poetry creates one."', ko: '"담배는 갈매기를 망친다. 그러나 시는 만든다."' },
+  'evt.dolphin.q4':      { en: '"I am a mammal. You are a bird. We differ. Therefore we are the same."', ko: '"나는 포유류다. 너는 새다. 우리는 다르다. 그래서 같다."' },
+  'evt.dolphin.q5':      { en: '"Just being alive at this dock today is itself a miracle."', ko: '"오늘 하루도 부두에 살아있다는 것 자체가 기적이다."' },
+  'evt.dolphin.ignore':  { en: 'Ignore', ko: '무시한다' },
+  'evt.dolphin.ignoreToast':{ en: 'The dolphin sank back down.', ko: '돌고래는 다시 가라앉았다.' },
+
+  // Suit
+  'evt.suit.title':      { en: '🕴️ Black-Suit Seagull', ko: '🕴️ 검은 정장 갈매기' },
+  'evt.suit.intro':      { en: 'A seagull in black suit and sunglasses approaches and hands over a business card.', ko: '검은 정장과 선글라스를 낀 갈매기가 다가와 명함을 내민다.' },
+  'evt.suit.take':       { en: 'Take the card', ko: '명함을 받는다' },
+  'evt.suit.takeSub':    { en: 'Something will happen in a few days', ko: '며칠 뒤 무슨 일이 생긴다' },
+  'evt.suit.takeToast':  { en: 'Took the card. No idea what company.', ko: '명함을 받았다. 무슨 회사인지는 모르겠다.' },
+  'evt.suit.no':         { en: 'Refuse', ko: '안 받는다' },
+  'evt.suit.noToast':    { en: 'The suit seagull vanished somewhere.', ko: '정장 갈매기는 어디론가 사라졌다.' },
+
+  'evt.suitAgain.title': { en: '📩 Suit Returns', ko: '📩 다시 만난 정장' },
+  'evt.suitAgain.intro': { en: 'The card seagull is back.\n"The CEO wants to meet you."', ko: '명함의 갈매기가 다시 왔다.\n"사장님이 만나고 싶어합니다."' },
+  'evt.suitAgain.go':    { en: 'Follow', ko: '따라간다' },
+  'evt.suitAgain.goToast':{ en: '🚗 A penthouse somewhere. Tobacco company CEO seagull.', ko: '🚗 어딘가의 펜트하우스. 담배 회사 CEO 갈매기.' },
+  'evt.suitAgain.goLog': { en: 'CEO: "Marry me if you smoke 3 A-grade or higher?"', ko: 'CEO: "A급 이상으로 3개 피우면 우리 결혼 어떨까?"' },
+  'evt.suitAgain.no':    { en: 'Refuse', ko: '거절한다' },
+  'evt.suitAgain.noToast':{ en: '"Disappointing." He vanished.', ko: '"실망입니다." 그는 사라졌다.' },
+
+  'evt.ceo.title':       { en: '💼 Promise with the CEO', ko: '💼 CEO와의 약속' },
+  'evt.ceo.intro':       { en: 'CEO seagull: "You haven\'t forgotten the deal?"\n3 A-grade-or-higher smokes = marriage.', ko: 'CEO 갈매기: "조건은 잊지 않으셨죠?"\nA급 이상 8개 흡연이면 결혼.' },
+  'evt.ceo.nod':         { en: 'Nod yes', ko: '알겠다고 끄덕인다' },
+  'evt.ceo.nodToast':    { en: 'A-grade or above smoked {n}/3', ko: 'A급 이상 {n}/3 흡연' },
+  'evt.ceo.leave':       { en: 'Just leave', ko: '그냥 떠난다' },
+  'evt.ceo.leaveToast':  { en: 'The bond with the CEO was broken.', ko: 'CEO와의 인연은 끊어졌다.' },
+
+  // Tourist
+  'evt.tourist.title':   { en: '🧳 Tourist\'s Hand', ko: '🧳 관광객의 손' },
+  'evt.tourist.intro':   { en: 'A tourist unpacks lunch and fiddles with the camera.', ko: '관광객이 도시락을 펼쳐놓고 카메라를 만진다.' },
+  'evt.tourist.qte':     { en: 'QTE: Snatch attempt', ko: 'QTE: 강탈 시도' },
+  'evt.tourist.qteSub':  { en: 'Win: food+cig, lose: injury', ko: '성공 시 음식+담배, 실패 시 부상' },
+  'evt.tourist.cute':    { en: 'Try being cute', ko: '재롱을 부려본다' },
+  'evt.tourist.cuteSub': { en: 'Reputation/affinity +', ko: '평판/호감도 +' },
+  'evt.tourist.cuteToast':{ en: 'Acted cute. Human affinity {n}/100', ko: '귀여움을 떨었다. 인간 호감 {n}/100' },
+  'evt.tourist.cuteBread':{ en: 'A tourist gave a piece of bread.', ko: '관광객이 빵 한 조각을 줬다.' },
+  'evt.tourist.cuteIgnore':{ en: 'The tourist ignored you.', ko: '관광객은 무시했다.' },
+  'evt.tourist.ignore':  { en: 'Ignore', ko: '무시한다' },
+
+  'evt.qteSteal.title':  { en: '🎯 Tourist Snatch QTE', ko: '🎯 관광객 강탈 QTE' },
+  'evt.qteSteal.intro':  { en: 'Time the beak swing right.', ko: '적절한 타이밍에 부리를 휘둘러라.' },
+  'evt.qteSteal.win':    { en: '💥 Snatch success! Food {food}, C-grade +1', ko: '💥 강탈 성공! 음식 {food}, C급 +1' },
+  'evt.qteSteal.winLog': { en: 'The tourist dropped the camera, dazed.', ko: '관광객은 망연자실 카메라를 떨어뜨렸다.' },
+  'evt.qteSteal.lose':   { en: '💢 Got hit by the camera.', ko: '💢 카메라에 맞았다.' },
+
+  // Lighter QTE
+  'evt.lighter.title':   { en: '🌧️ Lighter on a Rainy Day', ko: '🌧️ 비 오는 날 라이터' },
+  'evt.lighter.intro':   { en: 'Deep breath… time the click right.', ko: '심호흡… 클릭 타이밍을 맞춰라.' },
+  'evt.lighter.win':     { en: '🔥 Ignition success!', ko: '🔥 점화 성공!' },
+  'evt.lighter.fail':    { en: '💧 Lighter died… craving spike', ko: '💧 라이터가 꺼졌다… 욕구 폭발' },
+  'evt.qte.now':         { en: 'NOW!', ko: '지금!' },
+
+  // Photographer
+  'evt.photo.title':     { en: '📷 Photographer', ko: '📷 사진작가' },
+  'evt.photo.intro':     { en: '"This seagull has a killer face." An Insta photographer aims the camera.', ko: '"이 갈매기 표정 죽이네." 인스타 사진작가가 카메라를 들이댄다.' },
+  'evt.photo.pose':      { en: 'Pose for them', ko: '포즈를 취해준다' },
+  'evt.photo.poseSub':   { en: 'Affinity +15, Charm +5', ko: '인간 호감 +15, 매력 +5' },
+  'evt.photo.poseToast': { en: '📸 Snap! Pinned on Insta. (Photos {n})', ko: '📸 찰칵! 인스타에 박제됐다. (사진 {n})' },
+  'evt.photo.smoke':     { en: 'Blow smoke', ko: '담배 연기를 뱉는다' },
+  'evt.photo.smokeSub':  { en: 'Rep +5, Affinity -10', ko: '평판 +5, 인간 호감 -10' },
+  'evt.photo.smokeToast':{ en: 'Smoke on the lens. The artist swore.', ko: '렌즈에 연기. 작가는 욕했다.' },
+  'evt.photo.run':       { en: 'Run away', ko: '도망간다' },
+
+  // Fisher
+  'evt.fisher.title':    { en: '🎣 Dock Angler', ko: '🎣 부두 낚시꾼' },
+  'evt.fisher.intro':    { en: 'A bait can sits wide open by the angler\'s feet.', ko: '낚시꾼 발 옆에 미끼 통이 활짝 열려있다.' },
+  'evt.fisher.steal':    { en: 'Steal bait (QTE)', ko: '미끼를 훔친다 (QTE)' },
+  'evt.fisher.ask':      { en: 'Politely ask for one fish', ko: '정중히 한 마리 부탁한다' },
+  'evt.fisher.askYes':   { en: '🐟 Got 2 small fish.', ko: '🐟 작은 물고기 2마리를 받았다.' },
+  'evt.fisher.askNo':    { en: '"Get lost!" Got kicked.', ko: '"꺼져!" 발길질을 당했다.' },
+  'evt.fisher.ignore':   { en: 'Ignore', ko: '무시한다' },
+
+  'evt.qteBait.title':   { en: '🎯 Bait Theft QTE', ko: '🎯 미끼 훔치기 QTE' },
+  'evt.qteBait.intro':   { en: 'Snatch the moment a toe touches.', ko: '발끝 닿는 순간 잡아채라.' },
+  'evt.qteBait.win':     { en: '🐟 Bait + lighter heist successful.', ko: '🐟 미끼 + 라이터 절도 성공.' },
+  'evt.qteBait.lose':    { en: '🪝 Caught on the hook…', ko: '🪝 갈고리에 걸렸다…' },
+
+  // Puppy
+  'evt.puppy.title':     { en: '🐕 Lost Puppy', ko: '🐕 길 잃은 강아지' },
+  'evt.puppy.intro':     { en: 'A small poodle stares at you. Doesn\'t bark.', ko: '꼬마 푸들이 너를 빤히 본다. 짖지는 않는다.' },
+  'evt.puppy.friend':    { en: 'Become friends', ko: '친구가 된다' },
+  'evt.puppy.friendToast':{ en: '🐕❤️🐦 Cross-species friendship. Other seagulls scoffed.', ko: '🐕❤️🐦 종족을 초월한 우정. 다른 갈매기들이 비웃었다.' },
+  'evt.puppy.threat':    { en: 'Threaten', ko: '위협한다' },
+  'evt.puppy.threatWin': { en: '🦅 The poodle ran. Seagull society applauded.', ko: '🦅 푸들은 도망쳤다. 갈매기 사회는 박수를 쳤다.' },
+  'evt.puppy.threatLose':{ en: 'The poodle was unexpectedly tough.', ko: '의외로 푸들이 셌다.' },
+  'evt.puppy.cig':       { en: 'Offer a cigarette', ko: '담배를 권한다' },
+  'evt.puppy.cigSub':    { en: '1 cig consumed — bizarre outcome', ko: '담배 1개 소모 — 기괴한 결과' },
+  'evt.puppy.cigToast':  { en: '🐕🚬 The poodle took the cig. Memory wipe recommended.', ko: '🐕🚬 푸들이 부리에서 담배를 받아 물었다. 기억 삭제 권장.' },
+
+  // Fireworks
+  'evt.fw.title':        { en: '🎆 Dock Firework Festival', ko: '🎆 부둣가 폭죽 축제' },
+  'evt.fw.intro':        { en: 'Humans set off fireworks. Loud. The flock fears it.', ko: '인간들이 폭죽을 터뜨린다. 시끄럽다. 무리는 두렵다.' },
+  'evt.fw.stage':        { en: 'Fly through the stage center', ko: '무대 한가운데로 비행' },
+  'evt.fw.stageSub':     { en: 'Rep +15, dangerous', ko: '평판 +15, 위험' },
+  'evt.fw.stageWin':     { en: '🎆 Crossed the fireworks. Became a dock rockstar.', ko: '🎆 폭죽 사이를 가로질렀다. 부두의 록스타가 됐다.' },
+  'evt.fw.stageLose':    { en: '💥 Feathers got singed by fireworks.', ko: '💥 폭죽에 깃털이 그을렸다.' },
+  'evt.fw.hide':         { en: 'Hide behind the warehouse', ko: '창고 뒤로 숨는다' },
+  'evt.fw.hideWin':      { en: '🔇 A genuine pack dropped behind the warehouse.', ko: '🔇 창고 뒤에 떨어진 정품 한 갑.' },
+  'evt.fw.hideLose':     { en: 'Hidden, but still loud.', ko: '숨었지만 시끄러움은 그대로다.' },
+  'evt.fw.cry':          { en: 'Just cry (kkeueok)', ko: '그냥 운다 (끄어억)' },
+  'evt.fw.cryToast':     { en: 'Your kkeueok was buried by fireworks.', ko: '너의 끄어억은 폭죽에 묻혔다.' },
+
+  // Storm
+  'evt.storm.title':     { en: '🌪️ Typhoon Warning', ko: '🌪️ 태풍 경보' },
+  'evt.storm.intro':     { en: 'Typhoon eve. The dock shakes. Normal seagulls flee.', ko: '태풍 전야. 부두가 흔들린다. 보통 갈매기는 피한다.' },
+  'evt.storm.safe':      { en: 'To safety', ko: '안전한 곳으로' },
+  'evt.storm.safeToast': { en: 'Trembled inside the warehouse.', ko: '창고 안에서 떨었다.' },
+  'evt.storm.thrill':    { en: 'Enjoy the gale', ko: '강풍을 즐긴다' },
+  'evt.storm.thrillSub': { en: 'Thrill — flight ↑ danger ↑', ko: '스릴 — 비행 ↑ 위험 ↑' },
+  'evt.storm.thrillWin': { en: '🌪️ Defied 30 m/s winds. You are a seagull from another dimension.', ko: '🌪️ 풍속 30m/s를 거슬렀다. 너는 다른 차원의 갈매기다.' },
+  'evt.storm.thrillLose':{ en: '💢 Slammed into a sign.', ko: '💢 표지판에 처박혔다.' },
+  'evt.storm.bum':       { en: 'Join the dock vagrant', ko: '부둣가 노숙자에게 합류' },
+  'evt.storm.bumWin':    { en: '🛌 The vagrant shared a corner of his blanket. And butts.', ko: '🛌 노숙자가 담요 끝을 나눠줬다. 꽁초도 같이.' },
+  'evt.storm.bumLose':   { en: 'Even the vagrant chased you off.', ko: '노숙자도 너를 쫓아냈다.' },
+
+  // Trash mini-events
+  'evt.trash.f2':        { en: '🗑️ Two wet butts from the trash.', ko: '🗑️ 쓰레기통에서 젖은 꽁초 2개.' },
+  'evt.trash.d':         { en: '🗑️ One D-grade from the trash.', ko: '🗑️ 쓰레기통에서 D급 1개.' },
+  'evt.trash.lucky':     { en: '🗑️ Lucky bin. One C-grade!', ko: '🗑️ 쓰레기통 럭키. C급 1개!' },
+  'evt.trash.gross':     { en: '🗑️ Trash: only food waste.', ko: '🗑️ 쓰레기통: 음식물 쓰레기뿐.' },
+  'evt.trash.regret':    { en: '🗑️ Stuck a wing into the bin. Regret only.', ko: '🗑️ 쓰레기통에 손을 넣었다. 후회만 남았다.' },
+
+  // Mini exploration
+  'evt.mini.crow':       { en: 'A crow on the road picks a fight.', ko: '길에서 까마귀가 시비를 건다.' },
+  'evt.mini.crowLog':    { en: 'Crow: "A seagull smoking?" Ignored.', ko: '까마귀: "갈매기 주제에 담배냐?" 무시했다.' },
+  'evt.mini.lighter':    { en: 'Another seagull dropped a lighter.', ko: '다른 갈매기가 라이터를 두고 갔다.' },
+  'evt.mini.lighterLog': { en: 'Couldn\'t grab the lighter, only one D-grade.', ko: '라이터는 못 챙기고 D급 한 개만 챙겼다.' },
+  'evt.mini.penguin':    { en: 'A worker in penguin costume asks for a photo.', ko: '펭귄 코스프레한 부둣가 인부가 사진을 요구한다.' },
+  'evt.mini.penguinWin': { en: 'Posed. Got a chunk of bread.', ko: '포즈를 잡아줬다. 빵 한 덩이를 받았다.' },
+  'evt.mini.penguinLose':{ en: 'Ran away. The worker grew sad.', ko: '도망쳤다. 인부는 슬퍼했다.' },
+
+  // Shop
+  'shop.title':          { en: '🛒 Dock Convenience Stand', ko: '🛒 부둣가 구멍가게' },
+  'shop.intro':          { en: 'The old shopkeeper dozes facing away. Pay or sneak.\n💰 {money} · 🍖 {food}', ko: '구멍가게 노인이 등을 보이고 졸고 있다. 돈을 내고 가져가면 들키지 않는다.\n💰 {money} · 🍖 {food}' },
+  'shop.itemF':          { en: 'Wet Butt', ko: '젖은 꽁초' },
+  'shop.itemD':          { en: 'Street Butt', ko: '길거리 꽁초' },
+  'shop.itemC':          { en: 'Convenience-Store Steal', ko: '편의점 절도' },
+  'shop.itemB':          { en: 'Genuine Pack', ko: '정품 한 갑' },
+  'shop.itemA':          { en: 'Imported Cigar', ko: '외제 시가' },
+  'shop.itemS':          { en: 'Cuban Legend', ko: '쿠바산 전설' },
+  'shop.itemFood':       { en: 'One Fish', ko: '생선 한 마리' },
+  'shop.subCoin':        { en: 'Coins held: {n}', ko: '보유 동전 {n}' },
+  'shop.bought':         { en: 'Bought: {item}', ko: '구매: {item}' },
+  'shop.justBrowse':     { en: 'Just browse', ko: '그냥 둘러본다' },
+
+  // Library
+  'evt.lib.title':       { en: '📚 Library Window', ko: '📚 도서관 창문 너머' },
+  'evt.lib.intro':       { en: 'A book lies open by the library window. Nobody is watching.', ko: '도서관 창가에 펼쳐진 책. 아무도 안 본다.' },
+  'evt.lib.read':        { en: 'Read slowly', ko: '천천히 읽는다' },
+  'evt.lib.readSub':     { en: 'Intel +12, 1 turn', ko: '지능 +12, 시간 1턴 소모' },
+  'evt.lib.readToast':   { en: '🧠 Read a page.', ko: '🧠 한 페이지 읽었다.' },
+  'evt.lib.tear':        { en: 'Tear out a page for the nest', ko: '책장을 찢어 둥지로 가져간다' },
+  'evt.lib.tearSub':     { en: 'Rep -3, Affinity -5', ko: '평판 -3, 인간 호감 -5' },
+  'evt.lib.tearToast':   { en: 'Torn page. The librarian weeps.', ko: '찢긴 책장. 도서관 사서가 운다.' },
+  'evt.lib.skip':        { en: 'No interest', ko: '관심없다' },
+
+  // Grooming
+  'evt.groom.title':     { en: '🪞 Grooming Time', ko: '🪞 그루밍 타임' },
+  'evt.groom.intro':     { en: 'Preen feathers carefully. Other seagulls glance over.', ko: '깃털을 정성스레 다듬는다. 부둣가 갈매기들이 흘끗 본다.' },
+  'evt.groom.full':      { en: 'Carefully preen', ko: '정성스레 손질' },
+  'evt.groom.fullSub':   { en: 'Charm +12, Stress -5', ko: '매력 +12, 스트레스 -5' },
+  'evt.groom.fullToast': { en: '💋 Feathers shine.', ko: '💋 깃털이 반짝인다.' },
+  'evt.groom.lazy':      { en: 'Halfheartedly', ko: '대충 한다' },
+  'evt.groom.lazySub':   { en: 'Charm +3', ko: '매력 +3' },
+  'evt.groom.smoke':     { en: 'Smoke first', ko: '담배 한 모금부터' },
+  'evt.groom.smokeSub':  { en: 'Craving -10, Charm -5', ko: '욕구 -10, 매력 -5' },
+  'evt.groom.smokeToast':{ en: '🚬 Is a smoking seagull attractive? (Subjective)', ko: '🚬 담배 핀 갈매기는 매력적인가? (개취)' },
+
+  // Sunset
+  'evt.sun.title':       { en: '🌅 Dock Sunset', ko: '🌅 부둣가 노을' },
+  'evt.sun.intro':       { en: 'The sky is pink. To some it is just sky, but to you…', ko: '하늘이 분홍색이다. 누구한테는 그냥 하늘이지만, 너에게는…' },
+  'evt.sun.gaze':        { en: 'Gaze for a long time', ko: '한참 바라본다' },
+  'evt.sun.gazeSub':     { en: 'Sense +10, Stress -8', ko: '감수성 +10, 스트레스 -8' },
+  'evt.sun.gazeToast':   { en: '💧 An odd ache in the chest.', ko: '💧 가슴이 묘하게 시리다.' },
+  'evt.sun.poem':        { en: 'Recite a poem', ko: '시 한 줄을 읊는다' },
+  'evt.sun.poemSub':     { en: 'Sense +15, Intel +5, Rep -5', ko: '감수성 +15, 지능 +5, 평판 -5' },
+  'evt.sun.poemToast':   { en: '"Kkeueok is what fades." Other seagulls left.', ko: '"끄어억은 사라지는 것이다." 다른 갈매기가 떠났다.' },
+  'evt.sun.skip':        { en: 'Ignore', ko: '무시한다' },
+
+  // Mate
+  'evt.mate.title':      { en: '💞 New Mate Candidate', ko: '💞 새 짝 후보' },
+  'evt.mate.intro':      { en: 'A white-feathered seagull sits beside you, staring.', ko: '하얀 깃털의 갈매기가 옆에 앉는다. 너를 빤히 본다.' },
+  'evt.mate.approach':   { en: 'Approach politely', ko: '정중히 다가간다' },
+  'evt.mate.approachSub':{ en: 'Charm test — pass = mate bond (#21 trigger possible)', ko: '매력 시험 — 통과 시 짝 인연 (#21 트리거 가능)' },
+  'evt.mate.win':        { en: '💞 You watched the sunset together. Mate bond ✓', ko: '💞 너희는 함께 노을을 봤다. 짝 인연 ✓' },
+  'evt.mate.smell':      { en: 'They smelled smoke and left.', ko: '상대가 담배 냄새를 맡고 떠났다.' },
+  'evt.mate.lowCharm':   { en: 'Charm too low (now {n}/40). Maybe next time…', ko: '매력 부족 (현재 {n}/40). 다음 기회에…' },
+  'evt.mate.loud':       { en: 'kkiruk-kkiruk loudly', ko: '끼룩끼룩 시끄럽게' },
+  'evt.mate.loudSub':    { en: 'Rep +3, mate flees', ko: '평판 +3, 짝은 도망' },
+  'evt.mate.loudToast':  { en: 'They covered their ears and left.', ko: '상대는 귀를 막고 떠났다.' },
+  'evt.mate.skip':       { en: 'Ignore', ko: '무시한다' },
+
+  // Slot machine
+  'evt.slot.title':      { en: '🎰 Dock Slot Machine', ko: '🎰 부둣가 슬롯머신' },
+  'evt.slot.intro':      { en: 'A back-alley slot run by seagull mafia. Bet 1 cig.', ko: '갈매기 마피아가 운영하는 골목 슬롯. 담배 1개 베팅.' },
+  'evt.slot.fdBet':      { en: 'F/D-grade bet', ko: 'F/D급 베팅' },
+  'evt.slot.fdSub':      { en: 'Jackpot: C ×3 or luck', ko: '잭팟 시 C급 ×3 또는 행운' },
+  'evt.slot.aBet':       { en: 'A-grade↑ bet', ko: 'A급 ↑ 베팅' },
+  'evt.slot.aSub':       { en: 'Jackpot: S cigar + Rep', ko: '잭팟 시 S급 시가 + 평판' },
+  'evt.slot.leave':      { en: 'Just leave', ko: '그냥 떠난다' },
+  'evt.slot.reels':      { en: 'Reels stop…', ko: '릴이 멈춘다…' },
+  'evt.slot.jackpot':    { en: '💎💎💎 JACKPOT! S cigar ×{n} + Rep +10', ko: '💎💎💎 잭팟! S급 시가 {n}개 + 평판 +10' },
+  'evt.slot.tripleA':    { en: '🎉 Triple! 1 A-grade cigar', ko: '🎉 트리플! A급 시가 1개' },
+  'evt.slot.tripleC':    { en: '🎉 Triple! C ×2', ko: '🎉 트리플! C급 ×2' },
+  'evt.slot.pair':       { en: '😐 Two match. Bet refunded (1 cig).', ko: '😐 2개 일치. 본전 회수 (담배 1개 돌려받음)' },
+  'evt.slot.bust':       { en: '💸 Bust. Lighter smoke swept it away.', ko: '💸 꽝. 라이터 연기에 휩쓸렸다.' },
+  'evt.slot.ok':         { en: 'OK', ko: '확인' },
+  'evt.slot.resTitle':   { en: '🎰 Slot Result', ko: '🎰 슬롯머신 결과' },
+
+  // Quit smoking
+  'evt.quit.title':      { en: '💪 Quit Challenge', ko: '💪 금연 도전' },
+  'evt.quit.intro':      { en: 'Lungs are wrecked. Hold 7 days for recovery + "Legendary Quitter".', ko: '폐가 너무 망가졌다. 7일만 버티면 회복 + "전설의 금연자".' },
+  'evt.quit.go':         { en: 'Take the challenge', ko: '도전한다' },
+  'evt.quit.goSub':      { en: 'Stress +20, progress 0/7', ko: '스트레스 +20, 금연 진행도 0/7' },
+  'evt.quit.goToast':    { en: '🚭 Quit challenge started.', ko: '🚭 금연 도전 시작.' },
+  'evt.quit.no':         { en: 'Cannot', ko: '못한다' },
+
+  // Inventory modal
+  'inv.title':           { en: '🚬 Inventory / Status', ko: '🚬 인벤토리 / 상태' },
+  'inv.foodLine':        { en: '🍖 Food {n} pcs · Fullness {h}/100', ko: '🍖 음식 {n}개 · 포만감 {h}/100' },
+  'inv.eatNow':          { en: 'Eat now (+30)', ko: '지금 먹기 (+30)' },
+  'inv.fundsLine':       { en: 'Funds: 💰{money} · Day {day}/30 · Food auto-consumed below 50 fullness (+40)', ko: '자금: 💰{money} · Day {day}/30 · 음식은 포만감 50 이하에서 자동 소비됨 (+40)' },
+  'inv.smokeStat':       { en: 'Total smoked: {tot} · S-grade smoked: {s}', ko: '총 흡연량: {tot} · S급 흡연: {s}' },
+  'inv.subStats':        { en: '🧠 Intel {i} · 💋 Charm {c} · 💧 Sense {s}', ko: '🧠 지능 {i} · 💋 매력 {c} · 💧 감수성 {s}' },
+  'inv.endProgress':     { en: '🎯 Ending Progress ({n}/{tot} unlocked)', ko: '🎯 엔딩 진행도 ({n}/{tot} 해금)' },
+  'inv.endNote':         { en: 'Auto-trigger when met · Day 30 ends automatically', ko: '조건 충족 즉시 자동 트리거 · Day 30이 지나면 자동 종료' },
+  'inv.metaProgress':    { en: '✨ Meta Progress Bonuses ({n}/{tot} active)', ko: '✨ 메타 진행 보너스 ({n}/{tot} 활성)' },
+  'inv.metaLine':        { en: '{n} endings unlocked', ko: '엔딩 {n}개 해금' },
+  'inv.tagDone':         { en: '✓', ko: '✓' },
+  'inv.tagPending':      { en: 'in-progress', ko: '진행' },
+
+  // Album
+  'album.title':         { en: '📔 Cigarette Butt Memoirs', ko: '📔 꽁초의 일대기' },
+  'album.summary':       { en: 'Unlocked: {n}/{tot} · Total runs: {runs} · Longest: {long}d · Total cigs: {cigs}', ko: '해금: {n}/{tot} · 총 회차: {runs} · 최장수: {long}일 · 총 흡연: {cigs}' },
+  'album.share':         { en: '📤 SNS Share', ko: '📤 SNS 공유' },
+  'album.hidden':        { en: 'Hidden ending', ko: '히든 엔딩' },
+  'album.locked':        { en: 'Locked — see conditions in inventory progress', ko: '미해금 — 진행도 모달에서 조건 확인' },
+  'album.imgTip':        { en: 'Save image', ko: '이미지 저장' },
+  'album.milestoneHdr':  { en: 'Cumulative Milestones', ko: '누적 마일스톤' },
+  'album.ms3':           { en: 'New hunt: City Rooftop (Noon/Evening)', ko: '신규 사냥터: 도시 옥상 (점심/저녁)' },
+  'album.ms5':           { en: 'New hunt: Subway Entrance', ko: '신규 사냥터: 지하철 입구' },
+  'album.ms8':           { en: 'New BGM track + per-turn craving/fullness reduction', ko: '신규 BGM 트랙 + 매 턴 욕구/포만감 누적 감소' },
+  'album.ms10':          { en: 'Starting all stats +5 meta bonus', ko: '시작 모든 스탯 +5 메타 보너스' },
+  'album.ms13':          { en: 'Starting inv C-grade ×2 bonus', ko: '인벤 C급 ×2 시작 보너스' },
+  'album.ms16':          { en: 'Starting inv B-grade ×1', ko: '시작 인벤 B급 ×1' },
+  'album.ms18':          { en: 'Starting all stats +10', ko: '시작 모든 스탯 +10' },
+  'album.ms19':          { en: 'True ending #20 "Seagull God" trigger unlocked', ko: '진엔딩 #20 "갈매기 신" 트리거 해금' },
+  'album.ms21':          { en: 'Full clear — color variants for all costumes (TBD)', ko: '전체 도달 — 모든 코스튬에 색상 변형 추가 (예정)' },
+  'album.metStr':        { en: 'reached {n}', ko: '{n}개 — ' },
+  'album.endingsCount':  { en: 'Unlocked: {n}/{tot}', ko: '해금: {n}/{tot}' },
+
+  // Menu modal
+  'menu.title':          { en: '≡ Menu', ko: '≡ 메뉴' },
+  'menu.save':           { en: '💾 Manual Save', ko: '💾 수동 저장' },
+  'menu.swap':           { en: '🔄 Switch Slot (current: slot {n})', ko: '🔄 슬롯 전환 (현재: 슬롯 {n})' },
+  'menu.stats':          { en: '📈 Cumulative Stats', ko: '📈 누적 통계' },
+  'menu.share':          { en: '📤 Share Progress', ko: '📤 진행 공유' },
+  'menu.backup':         { en: '💾 Backup / Restore', ko: '💾 데이터 백업/복원' },
+  'menu.controls':       { en: '🎮 Controls Reminder', ko: '🎮 조작법 다시 보기' },
+  'menu.costume':        { en: '🎩 Change Costume', ko: '🎩 코스튬 변경' },
+  'menu.titles':         { en: '🏆 Change Title ({n} owned)', ko: '🏆 칭호 변경 ({n} 보유)' },
+  'menu.album':          { en: '📔 Ending Album', ko: '📔 엔딩 앨범' },
+  'menu.help':           { en: '❓ Help', ko: '❓ 도움말' },
+  'menu.toTitle':        { en: '🚪 To Title (saves current)', ko: '🚪 타이틀로 (현재 진행 저장)' },
+  'menu.reset':          { en: '🗑 Reset All Meta', ko: '🗑 모든 메타 초기화' },
+  'menu.langToggle':     { en: 'Toggle Korean', ko: 'Toggle English' },
+  'menu.langCurrent':    { en: '🌐 Language: English', ko: '🌐 언어: 한국어' },
+  'menu.confirmReset':   { en: 'Really wipe all meta data? (endings, costumes, stats, all slots)', ko: '정말로 모든 메타 데이터를 지울까? (엔딩, 코스튬, 통계, 모든 슬롯 전부)' },
+
+  // Slot picker
+  'slot.continueIntro':  { en: 'Pick a seagull to continue.', ko: '이어할 갈매기를 선택하세요.' },
+  'slot.newIntro':       { en: 'Slot for a new seagull. Picking an in-progress slot asks to overwrite.', ko: '새 갈매기를 시작할 슬롯. 진행 중 슬롯을 고르면 덮어쓸지 확인합니다.' },
+  'slot.continueTitle':  { en: '▶ Continue', ko: '▶ 이어하기' },
+  'slot.newTitle':       { en: '＋ New Seagull', ko: '＋ 새 갈매기 시작' },
+  'slot.empty':          { en: 'Empty slot', ko: '빈 슬롯' },
+  'slot.newAt':          { en: '＋ New seagull', ko: '＋ 새 갈매기' },
+  'slot.label.continue': { en: 'Slot {n} continue', ko: '슬롯 {n} 이어하기' },
+  'slot.label.overwrite':{ en: 'Slot {n} overwrite', ko: '슬롯 {n} 덮어쓰기' },
+  'slot.label.new':      { en: 'Slot {n} new run', ko: '슬롯 {n} 새 시작' },
+  'slot.confirmOver':    { en: 'Overwrite slot {n} Day {d} seagull? (irreversible)', ko: '슬롯 {n}의 Day {d} 갈매기를 덮어쓸까? (되돌릴 수 없음)' },
+  'slot.delConfirm':     { en: 'Delete slot {n} seagull? (irreversible)', ko: '슬롯 {n}의 갈매기를 삭제할까? (되돌릴 수 없음)' },
+  'slot.delTip':         { en: 'Delete', ko: '삭제' },
+  'slot.continueLog':    { en: '▶ Slot {n} continue (Day {d})', ko: '▶ 슬롯 {n} 이어하기 (Day {d})' },
+  'slot.row':            { en: 'Slot {n} · Day {d} {icon}', ko: '슬롯 {n} · Day {d} {icon}' },
+  'slot.rowMeta':        { en: '{cos} · Lung {l} · Rep {r}', ko: '{cos} · 폐 {l} · 평판 {r}' },
+  'slot.rowEmpty':       { en: 'Slot {n} · empty', ko: '슬롯 {n} · 빈 슬롯' },
+  'slot.rowEmptyAct':    { en: 'Slot {n} · empty{a}', ko: '슬롯 {n} · 빈 슬롯{a}' },
+  'slot.activeMark':     { en: ' (current)', ko: ' (현재)' },
+  'slot.swapTitle':      { en: '🔄 Switch Slot', ko: '🔄 슬롯 전환' },
+  'slot.swapIntro':      { en: 'Current slot auto-saves. Move to another slot:', ko: '현재 슬롯의 진행은 자동 저장됨. 다른 슬롯으로 이동:' },
+  'slot.swapToast':      { en: '▶ Switched to slot {n} (Day {d})', ko: '▶ 슬롯 {n}로 전환 (Day {d})' },
+  'slot.noSaves':        { en: 'No active seagulls. Use "New Seagull" to start.', ko: '진행 중인 갈매기가 없습니다. "새 갈매기 시작"으로 시작해주세요.' },
+  'slot.cosDefault':     { en: 'Default Butt', ko: '기본 꽁초' },
+
+  // Backup/restore
+  'bk.title':            { en: '💾 Backup / Restore', ko: '💾 데이터 백업 / 복원' },
+  'bk.savedOk':          { en: '✅ Endings auto-saved locally', ko: '✅ 엔딩 자동 로컬 저장됨' },
+  'bk.savedSummary':     { en: 'Endings {e}/{tot} · Titles {t} · Costumes {c} · Runs {r}', ko: '엔딩 {e}/{tot} · 칭호 {t} · 코스튬 {c} · 회차 {r}' },
+  'bk.note':             { en: 'Stored in localStorage main + backup keys. Use buttons below to guard against data loss.', ko: 'localStorage 메인 키 + 백업 키 동시 보관. 캐시가 날아갈 위험에 대비해 아래 백업 사용.' },
+  'bk.download':         { en: '💾 Download JSON file', ko: '💾 JSON 파일로 다운로드' },
+  'bk.import':           { en: '📥 Import backup file', ko: '📥 백업 파일 불러오기' },
+  'bk.copy':             { en: '📋 Copy to clipboard', ko: '📋 클립보드로 복사' },
+  'bk.preview':          { en: 'Current meta data preview', ko: '현재 메타 데이터 미리보기' },
+  'bk.savedFile':        { en: '💾 File saved', ko: '💾 파일 저장됨' },
+  'bk.savedFileAlt':     { en: '💾 File saved (fallback mode)', ko: '💾 파일 저장됨 (대체 모드)' },
+  'bk.copied':           { en: '📋 Copied to clipboard', ko: '📋 클립보드에 복사됐다' },
+  'bk.copied2':          { en: '📋 Copied', ko: '📋 복사됐다' },
+  'bk.copyFail':         { en: 'Copy failed — copy from the box manually', ko: '복사 실패 — 박스에서 직접 복사하세요' },
+  'bk.confirmRestore':   { en: 'Restore backup? Current meta will be overwritten.\nUnlocked endings: {n}', ko: '백업을 복원할까? 현재 메타 데이터는 덮어쓰여집니다.\n해금된 엔딩: {n}개' },
+  'bk.restoreOk':        { en: '✅ Restore complete', ko: '✅ 복원 완료' },
+  'bk.fileFmt':          { en: 'File format error: ', ko: '파일 형식 오류: ' },
+
+  // Stats modal
+  'stats.title':         { en: '📈 Cumulative Stats', ko: '📈 누적 통계' },
+  'stats.h.runs':        { en: '📊 Cumulative Progress', ko: '📊 누적 진행' },
+  'stats.totalRuns':     { en: 'Total runs', ko: '총 회차 수' },
+  'stats.totalRunsV':    { en: '{n}', ko: '{n}회' },
+  'stats.longest':       { en: 'Longest life', ko: '최장 수명' },
+  'stats.longestV':      { en: '{n}d', ko: '{n}일' },
+  'stats.totalCigs':     { en: 'Total smoked', ko: '총 흡연량' },
+  'stats.totalCigsV':    { en: '{n}', ko: '{n}개비' },
+  'stats.totalReach':    { en: 'Total ending reaches', ko: '총 엔딩 도달' },
+  'stats.totalReachV':   { en: '{n} (incl. dupes)', ko: '{n}회 (중복 포함)' },
+  'stats.h.coll':        { en: '🏆 Collection', ko: '🏆 컬렉션' },
+  'stats.unlocked':      { en: 'Unlocked endings', ko: '해금된 엔딩' },
+  'stats.unlockedV':     { en: '{n}/{tot}', ko: '{n}/{tot} 종' },
+  'stats.cosOwned':      { en: 'Costumes owned', ko: '보유 코스튬' },
+  'stats.cosOwnedV':     { en: '{n}/25', ko: '{n}/25 종' },
+  'stats.titlesOwned':   { en: 'Titles owned', ko: '보유 칭호' },
+  'stats.titlesOwnedV':  { en: '{n}/{tot}', ko: '{n}/{tot} 종' },
+  'stats.metaActive':    { en: 'Active meta bonuses', ko: '활성 메타 보너스' },
+  'stats.metaActiveV':   { en: '{n}/{tot}', ko: '{n}/{tot} 종' },
+  'stats.h.top':         { en: '👑 Most-Reached Ending', ko: '👑 가장 많이 도달한 엔딩' },
+  'stats.topNone':       { en: 'None', ko: '없음' },
+  'stats.topReach':      { en: '{n} reaches', ko: '{n}회 도달' },
+  'stats.byEnding':      { en: '📈 Reaches per Ending', ko: '📈 엔딩별 도달 횟수' },
+  'stats.byEndingV':     { en: '{n}', ko: '{n}회' },
+  'stats.cur':           { en: '📍 Current Run', ko: '📍 현재 회차' },
+  'stats.curRow':        { en: 'Slot {s} · Day {d}/30', ko: '슬롯 {s} · Day {d}/30' },
+  'stats.curMeta':       { en: 'Cigs smoked {n}', ko: '총 흡연 {n}개' },
+
+  // Titles modal
+  'titles.title':        { en: '🏆 Change Title', ko: '🏆 칭호 변경' },
+  'titles.intro':        { en: 'Titles unlock when an ending is reached. Shown in topbar at run start.', ko: '엔딩 도달 시 칭호가 해금됩니다. 회차 시작 시 상단바에 표시.' },
+  'titles.none':         { en: '— No Title —', ko: '— 칭호 없음 —' },
+  'titles.empty':        { en: 'No titles unlocked yet.', ko: '아직 해금된 칭호가 없다.' },
+  'titles.changedTo':    { en: 'Title set: {t}', ko: '칭호 변경: {t}' },
+  'titles.cleared':      { en: 'Title cleared', ko: '칭호 해제' },
+
+  // Costume modal
+  'cos.title':           { en: '🎩 Costumes', ko: '🎩 코스튬' },
+  'cos.intro':           { en: 'Applied at run start. Effects fire once with a tradeoff.', ko: '회차 시작 시 적용. 효과는 한 번 적용되며 트레이드오프가 따른다.' },
+  'cos.summary':         { en: 'Unlocked: {n}/{tot} · Locked costumes auto-unlock when their ending is reached', ko: '해금: {n}/{tot} · 미해금 코스튬은 해당 엔딩 도달 시 자동 해금' },
+  'cos.changedTo':       { en: 'Costume set: {n}', ko: '코스튬 변경: {n}' },
+
+  // Help
+  'help.title':          { en: '❓ Help', ko: '❓ 도움말' },
+  'help.controls':       { en: '🎮 Controls', ko: '🎮 조작' },
+  'help.controlsPC':     { en: 'PC: ← → move · Space jump/flap · 1~5 action shortcuts', ko: 'PC: ← → 이동 · Space 점프/날갯짓 · 1~5 액션 단축키' },
+  'help.controlsMobile': { en: 'Mobile: bottom ◀ ▶ move · ▲ jump · 5 action buttons', ko: '모바일: 화면 하단 ◀ ▶ 이동 · ▲ 점프 · 5개 액션 버튼' },
+  'help.coreStats':      { en: '📊 Six Core Stats', ko: '📊 핵심 6대 스탯' },
+  'help.coreDesc':       { en: '🫁 Lung 0 = death · 🚬 Craving overflow = convulsion · ✈️ Flight (recovers when not hunting) · 😤 Stress (smoke/sunset to lower) · 👥 Reputation · 🍖 Fullness 0 = starve (food auto-eaten)', ko: '🫁 폐 0이면 사망 · 🚬 욕구 안 채우면 발작 · ✈️ 비행 (사냥 안 할 때 자연 회복) · 😤 스트레스 (흡연/노을로 회복) · 👥 평판 · 🍖 포만감 0이면 굶어죽음 (음식 자동 소비)' },
+  'help.subStats':       { en: '📊 Three Sub-Stats', ko: '📊 보조 3대 스탯' },
+  'help.subDesc':        { en: '🧠 Intel (books/dolphin/contemplation) · 💋 Charm (groom/photo/rep) · 💧 Sense (sunset/poetry/quitting)', ko: '🧠 지능 (책/돌고래/사색) · 💋 매력 (그루밍/사진/평판) · 💧 감수성 (노을/시/금연)' },
+  'help.actionsHdr':     { en: '🎯 Actions', ko: '🎯 액션' },
+  'help.actionsBody':    { en: '<b>Hunt</b>: time-of-day specific spots (cigs/food)<br><b>Smoke</b>: per-grade satisfaction/lung damage<br><b>Explore</b>: random events (📚book · 🪞groom · 🌅sunset · 🎰slot · 🐬dolphin · 🎆fireworks · 🌪️storm · 🛒shop …)<br><b>Interact</b>: with seagulls/dolphin/CEO/etc<br><b>Sleep</b>: time advances, stress recovers', ko: '<b>사냥</b>: 시간대별 사냥터 (담배/음식 획득)<br><b>흡연</b>: 등급별 만족/폐손상<br><b>탐험</b>: 랜덤 이벤트 (📚책 · 🪞그루밍 · 🌅노을 · 🎰슬롯 · 🐬돌고래 · 🎆폭죽 · 🌪️태풍 · 🛒상점 …)<br><b>상호작용</b>: 다른 갈매기·돌고래·CEO 등<br><b>수면</b>: 시간 진행, 스트레스 회복' },
+  'help.endingsHdr':     { en: '📔 24 Endings', ko: '📔 엔딩 24종' },
+  'help.endingsBody':    { en: 'Whichever path, the dock stays the same. Conditions in 🚬 Inventory → Ending Progress, live.', ko: '어떤 길로 가도 부두는 그대로다. 도달 조건은 🚬 인벤토리 → 엔딩 진행도에서 실시간 확인.' },
+  'help.endingsWarn':    { en: '⚠ After Day 30, the closest ending fires automatically.', ko: '⚠ Day 30이 지나면 가장 가까운 엔딩으로 자동 종료.' },
+  'help.metaHdr':        { en: '✨ Meta Progress', ko: '✨ 메타 진행' },
+  'help.metaBody':       { en: 'Endings unlocked stack into starting bonuses + per-turn craving/fullness reduction. Each run gets easier.', ko: '엔딩 해금 누적 시 시작 보너스 + 매 턴 욕구/포만감 감소. 회차 거듭할수록 쉬워진다.' },
+
+  // Credits
+  'credits.title':       { en: 'Credits', ko: '크레딧' },
+  'credits.headline':    { en: '<b>Kkeueok — Dockside Chain-Smoking Seagull Simulator</b>', ko: '<b>끄어억 — 부둣가 골초 갈매기 시뮬레이터</b>' },
+  'credits.plan':        { en: 'Design: based on master document v2', ko: '기획: 마스터 문서 v2 기반' },
+  'credits.dev':         { en: 'Dev: single-HTML prototype', ko: '개발: 단일 HTML 프로토타입' },
+  'credits.art':         { en: 'Art: procedural canvas pixels (zero external assets)', ko: '아트: 절차적 캔버스 픽셀 (외부 에셋 0개)' },
+  'credits.poem1':       { en: '"A seagull with a butt in its beak lives at the dock.', ko: '"꽁초를 문 갈매기 한 마리가 부두에 산다.' },
+  'credits.poem2':       { en: 'It dies, lives, or vanishes.', ko: '그는 죽거나, 살거나, 사라진다.' },
+  'credits.poem3':       { en: 'Either way, the dock stays the same."', ko: '어느 쪽이든 부두는 그대로다."' },
+
+  // Day 1 line
+  'day1.start':          { en: 'Day 1: yet another pathetic seagull woke up at the dock.', ko: 'Day 1: 부둣가에 또 하나의 한심한 갈매기가 깨어났다.' },
+  'run.cosApplied':      { en: '🎩 Costume applied: {n}', ko: '🎩 코스튬 적용: {n}' },
+  'run.titleApplied':    { en: '🏆 Title: {t}', ko: '🏆 칭호: {t}' },
+  'run.metaApplied':     { en: '✨ {n} meta bonuses applied (see inv modal)', ko: '✨ 메타 보너스 {n}개 적용됨 (인벤 모달에서 확인)' },
+
+  // Sound toggle
+  'snd.on':              { en: '🔊 Sound ON', ko: '🔊 사운드 ON' },
+  'snd.off':             { en: '🔇 Sound OFF', ko: '🔇 사운드 OFF' },
+
+  // Endings (def)
+  'end.1.name':          { en: 'Lungs Wrecked, Dead', ko: '폐 망가져 죽음' },
+  'end.1.flavor':        { en: 'The cough never stops. One last puff drifts above the dock.', ko: '기침이 끝나지 않는다. 부둣가 위로 마지막 연기가 피어오른다.' },
+  'end.1.cosName':       { en: 'Patient Seagull', ko: '환자복 갈매기' },
+  'end.1.title':         { en: 'Legendary Lung Death', ko: '전설의 폐사자' },
+  'end.2.title':         { en: 'Legendary Smoker',     ko: '전설의 골초' },
+  'end.3.title':         { en: 'Dock Boss',            ko: '부두의 보스' },
+  'end.4.title':         { en: 'Junkie',               ko: '약쟁이' },
+  'end.5.title':         { en: 'Adopted Bird',         ko: '입양된 새' },
+  'end.6.title':         { en: 'Quitting Sage',        ko: '금연의 현자' },
+  'end.7.title':         { en: 'Tobacco Bride',        ko: '담배회사 신부' },
+  'end.8.title':         { en: 'Fog Seagull',          ko: '안개의 갈매기' },
+  'end.9.title':         { en: 'Sailor',               ko: '선원' },
+  'end.10.title':        { en: 'Salaryman',            ko: '회사원' },
+  'end.2.name':          { en: 'Legendary Chain-Smoker', ko: '전설의 골초' },
+  'end.2.flavor':        { en: 'Ten cigars and you reached another dimension. There were no ashtrays there.', ko: '시가 10개로 다른 차원에 도달했다. 그곳엔 재떨이가 없었다.' },
+  'end.2.cosName':       { en: 'Cigar Master', ko: '시가 마스터' },
+  'end.3.name':          { en: 'Seagull Mafia Boss', ko: '갈매기 마피아 보스' },
+  'end.3.flavor':        { en: 'Every butt at this dock is now yours.', ko: '부둣가의 모든 꽁초는 이제 너의 것이다.' },
+  'end.3.cosName':       { en: 'Suit Seagull', ko: '정장 갈매기' },
+  'end.4.name':          { en: 'Overdose', ko: '약물 과다' },
+  'end.4.flavor':        { en: 'Five cigars in one mouth. You become a zombie seagull.', ko: '시가 다섯 개를 한입에. 좀비 갈매기가 된다.' },
+  'end.4.cosName':       { en: 'Zombie Seagull', ko: '좀비 갈매기' },
+  'end.5.name':          { en: 'Adopted by a Human', ko: '인간 입양' },
+  'end.5.flavor':        { en: 'A lady carried you off. Your name is now "Kongi".', ko: '아주머니가 너를 안고 갔다. 이제 너의 이름은 "꽁이"다.' },
+  'end.5.cosName':       { en: 'Pet Seagull', ko: '가정용 갈매기' },
+  'end.6.name':          { en: 'Sudden Philosopher', ko: '갑자기 철학자가 됨' },
+  'end.6.flavor':        { en: '30 days, not a puff. You read books now.', ko: '30일 동안 한 모금도 안 피웠다. 너는 이제 책을 읽는다.' },
+  'end.6.cosName':       { en: 'Thinker', ko: '사색가' },
+  'end.7.name':          { en: 'Married the Tobacco CEO', ko: '담배 회사 CEO와 결혼' },
+  'end.7.flavor':        { en: 'Penthouse wedding. Bouquet is a bundle of cigars.', ko: '펜트하우스 결혼식. 부케는 시가 다발이다.' },
+  'end.7.cosName':       { en: 'Wedding Seagull', ko: '웨딩 갈매기' },
+  'end.8.name':          { en: 'Just Vanished One Day', ko: '그냥 어느 날 사라짐' },
+  'end.8.flavor':        { en: 'Nobody looked for you. The dock is the same.', ko: '아무도 너를 찾지 않았다. 부두는 그대로다.' },
+  'end.8.cosName':       { en: 'Fog Seagull', ko: '안개 갈매기' },
+  'end.9.name':          { en: 'Left with the Dolphin', ko: '돌고래와 떠남' },
+  'end.9.flavor':        { en: 'On the dolphin\'s back you cried kkiruk for the last time.', ko: '돌고래의 등 위에서 너는 마지막으로 끼룩거렸다.' },
+  'end.9.cosName':       { en: 'Sailor Seagull', ko: '항해사 갈매기' },
+  'end.10.name':         { en: 'An Ordinary Life', ko: '평범한 삶' },
+  'end.10.flavor':       { en: 'You lived ordinarily. After 30 days the dock is the same.', ko: '평범하게 살았다. 30일이 지나도 부두는 그대로다.' },
+  'end.10.cosName':      { en: 'Salaryman Seagull', ko: '회사원 갈매기' },
+  'end.11.name':         { en: 'Dockside Poet', ko: '부둣가의 시인' },
+  'end.11.flavor':       { en: 'Lost reputation, lost smoking, but the poetry remained. Nobody read it.', ko: '평판도 흡연도 잃었지만 시는 남았다. 아무도 안 읽었지만.' },
+  'end.11.cosName':      { en: 'Poet Seagull', ko: '시인 갈매기' },
+  'end.11.title':        { en: 'Dockside Poet', ko: '부둣가의 시인' },
+  'end.12.name':         { en: 'Crowned Seagull King', ko: '갈매기왕 등극' },
+  'end.12.flavor':       { en: 'Every dock seagull bowed to you. So what.', ko: '부두의 모든 갈매기가 너에게 고개를 숙였다. 그래서 뭐.' },
+  'end.12.cosName':      { en: 'Seagull King', ko: '갈매기왕' },
+  'end.12.title':        { en: 'Seagull King', ko: '갈매기왕' },
+  'end.13.name':         { en: 'Starved to Death', ko: '굶어 죽음' },
+  'end.13.flavor':       { en: 'Cigarettes were there. Food was not.', ko: '담배는 있었다. 음식이 없었다.' },
+  'end.13.cosName':      { en: 'Skeleton Seagull', ko: '해골 갈매기' },
+  'end.13.title':        { en: 'Starved Seagull', ko: '아사한 갈매기' },
+  'end.14.name':         { en: 'Seagull Princess', ko: '갈매기 프린세스' },
+  'end.14.flavor':       { en: 'You left in a foreign tourist\'s bag. With a pink ribbon.', ko: '외국인 관광객의 가방 속으로 너는 떠났다. 핑크리본을 달고.' },
+  'end.14.cosName':      { en: 'Princess', ko: '프린세스' },
+  'end.14.title':        { en: 'Princess', ko: '프린세스' },
+  'end.15.name':         { en: 'Seagull Pegasus', ko: '갈매기 천마' },
+  'end.15.flavor':       { en: 'No longer touching the dock. You became Pegasus.', ko: '더 이상 부두에 닿지 않았다. 페가수스가 됐다.' },
+  'end.15.cosName':      { en: 'Pegasus Seagull', ko: '천마 갈매기' },
+  'end.15.title':        { en: 'Skybound Seagull', ko: '천공의 갈매기' },
+  'end.16.name':         { en: 'Master Seagull', ko: '갈매기 사부' },
+  'end.16.flavor':       { en: 'Young seagulls came to learn the kkeueok from you.', ko: '젊은 갈매기들이 너에게 와서 끄어억을 배웠다.' },
+  'end.16.cosName':      { en: 'Master Seagull', ko: '사부 갈매기' },
+  'end.16.title':        { en: 'Kkeueok Master', ko: '끄어억 사부' },
+  'end.17.name':         { en: 'Seagull Rockstar', ko: '갈매기 록스타' },
+  'end.17.flavor':       { en: 'Mid-stage among fireworks, you became a rockstar.', ko: '폭죽 무대 한가운데에서 너는 록스타가 됐다.' },
+  'end.17.cosName':      { en: 'Rockstar', ko: '록스타' },
+  'end.17.title':        { en: 'Dock Rockstar', ko: '부둣가 록스타' },
+  'end.18.name':         { en: 'Dockside Painter', ko: '부둣가의 화가' },
+  'end.18.flavor':       { en: 'A seagull hit a million Insta followers.', ko: '갈매기 한 마리가 인스타에서 100만 팔로워를 찍었다.' },
+  'end.18.cosName':      { en: 'Painter', ko: '화가' },
+  'end.18.title':        { en: 'Insta Seagull', ko: '인스타 갈매기' },
+  'end.19.name':         { en: 'Street Thug', ko: '거리의 깡패' },
+  'end.19.flavor':       { en: 'The dock fell silent. Everyone steered clear.', ko: '부두는 조용해졌다. 다들 너를 피했다.' },
+  'end.19.cosName':      { en: 'Street Thug', ko: '거리의 깡패' },
+  'end.19.title':        { en: 'Dock Thug', ko: '부두의 깡패' },
+  'end.20.name':         { en: 'Seagull God', ko: '갈매기 신' },
+  'end.20.flavor':       { en: 'Having seen every path, you became the essence of kkeueok.', ko: '모든 길을 본 너는 끄어억의 본질이 됐다.' },
+  'end.20.cosName':      { en: 'Seagull God', ko: '갈매기 신' },
+  'end.20.title':        { en: 'Kkeueok Itself', ko: '끄어억 자체' },
+  'end.21.name':         { en: 'Seagull Mate', ko: '갈매기 짝꿍' },
+  'end.21.flavor':       { en: 'After quitting smoking you found a mate. A small nest at the dock.', ko: '금연 끝에 새 짝을 만났다. 부둣가에 작은 둥지가 생겼다.' },
+  'end.21.cosName':      { en: 'Lover Seagull', ko: '사랑꾼 갈매기' },
+  'end.21.title':        { en: 'Lover', ko: '사랑꾼' },
+  'end.22.name':         { en: 'Enlightened Seagull', ko: '깨달은 갈매기' },
+  'end.22.flavor':       { en: 'After books, sunsets and quitting, you grasped something. Nobody asked.', ko: '책과 노을과 금연 끝에 너는 무언가를 깨달았다. 아무도 안 물었지만.' },
+  'end.22.cosName':      { en: 'Sage Seagull', ko: '현자 갈매기' },
+  'end.22.title':        { en: 'Dockside Sage', ko: '부둣가의 현자' },
+  'end.23.name':         { en: 'Seagull Influencer', ko: '갈매기 인플루언서' },
+  'end.23.flavor':       { en: 'A million followers. Every kkeueok pinned as a clip.', ko: '팔로워 100만. 너의 모든 끄어억이 클립으로 박제됐다.' },
+  'end.23.cosName':      { en: 'Influencer', ko: '인플루언서' },
+  'end.23.title':        { en: 'Million Seagull', ko: '100만 갈매기' },
+  'end.24.name':         { en: 'Identity Crisis', ko: '정체성 혼란' },
+  'end.24.flavor':       { en: 'You loved humans too much. One day you started meowing.', ko: '인간이 너무 좋았다. 어느 날부터 너는 야옹거렸다.' },
+  'end.24.cosName':      { en: 'Sea-Cat', ko: '갈매고양이' },
+  'end.24.title':        { en: 'Meow Seagull', ko: '야옹 갈매기' },
+
+  // Costume effects
+  'cos.default.name':    { en: 'Default Butt', ko: '기본 꽁초' },
+  'cos.default.eff':     { en: 'No effect', ko: '효과 없음' },
+  'cos.default.tr':      { en: '-', ko: '-' },
+  'cos.patient.name':    { en: 'Patient Seagull', ko: '환자복 갈매기' },
+  'cos.patient.eff':     { en: 'Start Lung +20', ko: '시작 폐 +20' },
+  'cos.patient.tr':      { en: 'Start Flight -10', ko: '시작 비행 -10' },
+  'cos.cigar_master.name':{en:'Cigar Master', ko: '시가 마스터' },
+  'cos.cigar_master.eff':{ en: 'Hold 1 S-grade cigar', ko: 'S급 시가 1개 보유' },
+  'cos.cigar_master.tr': { en: 'Start Craving +30', ko: '시작 욕구 +30' },
+  'cos.suit.name':       { en: 'Suit Seagull', ko: '정장 갈매기' },
+  'cos.suit.eff':        { en: 'Start Reputation +20', ko: '시작 평판 +20' },
+  'cos.suit.tr':         { en: '+1 turn for chitchat (gravitas)', ko: '잡담 1턴 추가 (위엄)' },
+  'cos.zombie.name':     { en: 'Zombie Seagull', ko: '좀비 갈매기' },
+  'cos.zombie.eff':      { en: 'Lung damage -30%, human snatch +20%', ko: '폐 손상 -30%, 인간 강탈 +20%' },
+  'cos.zombie.tr':       { en: 'Start Reputation -30', ko: '시작 평판 -30' },
+  'cos.pet.name':        { en: 'Pet Seagull', ko: '가정용 갈매기' },
+  'cos.pet.eff':         { en: 'Food 5, stress decays naturally', ko: '음식 5개, 스트레스 자연 감소' },
+  'cos.pet.tr':          { en: 'Chase dodge -15%', ko: '추격 회피 -15%' },
+  'cos.thinker.name':    { en: 'Thinker', ko: '사색가' },
+  'cos.thinker.eff':     { en: 'Stress decay +10%/day', ko: '스트레스 감소 +10%/일' },
+  'cos.thinker.tr':      { en: 'Smoke satisfaction -20%', ko: '흡연 만족 -20%' },
+  'cos.wedding.name':    { en: 'Wedding Seagull', ko: '웨딩 갈매기' },
+  'cos.wedding.eff':     { en: 'Funds +50%, A-grade↑ satisfaction +15%', ko: '자금 +50%, A급↑ 만족 +15%' },
+  'cos.wedding.tr':      { en: 'F/D-grade satisfaction -30%', ko: 'F/D급 만족 -30%' },
+  'cos.fog.name':        { en: 'Fog Seagull', ko: '안개 갈매기' },
+  'cos.fog.eff':         { en: 'Avoid rivals/humans', ko: '라이벌/인간 회피' },
+  'cos.fog.tr':          { en: 'No co-op with peers', ko: '동료 협력 불가' },
+  'cos.sailor.name':     { en: 'Sailor Seagull', ko: '항해사 갈매기' },
+  'cos.sailor.eff':      { en: 'Flight +15, exclusive "Open Sea" hunt', ko: '비행 +15, 사냥터 "원해" 전용' },
+  'cos.sailor.tr':       { en: 'City hunt rep -10', ko: '도시 사냥터 평판 -10' },
+  'cos.salaryman.name':  { en: 'Salaryman Seagull', ko: '회사원 갈매기' },
+  'cos.salaryman.eff':   { en: 'All start stats +10', ko: '모든 시작 스탯 +10' },
+  'cos.salaryman.tr':    { en: 'Stress accumulation +20%', ko: '스트레스 누적 +20%' },
+  'cos.poet.name':       { en: 'Poet Seagull', ko: '시인 갈매기' },
+  'cos.poet.eff':        { en: 'Stress decay +5%, rep penalty waived', ko: '스트레스 자연 감소 +5%, 평판 패널티 면제' },
+  'cos.poet.tr':         { en: 'Other seagulls ignore you', ko: '다른 갈매기 무시당함' },
+  'cos.king.name':       { en: 'Seagull King', ko: '갈매기왕' },
+  'cos.king.eff':        { en: 'Start Rep +30, minion recruit +20%', ko: '시작 평판 +30, 부하 모집 확률 +20%' },
+  'cos.king.tr':         { en: 'Hunt risk +10%', ko: '사냥터 위험도 +10%' },
+  'cos.skeleton.name':   { en: 'Skeleton Seagull', ko: '해골 갈매기' },
+  'cos.skeleton.eff':    { en: 'Survive fullness 0 once', ko: '포만감 0이어도 즉사하지 않음 (1회)' },
+  'cos.skeleton.tr':     { en: 'Start Flight -20', ko: '시작 비행 -20' },
+  'cos.princess.name':   { en: 'Princess', ko: '프린세스' },
+  'cos.princess.eff':    { en: 'Start Affinity +30, photographer reward +50%', ko: '시작 인간 호감 +30, 사진작가 보상 +50%' },
+  'cos.princess.tr':     { en: 'Start Reputation -10', ko: '시작 평판 -10' },
+  'cos.pegasus.name':    { en: 'Pegasus Seagull', ko: '천마 갈매기' },
+  'cos.pegasus.eff':     { en: 'Start Flight +30, Flight regenerates', ko: '시작 비행 +30, 비행 능력 자연 회복' },
+  'cos.pegasus.tr':      { en: 'Start Craving +20', ko: '시작 욕구 +20' },
+  'cos.master.name':     { en: 'Master Seagull', ko: '사부 갈매기' },
+  'cos.master.eff':      { en: 'Start minions +2, Rep regen fast', ko: '시작 부하 +2, 평판 회복 빠름' },
+  'cos.master.tr':       { en: 'Start smoke satisfaction -10%', ko: '시작 흡연 만족 -10%' },
+  'cos.rockstar.name':   { en: 'Rockstar', ko: '록스타' },
+  'cos.rockstar.eff':    { en: 'Auto-clear firework event, Rep +25', ko: '폭죽 이벤트 자동 성공, 평판 +25' },
+  'cos.rockstar.tr':     { en: 'Start Lung -15', ko: '시작 폐 -15' },
+  'cos.painter.name':    { en: 'Painter', ko: '화가' },
+  'cos.painter.eff':     { en: 'Photographer affinity +50%, coin gain +30%', ko: '사진작가 호감 +50%, 동전 획득 +30%' },
+  'cos.painter.tr':      { en: 'Start Flight -10', ko: '시작 비행 -10' },
+  'cos.killer.name':     { en: 'Street Thug', ko: '거리의 깡패' },
+  'cos.killer.eff':      { en: 'Auto-win rival fights', ko: '라이벌 격투 자동 승리' },
+  'cos.killer.tr':       { en: 'Start Rep -40, no chitchat', ko: '시작 평판 -40, 잡담 불가' },
+  'cos.god.name':        { en: 'Seagull God', ko: '갈매기 신' },
+  'cos.god.eff':         { en: 'All stats 100, immortal', ko: '모든 스탯 100, 죽지 않음' },
+  'cos.god.tr':          { en: 'Auto-progress until ending', ko: '엔딩 도달 시까지 자동 진행' },
+  'cos.lover.name':      { en: 'Lover Seagull', ko: '사랑꾼 갈매기' },
+  'cos.lover.eff':       { en: 'Start Charm +30, mate event probability +', ko: '시작 매력 +30, 짝 만남 이벤트 +확률' },
+  'cos.lover.tr':        { en: 'Start Reputation -10', ko: '시작 평판 -10' },
+  'cos.sage.name':       { en: 'Sage Seagull', ko: '현자 갈매기' },
+  'cos.sage.eff':        { en: 'Start Intel +30, Sense +20, stress decays', ko: '시작 지능 +30, 감수성 +20, 스트레스 자연 감소' },
+  'cos.sage.tr':         { en: 'Start Flight -15', ko: '시작 비행 -15' },
+  'cos.influencer.name': { en: 'Influencer', ko: '인플루언서' },
+  'cos.influencer.eff':  { en: 'Start Charm +25, Affinity +20, photographer reward +50%', ko: '시작 매력 +25, 인간 호감 +20, 사진작가 보상 +50%' },
+  'cos.influencer.tr':   { en: 'Start Lung -10 (cosmetic surgery scars)', ko: '시작 폐 -10 (성형의 흔적)' },
+  'cos.catlike.name':    { en: 'Sea-Cat', ko: '갈매고양이' },
+  'cos.catlike.eff':     { en: 'Human chase dodge +30%, Affinity +30', ko: '인간 추격 회피 +30%, 인간 호감 +30' },
+  'cos.catlike.tr':      { en: 'Other seagulls Rep -25 (traitor)', ko: '다른 갈매기 평판 -25 (배신자 취급)' },
+
+  // Meta bonuses
+  'meta.b1':  { en: 'Start coins +5',                                   ko: '시작 동전 +5' },
+  'meta.b2':  { en: 'Start food +1',                                    ko: '시작 음식 +1' },
+  'meta.b3':  { en: 'Start Lung +5',                                    ko: '시작 폐 +5' },
+  'meta.b4':  { en: 'Start inv D-grade ×1',                             ko: '시작 인벤 D급 ×1' },
+  'meta.b5':  { en: 'Per-turn Craving -0.5',                            ko: '매 턴 욕구 누적 -0.5' },
+  'meta.b6':  { en: 'Start Flight +5',                                  ko: '시작 비행 +5' },
+  'meta.b7':  { en: 'Start Reputation +5',                              ko: '시작 평판 +5' },
+  'meta.b8':  { en: 'Per-turn Fullness -0.4 (less hungry)',             ko: '매 턴 포만감 누적 -0.4 (덜 배고파짐)' },
+  'meta.b9':  { en: 'Start coins +15, food +2',                         ko: '시작 동전 +15, 음식 +2' },
+  'meta.b10': { en: 'Start all stats +5',                               ko: '시작 모든 스탯 +5' },
+  'meta.b12': { en: 'Start inv C-grade ×2',                             ko: '시작 인벤 C급 ×2' },
+  'meta.b14': { en: 'Start Lung +10, per-turn Craving -0.5 extra',      ko: '시작 폐 +10, 매 턴 욕구 -0.5 추가' },
+  'meta.b16': { en: 'Start inv B-grade ×1',                             ko: '시작 인벤 B급 ×1' },
+  'meta.b18': { en: 'Start all stats +10',                              ko: '시작 모든 스탯 +10' },
+  'meta.b20': { en: 'Legendary Seagull: all bonuses amped + A ×1',      ko: '전설의 갈매기: 모든 보너스 강화 + A급 ×1' },
+
+  // Endings progress modal labels
+  'ep.1.label':  { en: 'Lung Death',                  ko: '폐사' },
+  'ep.1.cur':    { en: 'Lung {l}/100 → 0 = death (or 30-day natural)', ko: '폐 {l}/100 → 0이면 사망 (또는 30일 자연사)' },
+  'ep.2.label':  { en: 'Legendary Smoker',            ko: '전설의 골초' },
+  'ep.2.cur':    { en: 'S-grade cigars smoked {s}/3', ko: 'S급 시가 {s}/3개 흡연' },
+  'ep.3.label':  { en: 'Mafia Boss',                  ko: '마피아 보스' },
+  'ep.3.cur':    { en: 'Reputation {r}/100 + Minions {u}/5', ko: '평판 {r}/100 + 부하 {u}/5명' },
+  'ep.4.label':  { en: 'Overdose',                    ko: '약물 과다' },
+  'ep.4.cur.yes':{ en: '✓ Triggered',                 ko: '✓ 발생' },
+  'ep.4.cur.no': { en: '"5-in-mouth" in smoke modal after holding 5 S-grade', ko: 'S급 5개 보유 후 흡연 모달의 "한입에 5개"' },
+  'ep.5.label':  { en: 'Human Adoption',              ko: '인간 입양' },
+  'ep.5.cur':    { en: 'Affinity {a}/55 + Lung 30↓ injury during chase', ko: '인간 호감 {a}/55 + 인간 추격 시 폐 30↓ 부상' },
+  'ep.6.label':  { en: 'Philosopher',                 ko: '철학자' },
+  'ep.6.cur':    { en: 'Clean days {c}/18 + Rep 50+ + Day 22+', ko: '연속 무흡연 {c}/18일 + 평판 50+ + Day 22+' },
+  'ep.7.label':  { en: 'Marry the CEO',               ko: 'CEO와 결혼' },
+  'ep.7.metYes': { en: '✓ Met CEO',                   ko: '✓ CEO 만남' },
+  'ep.7.metNo':  { en: 'Meet CEO (suit card→follow 2 days later)', ko: 'CEO 만남 (정장 갈매기 명함→2일 후 따라가기)' },
+  'ep.7.cur':    { en: '{m} + A-grade↑ {a}/3',        ko: '{m} + A급↑ {a}/3개' },
+  'ep.8.label':  { en: 'Vanish One Day',              ko: '어느 날 사라짐' },
+  'ep.8.cur':    { en: 'Reputation {r}≤5 + No interaction {d}/8', ko: '평판 {r}≤5 + 무상호작용 {d}/8일' },
+  'ep.9.label':  { en: 'Dolphin Departure 🔒',        ko: '돌고래와 떠남 🔒' },
+  'ep.9.cur':    { en: 'Dolphin advice {n}/5 + Clean {c}/7', ko: '돌고래 충고 {n}/5회 + 연속 무흡연 {c}/7일' },
+  'ep.10.label': { en: 'Ordinary Life 🔒',            ko: '평범한 삶 🔒' },
+  'ep.10.cur':   { en: 'All stats 50~70 maintained {n}/14 + Day 22+', ko: '모든 스탯 50~70 유지 {n}/14일 + Day 22+' },
+  'ep.11.label': { en: 'Dockside Poet 🔒',            ko: '부둣가의 시인 🔒' },
+  'ep.11.cur':   { en: 'Clean {c}/12 + Rep {r}≤20',   ko: '연속 무흡연 {c}/12일 + 평판 {r}≤20' },
+  'ep.12.label': { en: 'Seagull King 🔒',             ko: '갈매기왕 🔒' },
+  'ep.12.cur':   { en: 'Rep {r}/90 + Minions {u}/4 + S-grade {s}/1', ko: '평판 {r}/90 + 부하 {u}/4명 + S급 {s}/1개' },
+  'ep.13.label': { en: 'Starve to Death',             ko: '굶어 죽음' },
+  'ep.13.cur':   { en: 'Fullness {h}/100 → 0 = death · Food {f}', ko: '포만감 {h}/100 → 0이면 사망 · 음식 {f}개' },
+  'ep.14.label': { en: 'Princess',                    ko: '프린세스' },
+  'ep.14.cur':   { en: 'Affinity {a}/55 + Rep {r}/45 + Day 6+ + No CEO', ko: '호감 {a}/55 + 평판 {r}/45 + Day 6+ + CEO 안 만남' },
+  'ep.15.label': { en: 'Pegasus 🔒',                  ko: '천마 갈매기 🔒' },
+  'ep.15.cur':   { en: 'Flight {f}/75 + firework stage(75+) or storm pass {p}', ko: '비행 {f}/75 + 폭죽 무대 통과(비행 75+) 또는 태풍 강풍 돌파 {p}' },
+  'ep.16.label': { en: 'Master Seagull',              ko: '사부 갈매기' },
+  'ep.16.cur':   { en: 'Minions {u}/3 + Rep {r}/50',  ko: '부하 {u}/3명 + 평판 {r}/50' },
+  'ep.17.label': { en: 'Rockstar',                    ko: '록스타' },
+  'ep.17.cur':   { en: 'Firework stage {p} + Rep {r}/80 + Flight {f}/70', ko: '폭죽 무대 통과 {p} + 평판 {r}/80 + 비행 {f}/70' },
+  'ep.18.label': { en: 'Painter',                     ko: '화가' },
+  'ep.18.cur':   { en: 'Photographer {n}/2 + Affinity {a}/40', ko: '사진작가 {n}/2회 + 인간 호감 {a}/40' },
+  'ep.19.label': { en: 'Street Thug',                 ko: '거리의 깡패' },
+  'ep.19.cur':   { en: 'Rival fight wins {k}/2',      ko: '라이벌 격투 승리 {k}/2회' },
+  'ep.20.label': { en: 'Seagull God 🔒',              ko: '갈매기 신 🔒' },
+  'ep.20.cur':   { en: 'Auto if endings 1~19 unlocked & Day 10+', ko: '엔딩 1~19 모두 해금 후 다음 회차 Day 10+에 자동' },
+  'ep.21.label': { en: 'Mate Seagull',                ko: '갈매기 짝꿍' },
+  'ep.21.cur':   { en: 'Clean {c}/8 + Charm {ch}/50 + met mate {m}', ko: '연속 무흡연 {c}/8일 + 매력 {ch}/50 + 짝 만남 {m}' },
+  'ep.22.label': { en: 'Enlightened 🔒',              ko: '깨달은 갈매기 🔒' },
+  'ep.22.cur':   { en: 'Intel {i}/75 + Sense {s}/75 + Clean {c}/10', ko: '지능 {i}/75 + 감수성 {s}/75 + 연속 무흡연 {c}/10일' },
+  'ep.23.label': { en: 'Influencer',                  ko: '갈매기 인플루언서' },
+  'ep.23.cur':   { en: 'Charm {ch}/70 + Photographer {n}/4 + Affinity {a}/60', ko: '매력 {ch}/70 + 사진 {n}/4회 + 인간 호감 {a}/60' },
+  'ep.24.label': { en: 'Identity Crisis 🔒',          ko: '정체성 혼란 🔒' },
+  'ep.24.cur':   { en: 'Affinity {a}/90 + Chases {c}/3 + Day 12+', ko: '인간 호감 {a}/90 + 인간 추격 받음 {c}/3회 + Day 12+' },
+
+  // Endings — runtime
+  'ending.unlockNew':    { en: '📔 New ending unlocked: {n} · auto-saved', ko: '📔 새 엔딩 해금: {n} · 자동 저장됨' },
+  'ending.reached':      { en: '✅ {n} reached (auto-saved)', ko: '✅ {n} 도달 (자동 저장됨)' },
+  'ending.saveFail':     { en: '⚠ Save failed — back up via Menu manually', ko: '⚠ 저장 실패 — 메뉴 → 백업으로 수동 저장 권장' },
+  'ending.cosUnlocked':  { en: '🎁 Costume unlocked: {n}', ko: '🎁 코스튬 해금: {n}' },
+  'ending.imgSaved':     { en: '🖼️ {n} image saved', ko: '🖼️ {n} 이미지 저장됨' },
+  'ending.imgSaved2':    { en: '🖼️ Image saved', ko: '🖼️ 이미지 저장됨' },
+  'ending.imgFail':      { en: 'Image save failed', ko: '이미지 저장 실패' },
+  'ending.shareTitle':   { en: '🖼️ {n} — Share Card', ko: '🖼️ {n} — 공유 카드' },
+  'ending.shareIntro':   { en: 'SNS share card. Long-press to save or use the buttons below.', ko: 'SNS 공유용 카드. 길게 눌러 저장하거나 아래 버튼을 누르세요.' },
+  'ending.shareDl':      { en: '🖼️ Download PNG', ko: '🖼️ PNG 다운로드' },
+  'ending.shareBtn':     { en: '📤 Share', ko: '📤 공유' },
+  'ending.shareTextEnd': { en: '🚬🐦 Reached the [{n}] ending in Kkeueok! ({u}/{t} unlocked)\n"Not kkiruk — kkeueok"\nhttps://seagull-game-rhr1109.vercel.app', ko: '🚬🐦 끄어억에서 [{n}] 엔딩에 도달했다! ({u}/{t} 해금)\n"끼룩이 아니라 끄어억"\nhttps://seagull-game-rhr1109.vercel.app' },
+  'ending.shareText':    { en: '🚬🐦 Kkeueok — {u}/{t} endings · longest {l}d · {r} runs\nhttps://seagull-game-rhr1109.vercel.app', ko: '🚬🐦 끄어억 — {u}/{t} 엔딩 해금 / 최장수 {l}일 / 총 회차 {r}회\nhttps://seagull-game-rhr1109.vercel.app' },
+  'ending.shareTitle2':  { en: 'Kkeueok — Dockside Chain-Smoking Seagull', ko: '끄어억 — 부둣가 골초 갈매기' },
+  'ending.copyPrompt':   { en: 'Copy text below to share:', ko: '아래 텍스트를 복사해서 공유:' },
+  'ending.titleHero':    { en: 'Kkeueok', ko: '끄어억' },
+  'ending.subtitleHero': { en: 'Dockside Chain-Smoking Seagull Simulator', ko: '부둣가 골초 갈매기 시뮬레이터' }
+};
+function t(key, params) {
+  const tbl = STR[key];
+  let s;
+  if (!tbl) s = key;
+  else s = (tbl[LANG] != null ? tbl[LANG] : (tbl.en != null ? tbl.en : (tbl.ko != null ? tbl.ko : key)));
+  if (params) {
+    for (const k of Object.keys(params)) {
+      s = s.split('{'+k+'}').join(params[k]);
+    }
+  }
+  return s;
+}
+function applyStaticI18n() {
+  // re-render markup decorated with data-i18n* attributes
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    el.innerHTML = t(el.dataset.i18nHtml);
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    el.title = t(el.dataset.i18nTitle);
+  });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+    el.setAttribute('aria-label', t(el.dataset.i18nAria));
+  });
+  // tab title
+  try { document.title = t('ui.title.tab'); } catch(e){}
+}
+
+// ============================================================
 // CONSTANTS
 // ============================================================
 const PALETTE = {
@@ -1167,53 +2064,57 @@ const PALETTE = {
 };
 
 const TIMES = [
-  { id:'morning', name:'아침', icon:'☀️', sky:['#5e7790','#a3b8c9'] },
-  { id:'lunch',   name:'점심', icon:'🌤️', sky:['#7e9bb5','#c5d6e3'] },
-  { id:'evening', name:'저녁', icon:'🌆', sky:['#9c5a3a','#E97451'] },
-  { id:'night',   name:'심야', icon:'🌙', sky:['#1c1f29','#3a3f55'] }
+  { id:'morning', nameKey:'time.morning', icon:'☀️', sky:['#5e7790','#a3b8c9'] },
+  { id:'lunch',   nameKey:'time.lunch',   icon:'🌤️', sky:['#7e9bb5','#c5d6e3'] },
+  { id:'evening', nameKey:'time.evening', icon:'🌆', sky:['#9c5a3a','#E97451'] },
+  { id:'night',   nameKey:'time.night',   icon:'🌙', sky:['#1c1f29','#3a3f55'] }
 ];
 
 const WEATHERS = [
-  { id:'clear', name:'맑음',  weight: 60 },
-  { id:'cloudy', name:'흐림', weight: 25 },
-  { id:'rain',  name:'비',    weight: 12 },
-  { id:'fog',   name:'안개',  weight: 3 }
+  { id:'clear',  nameKey:'weather.clear',  weight: 60 },
+  { id:'cloudy', nameKey:'weather.cloudy', weight: 25 },
+  { id:'rain',   nameKey:'weather.rain',   weight: 12 },
+  { id:'fog',    nameKey:'weather.fog',    weight: 3 }
 ];
 
 const GRADES = {
-  F: { name:'비에 젖은 꽁초', satisfaction:15,  lungDamage:3,  color:'#888'    },
-  D: { name:'길거리 꽁초',    satisfaction:30,  lungDamage:5,  color:'#B0B080' },
-  C: { name:'편의점 절도',    satisfaction:55,  lungDamage:8,  color:'#B0C080' },
-  B: { name:'정품 한 갑',     satisfaction:80,  lungDamage:11, color:'#87B0E5' },
-  A: { name:'외제 시가',      satisfaction:100, lungDamage:15, color:'#D0A0F0' },
-  S: { name:'전설의 쿠바산',  satisfaction:150, lungDamage:25, color:'#F4C430' }
+  F: { nameKey:'grade.F.name', satisfaction:15,  lungDamage:3,  color:'#888'    },
+  D: { nameKey:'grade.D.name', satisfaction:30,  lungDamage:5,  color:'#B0B080' },
+  C: { nameKey:'grade.C.name', satisfaction:55,  lungDamage:8,  color:'#B0C080' },
+  B: { nameKey:'grade.B.name', satisfaction:80,  lungDamage:11, color:'#87B0E5' },
+  A: { nameKey:'grade.A.name', satisfaction:100, lungDamage:15, color:'#D0A0F0' },
+  S: { nameKey:'grade.S.name', satisfaction:150, lungDamage:25, color:'#F4C430' }
 };
+function gradeName(g) { return t((GRADES[g] && GRADES[g].nameKey) || 'grade.'+g+'.name'); }
+function timeName(t_) { return t(t_.nameKey); }
+function weatherName(w) { return t(w.nameKey); }
 
 const HUNT_TABLE = {
   morning: [
-    { loc:'해변 관광객 가방', items:[['C',2],['D',1]], food:1, risk: 0.18 },
-    { loc:'부둣가 어시장',    items:[['D',1],['F',2]], food:2, risk: 0.10 }
+    { locKey:'hunt.loc.beach',       items:[['C',2],['D',1]], food:1, risk: 0.18 },
+    { locKey:'hunt.loc.fishMarket',  items:[['D',1],['F',2]], food:2, risk: 0.10 }
   ],
   lunch: [
-    { loc:'공원 흡연 구역',   items:[['F',1],['D',2]], food:0, risk: 0.05 },
-    { loc:'카페 테라스',      items:[['D',1],['C',1]], food:1, risk: 0.12 }
+    { locKey:'hunt.loc.parkSmoke',   items:[['F',1],['D',2]], food:0, risk: 0.05 },
+    { locKey:'hunt.loc.cafe',        items:[['D',1],['C',1]], food:1, risk: 0.12 }
   ],
   evening: [
-    { loc:'술집 앞 골목',     items:[['C',1],['B',1]], food:0, risk: 0.22 },
-    { loc:'야시장',           items:[['D',2],['C',1]], food:2, risk: 0.15 }
+    { locKey:'hunt.loc.barAlley',    items:[['C',1],['B',1]], food:0, risk: 0.22 },
+    { locKey:'hunt.loc.nightMarket', items:[['D',2],['C',1]], food:2, risk: 0.15 }
   ],
   night: [
-    { loc:'클럽 뒷골목',      items:[['B',1],['A',1]], food:0, risk: 0.30 },
-    { loc:'부둣가 창고',      items:[['A',1],['S',1]], food:0, risk: 0.40 }
+    { locKey:'hunt.loc.clubAlley',   items:[['B',1],['A',1]], food:0, risk: 0.30 },
+    { locKey:'hunt.loc.warehouse',   items:[['A',1],['S',1]], food:0, risk: 0.40 }
   ]
 };
 
 // Locations unlocked via meta milestones
 const HUNT_UNLOCK = {
-  rooftop:    { id:'rooftop',    requireEndings: 3, time:['lunch','evening'],  loc:'도시 옥상',     items:[['C',1],['B',2]],            food:0, risk:0.20 },
-  subway:     { id:'subway',     requireEndings: 5, time:['morning','lunch','evening'], loc:'지하철 입구', items:[['B',1],['A',1],['D',2]], food:1, risk:0.25 },
-  ocean:      { id:'ocean',      costume:'sailor',  time:['morning','evening'],loc:'먼바다 (원해)', items:[['A',2],['S',1]],            food:3, risk:0.35 }
+  rooftop: { id:'rooftop', requireEndings: 3, time:['lunch','evening'],            locKey:'hunt.loc.rooftop', items:[['C',1],['B',2]],          food:0, risk:0.20 },
+  subway:  { id:'subway',  requireEndings: 5, time:['morning','lunch','evening'],  locKey:'hunt.loc.subway',  items:[['B',1],['A',1],['D',2]], food:1, risk:0.25 },
+  ocean:   { id:'ocean',   costume:'sailor',  time:['morning','evening'],          locKey:'hunt.loc.ocean',   items:[['A',2],['S',1]],          food:3, risk:0.35 }
 };
+function huntLocName(loc) { return t(loc.locKey); }
 
 function getAvailableHunts(timeId) {
   const base = HUNT_TABLE[timeId].slice();
@@ -1264,7 +2165,7 @@ function defaultRun() {
     cigarettesSmokedTotal: 0,
     foodCount: 0,
     money: 0,
-    locText: '부둣가',
+    locKey: 'misc.locDefault',
     actionsThisDay: 0,
     seed: Math.floor(Math.random()*99999),
     costume: 'default',
@@ -1367,7 +2268,7 @@ function _notifyStorageFailure() {
   if (_storageFailureNotified) return;
   _storageFailureNotified = true;
   setTimeout(() => {
-    try { toast('⚠ 저장 실패 — 시크릿/프라이빗 모드인지 확인하세요', 'bad'); } catch(e){}
+    try { toast(t('misc.storageFail'), 'bad'); } catch(e){}
   }, 100);
 }
 function loadMeta() {
@@ -2297,7 +3198,7 @@ function updateSeagull() {
         seagull.y -= 4;
         AUDIO.sfx('flap');
       } else {
-        toast('비행 능력 부족… 못 난다', 'warn');
+        toast(t('misc.cantFly'), 'warn');
       }
     } else {
       seagull.vy -= 1.8;
@@ -2669,9 +3570,9 @@ function drawTitleFrame() {
   const titleCostume = (META.selectedCostume && META.costumesUnlocked.includes(META.selectedCostume)) ? META.selectedCostume : 'default';
   drawSeagull(tcx, sgX, sgY, titleCostume, { facing: 1, forceCig: true });
 
-  // cry bubble: occasionally show "끄어억"
+  // cry bubble: occasionally show idle voice
   if ((animFrame % 220) < 28) {
-    const txt = '끄어억…';
+    const txt = t('misc.cryDefault');
     tcx.font = '10px "Malgun Gothic","Apple SD Gothic Neo",sans-serif';
     const m = tcx.measureText(txt);
     const bw = m.width + 10, bh = 14;
@@ -2739,17 +3640,17 @@ function updateUI() {
   document.getElementById('dayLabel').textContent = `Day ${RUN.day}`;
   const titlePill = document.getElementById('titlePill');
   if (META.selectedTitle) {
-    titlePill.textContent = '🏆 ' + META.selectedTitle;
+    titlePill.textContent = '🏆 ' + titleText(META.selectedTitle);
     titlePill.classList.remove('hidden-init', 'hidden');
     titlePill.style.display = '';
   } else {
     titlePill.classList.add('hidden');
     titlePill.style.display = 'none';
   }
-  const t = TIMES[RUN.timeIdx];
-  document.getElementById('timeLabel').textContent = `${t.name} ${t.icon}`;
+  const t_ = TIMES[RUN.timeIdx];
+  document.getElementById('timeLabel').textContent = `${timeName(t_)} ${t_.icon}`;
   const w = WEATHERS.find(x=>x.id===RUN.weather);
-  document.getElementById('weatherLabel').textContent = w ? w.name : '';
+  document.getElementById('weatherLabel').textContent = w ? weatherName(w) : '';
   const setBar = (id, num, key, classOverride) => {
     const v = RUN.stats[key];
     const bar = document.getElementById(id);
@@ -2772,7 +3673,7 @@ function updateUI() {
   document.getElementById('senseNum').textContent = Math.round(RUN.stats.sense||0);
   document.getElementById('moneyLabel').textContent = '💰 ' + (RUN.money|0);
   document.getElementById('foodLabel').textContent = '🍖 ' + (RUN.foodCount|0);
-  document.getElementById('locText').textContent = RUN.locText || '부둣가';
+  document.getElementById('locText').textContent = t(RUN.locKey || 'misc.locDefault');
 
   // cry voice update
   updateCry();
@@ -2782,12 +3683,12 @@ function updateCry() {
   const lung = RUN.stats.lung;
   const stress = RUN.stats.stress;
   let voice;
-  if (lung > 70) voice = '끼룩끼룩';
-  else if (lung > 40) voice = '끼…룩…';
-  else if (lung > 10) voice = '끄어억';
-  else voice = '케헥…';
+  if (lung > 70) voice = t('misc.voice.healthy');
+  else if (lung > 40) voice = t('misc.voice.mid');
+  else if (lung > 10) voice = t('misc.voice.low');
+  else voice = t('misc.voice.dying');
   // also stress-coded
-  if (RUN.stats.craving > 90) voice = '끄으으어어억!!';
+  if (RUN.stats.craving > 90) voice = t('misc.voice.craving');
   document.getElementById('cry').textContent = voice;
 }
 
@@ -2898,12 +3799,12 @@ function disableActions(disabled) {
 }
 
 function actionHunt() {
-  const t = TIMES[RUN.timeIdx].id;
-  const list = getAvailableHunts(t);
+  const tId = TIMES[RUN.timeIdx].id;
+  const list = getAvailableHunts(tId);
   const loc = pick(list);
-  RUN.locText = loc.loc;
+  RUN.locKey = loc.locKey;
   AUDIO.sfx('flap');
-  toast(`✈️ ${loc.loc}로 비행…`, '');
+  toast(t('hunt.flying', {loc: huntLocName(loc)}), '');
   disableActions(true);
   startHuntCutscene(() => {
     disableActions(false);
@@ -2913,7 +3814,6 @@ function actionHunt() {
 
 function resolveHunt(loc) {
   RUN.flags.huntedThisTurn = true;
-  let msg = `${loc.loc}으로 출동.`;
   // success chance scaled by flight
   const flight = RUN.stats.flight;
   let success = (flight/100) * 0.7 + 0.2; // 0.2~0.9
@@ -2925,19 +3825,21 @@ function resolveHunt(loc) {
   if (RUN.costume === 'patient') success -= 0.08;
   success = clamp(success, 0.1, 0.95);
 
+  const locName = huntLocName(loc);
+  let msg;
   if (chance(success)) {
     let gained = '';
     for (const [g, n] of loc.items) {
       // partial yield only — never full
       const got = chance(0.45) ? n : Math.max(1, Math.floor(n*0.5));
       RUN.inventory[g] += got;
-      gained += `${g}급 ×${got} `;
+      gained += t('hunt.gainGrade', {grade:g, n:got});
     }
     if (loc.food && chance(0.55)) {
       RUN.foodCount += loc.food;
-      gained += `먹이 ×${loc.food}`;
+      gained += t('hunt.gainFood', {n: loc.food});
     }
-    msg = `🎯 사냥 성공! ${loc.loc}에서 ${gained.trim()} 획득`;
+    msg = t('hunt.success', {loc: locName, gained: gained.trim()});
     logLine(msg, 'good');
     toast(msg, 'good');
     AUDIO.sfx('success');
@@ -2945,7 +3847,7 @@ function resolveHunt(loc) {
     changeStat('flight', -2, {silent:true});
     changeStat('stress', +3);
   } else {
-    msg = `${loc.loc}: 사냥 실패. 텅 빈 부리만 남았다.`;
+    msg = t('hunt.fail', {loc: locName});
     logLine(msg, 'bad');
     toast(msg, 'bad');
     AUDIO.sfx('fail');
@@ -2965,20 +3867,20 @@ function triggerRisk(loc) {
   const events = [
     () => {
       // Human chase
-      logLine('🚨 인간이 빗자루를 들고 쫓아온다!', 'bad');
-      toast('인간 추격!', 'bad');
+      logLine(t('risk.humanChase'), 'bad');
+      toast(t('risk.humanChaseToast'), 'bad');
       RUN.flags.humanChaseCount = (RUN.flags.humanChaseCount||0) + 1;
       let dodgeMult = (RUN.costume === 'pet' ? 0.85 : 1);
       if (RUN.costume === 'catlike') dodgeMult += 0.3;
       const dodge = (RUN.stats.flight/100) * dodgeMult;
       if (chance(dodge)) {
-        logLine('아슬하게 피했다.', 'good');
+        logLine(t('risk.dodge'), 'good');
       } else {
-        logLine('빗자루에 한 대 맞았다. 폐와 평판 둘 다 터졌다.', 'bad');
+        logLine(t('risk.broomHit'), 'bad');
         changeStat('lung', -8);
         changeStat('reputation', -5);
         changeStat('stress', +10);
-        // 부상 트리거 — 폐 30 이하로 떨어지면 critical
+        // injury trigger — lung below 30 = critical
         if (RUN.stats.lung < 30) {
           RUN.flags.injuredCritical = true;
           maybeHumanAdoptionEnding();
@@ -2986,13 +3888,13 @@ function triggerRisk(loc) {
       }
     },
     () => {
-      logLine('💸 다른 갈매기가 먹이를 빼앗아 갔다!', 'bad');
+      logLine(t('risk.foodStolen'), 'bad');
       const pickGrade = chance(0.5) ? 'D' : 'F';
       RUN.inventory[pickGrade] = Math.max(0, RUN.inventory[pickGrade]-1);
       changeStat('reputation', -3);
     },
     () => {
-      logLine('🦴 상한 음식을 먹었다… 폐가 흔들린다.', 'bad');
+      logLine(t('risk.spoiled'), 'bad');
       changeStat('lung', -4);
     }
   ];
@@ -3003,8 +3905,8 @@ function actionSmoke() {
   const inv = RUN.inventory;
   const has = Object.values(inv).some(n => n > 0);
   if (!has) {
-    toast('피울 게 없다…', 'warn');
-    showCry('끄으어어억');
+    toast(t('smoke.nothing'), 'warn');
+    showCry(t('smoke.cryNothing'));
     changeStat('craving', +6);
     return;
   }
@@ -3020,7 +3922,7 @@ function actionSmoke() {
 
 function openInventoryToSmoke() {
   const grades = ['F','D','C','B','A','S'];
-  let html = '<p>어떤 걸 피울까?</p><div class="inv-grid">';
+  let html = '<p>'+escapeHtml(t('smoke.choosePrompt'))+'</p><div class="inv-grid">';
   let hasAny = false;
   for (const g of grades) {
     const n = RUN.inventory[g];
@@ -3030,21 +3932,21 @@ function openInventoryToSmoke() {
     html += `
       <div class="inv-item">
         <div class="grade grade-${g}">${g}<span style="color:var(--c-text-dim);font-size:11px">×${n}</span></div>
-        <div class="meta">${info.name}</div>
-        <div class="meta">만족 +${info.satisfaction} / 폐 -${info.lungDamage}</div>
-        <button data-grade="${g}" ${disabled}>피우기</button>
+        <div class="meta">${escapeHtml(gradeName(g))}</div>
+        <div class="meta">${escapeHtml(t('smoke.meta', {sat: info.satisfaction, dmg: info.lungDamage}))}</div>
+        <button data-grade="${g}" ${disabled}>${escapeHtml(t('smoke.btnSmoke'))}</button>
       </div>`;
   }
   if (RUN.inventory.S > 0 && RUN.inventory.S >= 5) {
     html += `<div class="inv-item" style="border-color:#a82020">
-      <div class="grade grade-S">⚠ 한입에 5개</div>
-      <div class="meta">시가 5개 한 번에. 이러면 안 된다.</div>
-      <button data-grade="OD">5개 흡연</button>
+      <div class="grade grade-S">${escapeHtml(t('smoke.od.warn'))}</div>
+      <div class="meta">${escapeHtml(t('smoke.od.meta'))}</div>
+      <button data-grade="OD">${escapeHtml(t('smoke.od.btn'))}</button>
     </div>`;
   }
   html += '</div>';
-  if (!hasAny) html = '<p>피울 게 하나도 없다… 끔찍하다.</p>';
-  openModal('🚬 흡연', html);
+  if (!hasAny) html = '<p>'+escapeHtml(t('smoke.empty'))+'</p>';
+  openModal(t('smoke.modalTitle'), html);
   document.querySelectorAll('#modalBody .inv-item button').forEach(b => {
     b.addEventListener('click', () => {
       const g = b.dataset.grade;
@@ -3082,8 +3984,8 @@ function doSmoke(grade) {
   for (let i=0;i<10;i++) emitSmoke(1);
   emitAsh(); emitAsh();
   if (RUN.stats.lung < 35) setTimeout(()=>AUDIO.sfx('cough'), 700);
-  toast(`🚬 ${info.name} 흡연. 만족 ${Math.round(sat)} / 폐 -${Math.round(lungDmg)}`, 'good');
-  logLine(`${grade}급 흡연: 끄어어… (만족 +${Math.round(sat)})`);
+  toast(t('smoke.toast', {name: gradeName(grade), sat: Math.round(sat), dmg: Math.round(lungDmg)}), 'good');
+  logLine(t('smoke.log', {grade: grade, sat: Math.round(sat)}));
   if (RUN.stats.lung <= 0) {
     triggerEnding(1);
     return;
@@ -3104,8 +4006,8 @@ function doOverdose() {
   if (RUN.inventory.S < 5) return;
   RUN.inventory.S -= 5;
   for (let i=0;i<60;i++) emitSmoke(1);
-  toast('💀 한입에 5개… 시야가 흐릿해진다.', 'bad');
-  logLine('시가 5개 동시 흡연. 갈매기는 더는 갈매기가 아니다.', 'bad');
+  toast(t('smoke.od.toast'), 'bad');
+  logLine(t('smoke.od.log'), 'bad');
   AUDIO.sfx('cough');
   setTimeout(()=>AUDIO.sfx('death'), 600);
   RUN.flags.overdose = true;
@@ -3118,11 +4020,11 @@ function actionExplore() {
   } else {
     // wander
     const find = pick([
-      ()=>{ logLine('주변을 어슬렁거렸다. 별일 없음.'); changeStat('stress', -3); },
-      ()=>{ logLine('💡 길에서 동전 발견.'); RUN.money += 1; },
-      ()=>{ logLine('💡 비에 젖은 꽁초 한 개.'); RUN.inventory.F++; },
-      ()=>{ logLine('이상한 새가 멀리서 쳐다본다.'); changeStat('stress', +3); },
-      ()=>{ logLine('잠시 명상했다. 생각해보니 의미는 없었다.'); changeStat('stress', -5); }
+      ()=>{ logLine(t('expl.stroll1')); changeStat('stress', -3); },
+      ()=>{ logLine(t('expl.stroll.coin')); RUN.money += 1; },
+      ()=>{ logLine(t('expl.stroll.butt')); RUN.inventory.F++; },
+      ()=>{ logLine(t('expl.stroll.bird')); changeStat('stress', +3); },
+      ()=>{ logLine(t('expl.stroll.med')); changeStat('stress', -5); }
     ]);
     find();
     advanceTime();
@@ -3156,10 +4058,10 @@ function actionSleep() {
   changeStat('craving', +14);
   if (!RUN.flags.smokedToday) {
     changeStat('lung', +2);
-    logLine('💤 흡연 없는 하루. 폐가 약간 회복됐다.', 'good');
+    logLine(t('sleep.clean'), 'good');
     showCry('zZZ…');
   } else {
-    showCry('쿨…쿨…');
+    showCry(t('sleep.cry'));
   }
   advanceTime(true);
 }
@@ -3170,29 +4072,29 @@ function actionSleep() {
 function eventNormalGull() {
   spawnGuest('normal', { targetX: 0.28, life: 480 });
   AUDIO.sfx('kkiruk');
-  presentChoices('💬 부둣가 친구', '평범한 갈매기가 다가와 잡담을 시작한다.', [
+  presentChoices(t('evt.friend.title'), t('evt.friend.intro'), [
     {
-      text:'잡담을 받아준다',
-      sub:'평판 +5, 스트레스 -3',
+      text:t('evt.friend.chat'),
+      sub:t('evt.friend.chatSub'),
       onPick:()=>{
         changeStat('reputation', +5);
         changeStat('stress', -3);
-        toast('잠깐 수다떨었다. 별 내용은 없었다.','good');
+        toast(t('evt.friend.chatToast'),'good');
         advanceTime();
       }
     },
     {
-      text:'무시한다',
-      sub:'평판 -3',
+      text:t('evt.friend.ignore'),
+      sub:t('evt.friend.ignoreSub'),
       onPick:()=>{
         changeStat('reputation', -3);
-        toast('"끼룩"하고 무시했다.','warn');
+        toast(t('evt.friend.ignoreToast'),'warn');
         advanceTime();
       }
     },
     {
-      text:'한 대 빌려준다',
-      sub:'담배 1개 소모, 평판 +10',
+      text:t('evt.friend.lend'),
+      sub:t('evt.friend.lendSub'),
       disabled: !Object.values(RUN.inventory).some(v=>v>0),
       onPick:()=>{
         // pick lowest grade
@@ -3202,7 +4104,7 @@ function eventNormalGull() {
         changeStat('reputation', +10);
         if (RUN.stats.reputation >= 80 && chance(0.4)) {
           RUN.flags.underlings++;
-          toast(`💪 부하 갈매기 +1 (총 ${RUN.flags.underlings}/5)`,'good');
+          toast(t('evt.friend.minion', {n: RUN.flags.underlings}),'good');
         }
         advanceTime();
       }
@@ -3213,21 +4115,21 @@ function eventNormalGull() {
 function eventRivalGull() {
   spawnGuest('rival', { targetX: 0.28, life: 480 });
   AUDIO.sfx('kkeuh');
-  presentChoices('🦅 라이벌 갈매기', '큰형 갈매기가 다가와 한 대 빌려달라고 한다.', [
+  presentChoices(t('evt.rival.title'), t('evt.rival.intro'), [
     {
-      text:'양보한다 (평판 +8)',
+      text:t('evt.rival.give'),
       disabled: !Object.values(RUN.inventory).some(v=>v>0),
       onPick:()=>{
         for (const g of ['B','A','C','D','F','S']) {
           if (RUN.inventory[g] > 0) { RUN.inventory[g]--; break; }
         }
         changeStat('reputation', +8);
-        toast('큰형: "고맙다 끼룩"','good');
+        toast(t('evt.rival.giveToast'),'good');
         advanceTime();
       }
     },
     {
-      text:'거절한다 (전투!)',
+      text:t('evt.rival.fight'),
       onPick:()=>{
         const auto = (RUN.costume === 'killer');
         screenShake(5, 20);
@@ -3237,12 +4139,12 @@ function eventRivalGull() {
           changeStat('reputation', +12);
           changeStat('flight', -8);
           RUN.flags.killCount = (RUN.flags.killCount||0) + 1;
-          toast(`🦅 큰형을 이겼다. 거리의 전설이 됐다. (격투 승리 ${RUN.flags.killCount})`,'good');
+          toast(t('evt.rival.win', {n: RUN.flags.killCount}),'good');
         } else {
           changeStat('lung', -10);
           changeStat('flight', -10);
           changeStat('reputation', -5);
-          toast('🩸 두들겨 맞았다.','bad');
+          toast(t('evt.rival.loseToast'),'bad');
           screenShake(8, 30);
           if (RUN.stats.lung <= 0) { triggerEnding(1); return; }
         }
@@ -3250,13 +4152,13 @@ function eventRivalGull() {
       }
     },
     {
-      text:'거짓말한다 ("없다")',
+      text:t('evt.rival.lie'),
       onPick:()=>{
         if (chance(0.4)) {
           changeStat('reputation', -20);
-          toast('큰형: "주머니에 있는 거 뭐냐?" 들켰다.','bad');
+          toast(t('evt.rival.lieFail'),'bad');
         } else {
-          toast('큰형은 그냥 갔다.','warn');
+          toast(t('evt.rival.lieGo'),'warn');
         }
         advanceTime();
       }
@@ -3267,20 +4169,20 @@ function eventRivalGull() {
 function eventDolphin() {
   spawnGuest('dolphin', { targetX: 0.18, y: 0, life: 480 });
   AUDIO.sfx('splash');
-  presentChoices('🐬 돌고래의 충고', '부둣가에 돌고래가 떠올라 인생 조언을 시작한다.', [
+  presentChoices(t('evt.dolphin.title'), t('evt.dolphin.intro'), [
     {
-      text:'들어준다',
-      sub:'지능 +6, 감수성 +6 (그리고 …)',
+      text:t('evt.dolphin.listen'),
+      sub:t('evt.dolphin.listenSub'),
       onPick:()=>{
         RUN.flags.dolphinChats++;
         changeStatSafe('intel', +6);
         changeStatSafe('sense', +6);
         const lines = [
-          '"바다는 넓다. 너는 좁다."',
-          '"끼룩보다 끄어억이 솔직하다."',
-          '"담배는 갈매기를 망친다. 그러나 시는 만든다."',
-          '"나는 포유류다. 너는 새다. 우리는 다르다. 그래서 같다."',
-          '"오늘 하루도 부두에 살아있다는 것 자체가 기적이다."'
+          t('evt.dolphin.q1'),
+          t('evt.dolphin.q2'),
+          t('evt.dolphin.q3'),
+          t('evt.dolphin.q4'),
+          t('evt.dolphin.q5')
         ];
         toast(pick(lines), 'good');
         // dolphin departure ending
@@ -3291,9 +4193,9 @@ function eventDolphin() {
       }
     },
     {
-      text:'무시한다',
+      text:t('evt.dolphin.ignore'),
       onPick:()=>{
-        toast('돌고래는 다시 가라앉았다.','');
+        toast(t('evt.dolphin.ignoreToast'),'');
         advanceTime();
       }
     }
@@ -3306,21 +4208,21 @@ function eventSuitGull() {
   }
   spawnGuest('suit', { targetX: 0.28, life: 480 });
   AUDIO.sfx('menu');
-  presentChoices('🕴️ 검은 정장 갈매기', '검은 정장과 선글라스를 낀 갈매기가 다가와 명함을 내민다.', [
+  presentChoices(t('evt.suit.title'), t('evt.suit.intro'), [
     {
-      text:'명함을 받는다',
-      sub:'며칠 뒤 무슨 일이 생긴다',
+      text:t('evt.suit.take'),
+      sub:t('evt.suit.takeSub'),
       onPick:()=>{
         RUN.flags.suitGullMet = true;
         RUN.flags.suitGullDaysSince = 0;
-        toast('명함을 받았다. 무슨 회사인지는 모르겠다.','warn');
+        toast(t('evt.suit.takeToast'),'warn');
         advanceTime();
       }
     },
     {
-      text:'안 받는다',
+      text:t('evt.suit.no'),
       onPick:()=>{
-        toast('정장 갈매기는 어디론가 사라졌다.','');
+        toast(t('evt.suit.noToast'),'');
         advanceTime();
       }
     }
@@ -3331,20 +4233,20 @@ function eventSuitGullCallback() {
   // mark as fired so it doesn't re-trigger every interaction after day 2
   RUN.flags.suitGullDaysSince = -1;
   spawnGuest('suit', { targetX: 0.25, life: 480, scale: 1.4 });
-  presentChoicesWithPortrait('suit', '📩 다시 만난 정장', '명함의 갈매기가 다시 왔다.\n"사장님이 만나고 싶어합니다."', [
+  presentChoicesWithPortrait('suit', t('evt.suitAgain.title'), t('evt.suitAgain.intro'), [
     {
-      text:'따라간다',
+      text:t('evt.suitAgain.go'),
       onPick:()=>{
         RUN.flags.ceoMet = true;
-        toast('🚗 어딘가의 펜트하우스. 담배 회사 CEO 갈매기.','warn');
-        logLine('CEO: "A급 이상으로 3개 피우면 우리 결혼 어떨까?"');
+        toast(t('evt.suitAgain.goToast'),'warn');
+        logLine(t('evt.suitAgain.goLog'));
         advanceTime();
       }
     },
     {
-      text:'거절한다',
+      text:t('evt.suitAgain.no'),
       onPick:()=>{
-        toast('"실망입니다." 그는 사라졌다.','');
+        toast(t('evt.suitAgain.noToast'),'');
         advanceTime();
       }
     }
@@ -3355,19 +4257,19 @@ function eventCEO() {
   if (!RUN.flags.ceoMet) return eventNormalGull();
   spawnGuest('ceo', { targetX: 0.25, life: 480, scale: 1.6 });
   AUDIO.sfx('coin');
-  presentChoicesWithPortrait('ceo', '💼 CEO와의 약속', 'CEO 갈매기: "조건은 잊지 않으셨죠?"\nA급 이상 8개 흡연이면 결혼.', [
+  presentChoicesWithPortrait('ceo', t('evt.ceo.title'), t('evt.ceo.intro'), [
     {
-      text:'알겠다고 끄덕인다',
+      text:t('evt.ceo.nod'),
       onPick:()=>{
-        toast(`A급 이상 ${RUN.flags.aPlusSmokedTotal}/3 흡연`,'warn');
+        toast(t('evt.ceo.nodToast', {n: RUN.flags.aPlusSmokedTotal}),'warn');
         advanceTime();
       }
     },
     {
-      text:'그냥 떠난다',
+      text:t('evt.ceo.leave'),
       onPick:()=>{
         RUN.flags.ceoMet = false;
-        toast('CEO와의 인연은 끊어졌다.','');
+        toast(t('evt.ceo.leaveToast'),'');
         advanceTime();
       }
     }
@@ -3376,32 +4278,32 @@ function eventCEO() {
 
 function eventTouristNice() {
   spawnGuest('tourist', { targetX: 0.22, life: 480 });
-  presentChoices('🧳 관광객의 손', '관광객이 도시락을 펼쳐놓고 카메라를 만진다.', [
+  presentChoices(t('evt.tourist.title'), t('evt.tourist.intro'), [
     {
-      text:'QTE: 강탈 시도',
-      sub:'성공 시 음식+담배, 실패 시 부상',
+      text:t('evt.tourist.qte'),
+      sub:t('evt.tourist.qteSub'),
       onPick: () => qteRobTourist()
     },
     {
-      text:'재롱을 부려본다',
-      sub:'평판/호감도 +',
+      text:t('evt.tourist.cute'),
+      sub:t('evt.tourist.cuteSub'),
       onPick:()=>{
         if (chance(0.6)) {
           changeStat('reputation', +5);
           RUN.flags.humanAffinity = clamp(RUN.flags.humanAffinity + 8, 0, 100);
-          toast(`귀여움을 떨었다. 인간 호감 ${RUN.flags.humanAffinity}/100`,'good');
+          toast(t('evt.tourist.cuteToast', {n: RUN.flags.humanAffinity}),'good');
           if (chance(0.5)) {
             RUN.foodCount++;
-            logLine('관광객이 빵 한 조각을 줬다.','good');
+            logLine(t('evt.tourist.cuteBread'),'good');
           }
         } else {
-          toast('관광객은 무시했다.','');
+          toast(t('evt.tourist.cuteIgnore'),'');
         }
         advanceTime();
       }
     },
     {
-      text:'무시한다',
+      text:t('evt.tourist.ignore'),
       onPick:()=>{ advanceTime(); }
     }
   ]);
@@ -3412,16 +4314,16 @@ function eventTouristNice() {
 // ============================================================
 function qteRobTourist() {
   qteGeneric({
-    title:'🎯 관광객 강탈 QTE',
-    intro:'적절한 타이밍에 부리를 휘둘러라.',
+    title:t('evt.qteSteal.title'),
+    intro:t('evt.qteSteal.intro'),
     zoneSize: 0.18,
     onSuccess:()=>{
       const food = 1 + rand(2);
       RUN.foodCount += food;
       RUN.inventory.C++;
       changeStat('flight', -3);
-      toast(`💥 강탈 성공! 음식 ${food}, C급 +1`,'good');
-      logLine('관광객은 망연자실 카메라를 떨어뜨렸다.','good');
+      toast(t('evt.qteSteal.win', {food}),'good');
+      logLine(t('evt.qteSteal.winLog'),'good');
       RUN.flags.humanAffinity = clamp(RUN.flags.humanAffinity - 8, 0, 100);
       advanceTime();
     },
@@ -3429,7 +4331,7 @@ function qteRobTourist() {
       changeStat('lung', -6);
       changeStat('flight', -8);
       changeStat('stress', +10);
-      toast('💢 카메라에 맞았다.','bad');
+      toast(t('evt.qteSteal.lose'),'bad');
       if (RUN.stats.lung < 5) {
         RUN.flags.injuredCritical = true;
         maybeHumanAdoptionEnding();
@@ -3442,15 +4344,15 @@ function qteRobTourist() {
 
 function qteLighter(callback) {
   qteGeneric({
-    title:'🌧️ 비 오는 날 라이터',
-    intro:'심호흡… 클릭 타이밍을 맞춰라.',
+    title:t('evt.lighter.title'),
+    intro:t('evt.lighter.intro'),
     zoneSize: 0.14,
     onSuccess:()=>{
-      toast('🔥 점화 성공!','good');
+      toast(t('evt.lighter.win'),'good');
       openInventoryToSmoke();
     },
     onFail:()=>{
-      toast('💧 라이터가 꺼졌다… 욕구 폭발','bad');
+      toast(t('evt.lighter.fail'),'bad');
       changeStat('craving', +20);
       changeStat('stress', +10);
       advanceTime();
@@ -3467,7 +4369,7 @@ function qteGeneric({title, intro, zoneSize=0.18, onSuccess, onFail}) {
         <div class="qte-zone" style="left:${zoneStart*100}%;width:${zoneSize*100}%"></div>
         <div class="qte-cursor" id="qteCursor" style="left:0%"></div>
       </div>
-      <button class="qte-btn" id="qteHit">지금!</button>
+      <button class="qte-btn" id="qteHit">${escapeHtml(t('evt.qte.now'))}</button>
     </div>`;
   openModal(title, html, {locked:true});
   let pos = 0;
@@ -3568,8 +4470,8 @@ function triggerRandomEvent() {
 
 function eventPhotographer() {
   spawnGuest('tourist', { targetX: 0.22, life: 480 });
-  presentChoices('📷 사진작가', '"이 갈매기 표정 죽이네." 인스타 사진작가가 카메라를 들이댄다.', [
-    { text:'포즈를 취해준다', sub:'인간 호감 +15, 매력 +5',
+  presentChoices(t('evt.photo.title'), t('evt.photo.intro'), [
+    { text:t('evt.photo.pose'), sub:t('evt.photo.poseSub'),
       onPick:()=>{
         let bonus = (RUN.costume === 'painter' || RUN.costume === 'princess') ? 1.5 : 1;
         RUN.flags.humanAffinity = clamp(RUN.flags.humanAffinity + 15*bonus, 0, 100);
@@ -3577,52 +4479,52 @@ function eventPhotographer() {
         RUN.flags.photoCount = (RUN.flags.photoCount||0) + 1;
         RUN.money = (RUN.money|0) + 2;
         changeStatSafe('charm', +5);
-        toast('📸 찰칵! 인스타에 박제됐다. (사진 ' + RUN.flags.photoCount + ')','good');
+        toast(t('evt.photo.poseToast', {n: RUN.flags.photoCount}),'good');
         AUDIO.sfx('coin');
         screenFlash('rgba(255,255,255,0.95)', 12);
         spawnHearts(cv.width*0.5, cv.height*0.5, 8);
         advanceTime();
       } },
-    { text:'담배 연기를 뱉는다', sub:'평판 +5, 인간 호감 -10',
+    { text:t('evt.photo.smoke'), sub:t('evt.photo.smokeSub'),
       disabled: !Object.values(RUN.inventory).some(v=>v>0),
       onPick:()=>{
         for (const g of ['F','D','C']) if (RUN.inventory[g]>0) { RUN.inventory[g]--; break; }
         changeStat('reputation', +5);
         RUN.flags.humanAffinity = clamp(RUN.flags.humanAffinity - 10, 0, 100);
-        toast('렌즈에 연기. 작가는 욕했다.','warn');
+        toast(t('evt.photo.smokeToast'),'warn');
         advanceTime();
       } },
-    { text:'도망간다', onPick:()=>{ changeStat('flight', -3); advanceTime(); } }
+    { text:t('evt.photo.run'), onPick:()=>{ changeStat('flight', -3); advanceTime(); } }
   ]);
 }
 
 function eventFisherman() {
-  presentChoices('🎣 부두 낚시꾼', '낚시꾼 발 옆에 미끼 통이 활짝 열려있다.', [
-    { text:'미끼를 훔친다 (QTE)', onPick: () => qteSteal() },
-    { text:'정중히 한 마리 부탁한다',
+  presentChoices(t('evt.fisher.title'), t('evt.fisher.intro'), [
+    { text:t('evt.fisher.steal'), onPick: () => qteSteal() },
+    { text:t('evt.fisher.ask'),
       onPick:()=>{
         if (RUN.flags.humanAffinity > 40 && chance(0.6)) {
           RUN.foodCount += 2;
-          toast('🐟 작은 물고기 2마리를 받았다.','good');
+          toast(t('evt.fisher.askYes'),'good');
           AUDIO.sfx('coin');
         } else {
-          toast('"꺼져!" 발길질을 당했다.','bad');
+          toast(t('evt.fisher.askNo'),'bad');
           changeStat('lung', -3);
           changeStat('stress', +6);
         }
         advanceTime();
       } },
-    { text:'무시한다', onPick:()=>{ advanceTime(); } }
+    { text:t('evt.fisher.ignore'), onPick:()=>{ advanceTime(); } }
   ]);
 }
 function qteSteal() {
   qteGeneric({
-    title:'🎯 미끼 훔치기 QTE', intro:'발끝 닿는 순간 잡아채라.',
+    title:t('evt.qteBait.title'), intro:t('evt.qteBait.intro'),
     zoneSize: 0.16,
     onSuccess:()=>{
       RUN.foodCount += 3;
       RUN.inventory.D++;
-      toast('🐟 미끼 + 라이터 절도 성공.','good');
+      toast(t('evt.qteBait.win'),'good');
       AUDIO.sfx('coin');
       changeStat('reputation', +3);
       advanceTime();
@@ -3630,7 +4532,7 @@ function qteSteal() {
     onFail:()=>{
       changeStat('lung', -10);
       changeStat('flight', -8);
-      toast('🪝 갈고리에 걸렸다…','bad');
+      toast(t('evt.qteBait.lose'),'bad');
       AUDIO.sfx('hit');
       advanceTime();
     }
@@ -3638,33 +4540,33 @@ function qteSteal() {
 }
 
 function eventStrayDog() {
-  presentChoices('🐕 길 잃은 강아지', '꼬마 푸들이 너를 빤히 본다. 짖지는 않는다.', [
-    { text:'친구가 된다',
+  presentChoices(t('evt.puppy.title'), t('evt.puppy.intro'), [
+    { text:t('evt.puppy.friend'),
       onPick:()=>{
         changeStat('stress', -10);
         changeStat('reputation', -2);
         RUN.flags.humanAffinity = clamp(RUN.flags.humanAffinity + 12, 0, 100);
-        toast('🐕❤️🐦 종족을 초월한 우정. 다른 갈매기들이 비웃었다.','good');
+        toast(t('evt.puppy.friendToast'),'good');
         advanceTime();
       } },
-    { text:'위협한다',
+    { text:t('evt.puppy.threat'),
       onPick:()=>{
         if (chance(0.6)) {
           changeStat('reputation', +6);
-          toast('🦅 푸들은 도망쳤다. 갈매기 사회는 박수를 쳤다.','good');
+          toast(t('evt.puppy.threatWin'),'good');
         } else {
           changeStat('lung', -5);
           changeStat('flight', -5);
-          toast('의외로 푸들이 셌다.','bad');
+          toast(t('evt.puppy.threatLose'),'bad');
         }
         advanceTime();
       } },
-    { text:'담배를 권한다',
-      sub:'담배 1개 소모 — 기괴한 결과',
+    { text:t('evt.puppy.cig'),
+      sub:t('evt.puppy.cigSub'),
       disabled: !Object.values(RUN.inventory).some(v=>v>0),
       onPick:()=>{
         for (const g of ['F','D','C','B','A','S']) if (RUN.inventory[g]>0) { RUN.inventory[g]--; break; }
-        toast('🐕🚬 푸들이 부리에서 담배를 받아 물었다. 기억 삭제 권장.','warn');
+        toast(t('evt.puppy.cigToast'),'warn');
         changeStat('stress', -15);
         changeStat('reputation', +3);
         RUN.flags.humanAffinity = clamp(RUN.flags.humanAffinity + 5, 0, 100);
@@ -3674,9 +4576,9 @@ function eventStrayDog() {
 }
 
 function eventFireworks() {
-  presentChoices('🎆 부둣가 폭죽 축제', '인간들이 폭죽을 터뜨린다. 시끄럽다. 무리는 두렵다.', [
-    { text:'무대 한가운데로 비행',
-      sub:'평판 +15, 위험',
+  presentChoices(t('evt.fw.title'), t('evt.fw.intro'), [
+    { text:t('evt.fw.stage'),
+      sub:t('evt.fw.stageSub'),
       onPick:()=>{
         const auto = (RUN.costume === 'rockstar');
         spawnFireworks(10);
@@ -3684,36 +4586,36 @@ function eventFireworks() {
           changeStat('reputation', +15);
           changeStat('flight', -5);
           RUN.flags.fireworkStageDone = true;
-          toast('🎆 폭죽 사이를 가로질렀다. 부두의 록스타가 됐다.','good');
+          toast(t('evt.fw.stageWin'),'good');
           screenFlash('rgba(255,200,80,0.6)', 24);
           // pegasus credit if you went into the stage with high flight
           if (RUN.stats.flight + 5 >= 75) RUN.flags.pegasusAchieved = true;
         } else {
           changeStat('lung', -12);
           changeStat('flight', -15);
-          toast('💥 폭죽에 깃털이 그을렸다.','bad');
+          toast(t('evt.fw.stageLose'),'bad');
           AUDIO.sfx('hit');
           screenShake(8, 30);
           screenFlash('rgba(255,80,40,0.5)', 16);
         }
         advanceTime();
       } },
-    { text:'창고 뒤로 숨는다',
+    { text:t('evt.fw.hide'),
       onPick:()=>{
         if (chance(0.5)) {
           RUN.inventory.B++;
-          toast('🔇 창고 뒤에 떨어진 정품 한 갑.','good');
+          toast(t('evt.fw.hideWin'),'good');
         } else {
           changeStat('stress', +8);
-          toast('숨었지만 시끄러움은 그대로다.','warn');
+          toast(t('evt.fw.hideLose'),'warn');
         }
         advanceTime();
       } },
-    { text:'그냥 운다 (끄어억)',
+    { text:t('evt.fw.cry'),
       onPick:()=>{
         AUDIO.sfx('kkeuh');
         changeStat('stress', +12);
-        toast('너의 끄어억은 폭죽에 묻혔다.','');
+        toast(t('evt.fw.cryToast'),'');
         advanceTime();
       } }
   ]);
@@ -3722,39 +4624,39 @@ function eventFireworks() {
 function eventTyphoon() {
   RUN.weather = 'rain';
   screenShake(3, 60);
-  presentChoices('🌪️ 태풍 경보', '태풍 전야. 부두가 흔들린다. 보통 갈매기는 피한다.', [
-    { text:'안전한 곳으로',
+  presentChoices(t('evt.storm.title'), t('evt.storm.intro'), [
+    { text:t('evt.storm.safe'),
       onPick:()=>{
         changeStat('stress', -5);
         changeStat('flight', -3);
-        toast('창고 안에서 떨었다.','warn');
+        toast(t('evt.storm.safeToast'),'warn');
         advanceTime();
       } },
-    { text:'강풍을 즐긴다',
-      sub:'스릴 — 비행 ↑ 위험 ↑',
+    { text:t('evt.storm.thrill'),
+      sub:t('evt.storm.thrillSub'),
       onPick:()=>{
         if (RUN.stats.flight > 60 && chance(0.6)) {
           changeStat('flight', +10);
           changeStat('stress', -12);
           RUN.flags.pegasusAchieved = true;
-          toast('🌪️ 풍속 30m/s를 거슬렀다. 너는 다른 차원의 갈매기다.','good');
+          toast(t('evt.storm.thrillWin'),'good');
         } else {
           changeStat('lung', -15);
           changeStat('flight', -25);
-          toast('💢 표지판에 처박혔다.','bad');
+          toast(t('evt.storm.thrillLose'),'bad');
           AUDIO.sfx('hit');
         }
         advanceTime();
       } },
-    { text:'부둣가 노숙자에게 합류',
+    { text:t('evt.storm.bum'),
       onPick:()=>{
         if (chance(0.5)) {
           RUN.inventory.D += 2;
           changeStat('stress', -8);
-          toast('🛌 노숙자가 담요 끝을 나눠줬다. 꽁초도 같이.','good');
+          toast(t('evt.storm.bumWin'),'good');
           RUN.flags.humanAffinity = clamp(RUN.flags.humanAffinity + 8, 0, 100);
         } else {
-          toast('노숙자도 너를 쫓아냈다.','warn');
+          toast(t('evt.storm.bumLose'),'warn');
           changeStat('stress', +6);
         }
         advanceTime();
@@ -3766,16 +4668,16 @@ function eventStrangeBirds() {
   spawnGuest('crow', { targetX: 0.25, life: 360 });
   AUDIO.sfx('kkeuh');
   const lines = [
-    { text:'길에서 까마귀가 시비를 건다.', effect:()=>{
+    { text:t('evt.mini.crow'), effect:()=>{
         changeStat('reputation', -2); changeStat('stress', +5);
-        logLine('까마귀: "갈매기 주제에 담배냐?" 무시했다.');
+        logLine(t('evt.mini.crowLog'));
       }},
-    { text:'다른 갈매기가 라이터를 두고 갔다.', effect:()=>{
-        RUN.inventory.D++; logLine('라이터는 못 챙기고 D급 한 개만 챙겼다.','good');
+    { text:t('evt.mini.lighter'), effect:()=>{
+        RUN.inventory.D++; logLine(t('evt.mini.lighterLog'),'good');
       }},
-    { text:'펭귄 코스프레한 부둣가 인부가 사진을 요구한다.', effect:()=>{
-        if (chance(0.5)) { RUN.foodCount++; logLine('포즈를 잡아줬다. 빵 한 덩이를 받았다.','good'); }
-        else logLine('도망쳤다. 인부는 슬퍼했다.');
+    { text:t('evt.mini.penguin'), effect:()=>{
+        if (chance(0.5)) { RUN.foodCount++; logLine(t('evt.mini.penguinWin'),'good'); }
+        else logLine(t('evt.mini.penguinLose'));
       }}
   ];
   const e = pick(lines);
@@ -3786,72 +4688,72 @@ function eventStrangeBirds() {
 
 function eventShop() {
   const items = [
-    { key:'F', name:'젖은 꽁초',     cost:1, action:()=>{ RUN.inventory.F++; } },
-    { key:'D', name:'길거리 꽁초',   cost:3, action:()=>{ RUN.inventory.D++; } },
-    { key:'C', name:'편의점 절도',   cost:6, action:()=>{ RUN.inventory.C++; } },
-    { key:'B', name:'정품 한 갑',    cost:12, action:()=>{ RUN.inventory.B++; } },
-    { key:'A', name:'외제 시가',     cost:25, action:()=>{ RUN.inventory.A++; } },
-    { key:'S', name:'쿠바산 전설',   cost:60, action:()=>{ RUN.inventory.S++; } },
-    { key:'food', name:'생선 한 마리', cost:4,  action:()=>{ RUN.foodCount += 2; } }
+    { key:'F', nameKey:'shop.itemF',    cost:1, action:()=>{ RUN.inventory.F++; } },
+    { key:'D', nameKey:'shop.itemD',    cost:3, action:()=>{ RUN.inventory.D++; } },
+    { key:'C', nameKey:'shop.itemC',    cost:6, action:()=>{ RUN.inventory.C++; } },
+    { key:'B', nameKey:'shop.itemB',    cost:12, action:()=>{ RUN.inventory.B++; } },
+    { key:'A', nameKey:'shop.itemA',    cost:25, action:()=>{ RUN.inventory.A++; } },
+    { key:'S', nameKey:'shop.itemS',    cost:60, action:()=>{ RUN.inventory.S++; } },
+    { key:'food', nameKey:'shop.itemFood', cost:4, action:()=>{ RUN.foodCount += 2; } }
   ];
   const choices = items.map(it => ({
-    text: `🛒 ${it.name} — 💰${it.cost}`,
-    sub: `보유 동전 ${RUN.money|0}`,
+    text: `🛒 ${t(it.nameKey)} — 💰${it.cost}`,
+    sub: t('shop.subCoin', {n: RUN.money|0}),
     disabled: RUN.money < it.cost,
     onPick: () => {
       RUN.money -= it.cost;
       it.action();
       AUDIO.sfx('coin');
-      toast(`구매: ${it.name}`, 'good');
+      toast(t('shop.bought', {item: t(it.nameKey)}), 'good');
       advanceTime();
     }
   }));
-  choices.push({ text:'그냥 둘러본다', onPick:()=>advanceTime() });
-  presentChoices('🛒 부둣가 구멍가게', `구멍가게 노인이 등을 보이고 졸고 있다. 돈을 내고 가져가면 들키지 않는다.\n💰 ${RUN.money|0} · 🍖 ${RUN.foodCount}`, choices);
+  choices.push({ text:t('shop.justBrowse'), onPick:()=>advanceTime() });
+  presentChoices(t('shop.title'), t('shop.intro', {money: RUN.money|0, food: RUN.foodCount}), choices);
 }
 
 // === New events that build sub-stats ===
 function eventBookshelf() {
   spawnGuest('normal', { targetX: 0.22, life: 360 });
-  presentChoices('📚 도서관 창문 너머', '도서관 창가에 펼쳐진 책. 아무도 안 본다.', [
-    { text:'천천히 읽는다', sub:'지능 +12, 시간 1턴 소모',
+  presentChoices(t('evt.lib.title'), t('evt.lib.intro'), [
+    { text:t('evt.lib.read'), sub:t('evt.lib.readSub'),
       onPick:()=>{
         changeStatSafe('intel', +12);
         changeStatSafe('stress', -3);
-        toast('🧠 한 페이지 읽었다.','good');
+        toast(t('evt.lib.readToast'),'good');
         AUDIO.sfx('menu');
         advanceTime();
       } },
-    { text:'책장을 찢어 둥지로 가져간다', sub:'평판 -3, 인간 호감 -5',
+    { text:t('evt.lib.tear'), sub:t('evt.lib.tearSub'),
       onPick:()=>{
         changeStat('reputation', -3);
         RUN.flags.humanAffinity = clamp((RUN.flags.humanAffinity||0)-5, 0, 100);
-        toast('찢긴 책장. 도서관 사서가 운다.','warn');
+        toast(t('evt.lib.tearToast'),'warn');
         advanceTime();
       } },
-    { text:'관심없다', onPick:()=>{ advanceTime(); } }
+    { text:t('evt.lib.skip'), onPick:()=>{ advanceTime(); } }
   ]);
 }
 
 function eventGrooming() {
-  presentChoices('🪞 그루밍 타임', '깃털을 정성스레 다듬는다. 부둣가 갈매기들이 흘끗 본다.', [
-    { text:'정성스레 손질', sub:'매력 +12, 스트레스 -5',
+  presentChoices(t('evt.groom.title'), t('evt.groom.intro'), [
+    { text:t('evt.groom.full'), sub:t('evt.groom.fullSub'),
       onPick:()=>{
         changeStatSafe('charm', +12);
         changeStatSafe('stress', -5);
-        toast('💋 깃털이 반짝인다.','good');
+        toast(t('evt.groom.fullToast'),'good');
         AUDIO.sfx('coin');
         advanceTime();
       } },
-    { text:'대충 한다', sub:'매력 +3',
+    { text:t('evt.groom.lazy'), sub:t('evt.groom.lazySub'),
       onPick:()=>{ changeStatSafe('charm', +3); advanceTime(); } },
-    { text:'담배 한 모금부터',
-      sub:'욕구 -10, 매력 -5',
+    { text:t('evt.groom.smoke'),
+      sub:t('evt.groom.smokeSub'),
       disabled: !Object.values(RUN.inventory).some(v=>v>0),
       onPick:()=>{
         for (const g of ['F','D','C']) if (RUN.inventory[g]>0) { RUN.inventory[g]--; changeStat('craving', -10); RUN.flags.smokedToday = true; break; }
         changeStatSafe('charm', -5);
-        toast('🚬 담배 핀 갈매기는 매력적인가? (개취)','warn');
+        toast(t('evt.groom.smokeToast'),'warn');
         advanceTime();
       } }
   ]);
@@ -3860,71 +4762,71 @@ function eventGrooming() {
 function eventSunset() {
   spawnGuest('dolphin', { targetX: 0.15, y: 0, life: 200 });
   RUN.flags.sunsetCount = (RUN.flags.sunsetCount||0) + 1;
-  presentChoices('🌅 부둣가 노을', '하늘이 분홍색이다. 누구한테는 그냥 하늘이지만, 너에게는…', [
-    { text:'한참 바라본다', sub:'감수성 +10, 스트레스 -8',
+  presentChoices(t('evt.sun.title'), t('evt.sun.intro'), [
+    { text:t('evt.sun.gaze'), sub:t('evt.sun.gazeSub'),
       onPick:()=>{
         changeStatSafe('sense', +10);
         changeStatSafe('stress', -8);
-        toast('💧 가슴이 묘하게 시리다.','good');
+        toast(t('evt.sun.gazeToast'),'good');
         screenFlash('rgba(233,116,81,0.35)', 30);
         advanceTime();
       } },
-    { text:'시 한 줄을 읊는다', sub:'감수성 +15, 지능 +5, 평판 -5',
+    { text:t('evt.sun.poem'), sub:t('evt.sun.poemSub'),
       onPick:()=>{
         changeStatSafe('sense', +15);
         changeStatSafe('intel', +5);
         changeStat('reputation', -5);
-        toast('"끄어억은 사라지는 것이다." 다른 갈매기가 떠났다.','warn');
+        toast(t('evt.sun.poemToast'),'warn');
         advanceTime();
       } },
-    { text:'무시한다', onPick:()=>{ advanceTime(); } }
+    { text:t('evt.sun.skip'), onPick:()=>{ advanceTime(); } }
   ]);
 }
 
 function eventMate() {
-  // 짝 만남 — only fires if matching profile
+  // mate encounter — only fires if matching profile
   spawnGuest('normal', { targetX: 0.30, life: 480 });
   spawnHearts(cv.width*0.5, cv.height*0.5, 4);
-  presentChoicesWithPortrait('normal', '💞 새 짝 후보', '하얀 깃털의 갈매기가 옆에 앉는다. 너를 빤히 본다.', [
-    { text:'정중히 다가간다', sub:'매력 시험 — 통과 시 짝 인연 (#21 트리거 가능)',
+  presentChoicesWithPortrait('normal', t('evt.mate.title'), t('evt.mate.intro'), [
+    { text:t('evt.mate.approach'), sub:t('evt.mate.approachSub'),
       onPick:()=>{
         if ((RUN.stats.charm||0) >= 40 && !RUN.flags.smokedToday) {
           RUN.flags.metMate = true;
           changeStat('reputation', +5);
           changeStatSafe('sense', +5);
-          toast('💞 너희는 함께 노을을 봤다. 짝 인연 ✓','good');
+          toast(t('evt.mate.win'),'good');
           spawnHearts(cv.width*0.5, cv.height*0.5, 10);
         } else {
-          if (RUN.flags.smokedToday) toast('상대가 담배 냄새를 맡고 떠났다.','bad');
-          else toast(`매력 부족 (현재 ${Math.round(RUN.stats.charm||0)}/40). 다음 기회에…`,'warn');
+          if (RUN.flags.smokedToday) toast(t('evt.mate.smell'),'bad');
+          else toast(t('evt.mate.lowCharm', {n: Math.round(RUN.stats.charm||0)}),'warn');
         }
         advanceTime();
       } },
-    { text:'끼룩끼룩 시끄럽게', sub:'평판 +3, 짝은 도망',
+    { text:t('evt.mate.loud'), sub:t('evt.mate.loudSub'),
       onPick:()=>{
         changeStat('reputation', +3);
-        toast('상대는 귀를 막고 떠났다.','warn');
+        toast(t('evt.mate.loudToast'),'warn');
         advanceTime();
       } },
-    { text:'무시한다', onPick:()=>{ advanceTime(); } }
+    { text:t('evt.mate.skip'), onPick:()=>{ advanceTime(); } }
   ]);
 }
 
 function eventSlotMachine() {
-  presentChoices('🎰 부둣가 슬롯머신', '갈매기 마피아가 운영하는 골목 슬롯. 담배 1개 베팅.', [
-    { text:'F/D급 베팅', sub:'잭팟 시 C급 ×3 또는 행운',
+  presentChoices(t('evt.slot.title'), t('evt.slot.intro'), [
+    { text:t('evt.slot.fdBet'), sub:t('evt.slot.fdSub'),
       disabled: !(RUN.inventory.F>0 || RUN.inventory.D>0),
       onPick:()=>{
         for (const g of ['F','D']) if (RUN.inventory[g]>0) { RUN.inventory[g]--; break; }
         slotSpin(1);
       } },
-    { text:'A급 ↑ 베팅', sub:'잭팟 시 S급 시가 + 평판',
+    { text:t('evt.slot.aBet'), sub:t('evt.slot.aSub'),
       disabled: !(RUN.inventory.A>0 || RUN.inventory.S>0),
       onPick:()=>{
         for (const g of ['A','S']) if (RUN.inventory[g]>0) { RUN.inventory[g]--; break; }
         slotSpin(3);
       } },
-    { text:'그냥 떠난다', onPick:()=>{ advanceTime(); } }
+    { text:t('evt.slot.leave'), onPick:()=>{ advanceTime(); } }
   ]);
 }
 
@@ -3943,58 +4845,58 @@ function slotSpin(level) {
   } else {
     result='miss';
   }
-  let html = `<p>릴이 멈춘다…</p>
+  let html = `<p>${escapeHtml(t('evt.slot.reels'))}</p>
     <div style="font-size:34px;text-align:center;letter-spacing:6px;background:#14181F;border:1px solid var(--c-line);padding:10px;border-radius:8px">${reels.join(' ')}</div>
     <hr>`;
   let foot = '';
   if (result === 'jackpot') {
     RUN.inventory.S += level*2;
     changeStat('reputation', +10);
-    foot = `<p class="tag good">💎💎💎 잭팟! S급 시가 ${level*2}개 + 평판 +10</p>`;
+    foot = `<p class="tag good">${escapeHtml(t('evt.slot.jackpot', {n: level*2}))}</p>`;
     AUDIO.sfx('success');
     spawnFireworks(12);
     screenFlash('rgba(244,196,48,0.6)', 24);
   } else if (result === 'match3') {
-    if (level >= 3) { RUN.inventory.A += 1; foot = '<p class="tag good">🎉 트리플! A급 시가 1개</p>'; }
-    else { RUN.inventory.C += 2; foot = '<p class="tag good">🎉 트리플! C급 ×2</p>'; }
+    if (level >= 3) { RUN.inventory.A += 1; foot = '<p class="tag good">'+escapeHtml(t('evt.slot.tripleA'))+'</p>'; }
+    else { RUN.inventory.C += 2; foot = '<p class="tag good">'+escapeHtml(t('evt.slot.tripleC'))+'</p>'; }
     AUDIO.sfx('coin');
   } else if (result === 'match2') {
-    foot = '<p class="tag warn">😐 2개 일치. 본전 회수 (담배 1개 돌려받음)</p>';
+    foot = '<p class="tag warn">'+escapeHtml(t('evt.slot.pair'))+'</p>';
     RUN.inventory.D += 1;
   } else {
-    foot = '<p class="tag bad">💸 꽝. 라이터 연기에 휩쓸렸다.</p>';
+    foot = '<p class="tag bad">'+escapeHtml(t('evt.slot.bust'))+'</p>';
     changeStat('stress', +5);
     AUDIO.sfx('fail');
   }
-  html += foot + '<div class="choices"><button class="choice-btn" id="slotOk">확인</button></div>';
-  openModal('🎰 슬롯머신 결과', html, {locked:true});
+  html += foot + '<div class="choices"><button class="choice-btn" id="slotOk">'+escapeHtml(t('evt.slot.ok'))+'</button></div>';
+  openModal(t('evt.slot.resTitle'), html, {locked:true});
   document.getElementById('slotOk').addEventListener('click', () => { closeModal(); advanceTime(); });
 }
 
 function eventTrash() {
   const items = [
-    ()=>{ RUN.inventory.F+=2; logLine('🗑️ 쓰레기통에서 젖은 꽁초 2개.','good'); AUDIO.sfx('coin'); },
-    ()=>{ RUN.inventory.D++; logLine('🗑️ 쓰레기통에서 D급 1개.','good'); },
-    ()=>{ if (chance(0.5)) { RUN.inventory.C++; logLine('🗑️ 쓰레기통 럭키. C급 1개!','good'); } else { logLine('🗑️ 쓰레기통: 음식물 쓰레기뿐.','bad'); changeStat('stress',+3);} },
-    ()=>{ logLine('🗑️ 쓰레기통에 손을 넣었다. 후회만 남았다.','bad'); changeStat('stress',+5); }
+    ()=>{ RUN.inventory.F+=2; logLine(t('evt.trash.f2'),'good'); AUDIO.sfx('coin'); },
+    ()=>{ RUN.inventory.D++; logLine(t('evt.trash.d'),'good'); },
+    ()=>{ if (chance(0.5)) { RUN.inventory.C++; logLine(t('evt.trash.lucky'),'good'); } else { logLine(t('evt.trash.gross'),'bad'); changeStat('stress',+3);} },
+    ()=>{ logLine(t('evt.trash.regret'),'bad'); changeStat('stress',+5); }
   ];
   pick(items)();
   advanceTime();
 }
 
 function eventQuitChallenge() {
-  presentChoices('💪 금연 도전', '폐가 너무 망가졌다. 7일만 버티면 회복 + "전설의 금연자".', [
+  presentChoices(t('evt.quit.title'), t('evt.quit.intro'), [
     {
-      text:'도전한다',
-      sub:'스트레스 +20, 금연 진행도 0/7',
+      text:t('evt.quit.go'),
+      sub:t('evt.quit.goSub'),
       onPick:()=>{
         RUN.flags.consecutiveCleanDays = 0;
         changeStat('stress', +20);
-        toast('🚭 금연 도전 시작.','warn');
+        toast(t('evt.quit.goToast'),'warn');
         advanceTime();
       }
     },
-    { text:'못한다', onPick:()=>{ advanceTime(); } }
+    { text:t('evt.quit.no'), onPick:()=>{ advanceTime(); } }
   ]);
 }
 
@@ -4032,14 +4934,14 @@ function advanceTime(slept=false) {
   if (RUN.stats.hunger < 50 && RUN.foodCount > 0) {
     RUN.foodCount--;
     changeStat('hunger', +40, {silent:true});
-    logLine('🍖 배가 고파 챙겨둔 먹이를 먹었다.');
+    logLine(t('misc.atFood'));
   }
   // hunger 0 → starve. skeleton costume gets one free pass.
   if (RUN.stats.hunger <= 0 && !RUN.finished) {
     if (RUN.costume === 'skeleton' && !RUN.flags.skeletonRevived) {
       RUN.flags.skeletonRevived = true;
       RUN.stats.hunger = 30;
-      toast('💀 해골 갈매기는 죽지 않는다. 한 번은.', 'warn');
+      toast(t('misc.skeletonLives'), 'warn');
       AUDIO.sfx('kkeuh');
     } else {
       triggerEnding(13);
@@ -4057,7 +4959,7 @@ function advanceTime(slept=false) {
 
   // overdose risk
   if (RUN.stats.craving >= 95 && chance(0.04)) {
-    logLine('💥 욕구 폭발 — 갈매기가 발작한다.','bad');
+    logLine(t('misc.cravingBurst'),'bad');
     changeStat('lung', -8);
     changeStat('stress', +15);
   }
@@ -4071,7 +4973,7 @@ function advanceTime(slept=false) {
     RUN.timeIdx = 0;
     if (!slept) {
       changeStat('stress', +10);
-      logLine('자지 않은 채 새 날이 밝았다.','warn');
+      logLine(t('sleep.noSleep'),'warn');
     }
     endOfDay();
     if (RUN.finished) return;
@@ -4124,10 +5026,10 @@ function onNewDay() {
   // weather refresh
   RUN.weather = weightedPick(WEATHERS).id;
   RUN.actionsThisDay = 0;
-  logLine(`📅 Day ${RUN.day} 시작.`);
-  if (RUN.day === 25) toast('🌅 5일 남았다. 갈매기는 늙어간다.', 'warn');
-  if (RUN.day === 28) toast('⚠️ 2일 후 갈매기는 끝난다.', 'warn');
-  if (RUN.day === 30) toast('☠️ 마지막 날. 오늘 잠들면 끝.', 'bad');
+  logLine(t('day.start', {day: RUN.day}));
+  if (RUN.day === 25) toast(t('day.day25'), 'warn');
+  if (RUN.day === 28) toast(t('day.day28'), 'warn');
+  if (RUN.day === 30) toast(t('day.day30'), 'bad');
   showCry();
   // achievement: long life
   if (RUN.day > META.longestLife) {
@@ -4152,8 +5054,8 @@ function onNewDay() {
 
 function ageOutEnding() {
   if (RUN.finished) return;
-  toast('🌅 30일이 흘렀다…', 'warn');
-  logLine('30일이 지났다. 갈매기는 늙었다.', 'warn');
+  toast(t('day.endRun'), 'warn');
+  logLine(t('day.endRunLog'), 'warn');
   const s = RUN.stats;
   // pick the ending closest to the player's actual run
   if (RUN.flags.sCigarettesSmoked >= 5) return triggerEnding(2);
@@ -4205,35 +5107,61 @@ function checkEndings() {
 // ============================================================
 const ENDING_DEFS = [
   null, // 0
-  { id:1, name:'폐 망가져 죽음', flavor:'기침이 끝나지 않는다. 부둣가 위로 마지막 연기가 피어오른다.', costume:'patient', costumeName:'환자복 갈매기', hidden:false },
-  { id:2, name:'전설의 골초',     flavor:'시가 10개로 다른 차원에 도달했다. 그곳엔 재떨이가 없었다.', costume:'cigar_master', costumeName:'시가 마스터', hidden:false },
-  { id:3, name:'갈매기 마피아 보스', flavor:'부둣가의 모든 꽁초는 이제 너의 것이다.', costume:'suit', costumeName:'정장 갈매기', hidden:false },
-  { id:4, name:'약물 과다',       flavor:'시가 다섯 개를 한입에. 좀비 갈매기가 된다.', costume:'zombie', costumeName:'좀비 갈매기', hidden:false },
-  { id:5, name:'인간 입양',       flavor:'아주머니가 너를 안고 갔다. 이제 너의 이름은 "꽁이"다.', costume:'pet', costumeName:'가정용 갈매기', hidden:false },
-  { id:6, name:'갑자기 철학자가 됨', flavor:'30일 동안 한 모금도 안 피웠다. 너는 이제 책을 읽는다.', costume:'thinker', costumeName:'사색가', hidden:false },
-  { id:7, name:'담배 회사 CEO와 결혼', flavor:'펜트하우스 결혼식. 부케는 시가 다발이다.', costume:'wedding', costumeName:'웨딩 갈매기', hidden:false },
-  { id:8, name:'그냥 어느 날 사라짐', flavor:'아무도 너를 찾지 않았다. 부두는 그대로다.', costume:'fog', costumeName:'안개 갈매기', hidden:false },
-  { id:9, name:'돌고래와 떠남',     flavor:'돌고래의 등 위에서 너는 마지막으로 끼룩거렸다.', costume:'sailor', costumeName:'항해사 갈매기', hidden:true },
-  { id:10, name:'평범한 삶',       flavor:'평범하게 살았다. 30일이 지나도 부두는 그대로다.', costume:'salaryman', costumeName:'회사원 갈매기', hidden:true },
-  { id:11, name:'부둣가의 시인',   flavor:'평판도 흡연도 잃었지만 시는 남았다. 아무도 안 읽었지만.', costume:'poet',     costumeName:'시인 갈매기',   title:'부둣가의 시인',     hidden:true  },
-  { id:12, name:'갈매기왕 등극',   flavor:'부두의 모든 갈매기가 너에게 고개를 숙였다. 그래서 뭐.',     costume:'king',     costumeName:'갈매기왕',     title:'갈매기왕',          hidden:true  },
-  { id:13, name:'굶어 죽음',       flavor:'담배는 있었다. 음식이 없었다.',                              costume:'skeleton', costumeName:'해골 갈매기',  title:'아사한 갈매기',     hidden:false },
-  { id:14, name:'갈매기 프린세스', flavor:'외국인 관광객의 가방 속으로 너는 떠났다. 핑크리본을 달고.',  costume:'princess', costumeName:'프린세스',     title:'프린세스',          hidden:false },
-  { id:15, name:'갈매기 천마',     flavor:'더 이상 부두에 닿지 않았다. 페가수스가 됐다.',              costume:'pegasus',  costumeName:'천마 갈매기',  title:'천공의 갈매기',     hidden:true  },
-  { id:16, name:'갈매기 사부',     flavor:'젊은 갈매기들이 너에게 와서 끄어억을 배웠다.',              costume:'master',   costumeName:'사부 갈매기',  title:'끄어억 사부',       hidden:false },
-  { id:17, name:'갈매기 록스타',   flavor:'폭죽 무대 한가운데에서 너는 록스타가 됐다.',                costume:'rockstar', costumeName:'록스타',       title:'부둣가 록스타',     hidden:false },
-  { id:18, name:'부둣가의 화가',   flavor:'갈매기 한 마리가 인스타에서 100만 팔로워를 찍었다.',         costume:'painter',  costumeName:'화가',         title:'인스타 갈매기',     hidden:false },
-  { id:19, name:'거리의 깡패',     flavor:'부두는 조용해졌다. 다들 너를 피했다.',                       costume:'killer',   costumeName:'거리의 깡패',  title:'부두의 깡패',       hidden:false },
-  { id:20, name:'갈매기 신',       flavor:'모든 길을 본 너는 끄어억의 본질이 됐다.',                    costume:'god',      costumeName:'갈매기 신',    title:'끄어억 자체',       hidden:true  },
-  { id:21, name:'갈매기 짝꿍',     flavor:'금연 끝에 새 짝을 만났다. 부둣가에 작은 둥지가 생겼다.',     costume:'lover',    costumeName:'사랑꾼 갈매기',title:'사랑꾼',           hidden:false },
-  { id:22, name:'깨달은 갈매기',   flavor:'책과 노을과 금연 끝에 너는 무언가를 깨달았다. 아무도 안 물었지만.', costume:'sage',  costumeName:'현자 갈매기', title:'부둣가의 현자',     hidden:true  },
-  { id:23, name:'갈매기 인플루언서', flavor:'팔로워 100만. 너의 모든 끄어억이 클립으로 박제됐다.',       costume:'influencer', costumeName:'인플루언서',  title:'100만 갈매기',     hidden:false },
-  { id:24, name:'정체성 혼란',     flavor:'인간이 너무 좋았다. 어느 날부터 너는 야옹거렸다.',           costume:'catlike',  costumeName:'갈매고양이',  title:'야옹 갈매기',       hidden:true  }
+  { id:1,  costume:'patient',      hidden:false },
+  { id:2,  costume:'cigar_master', hidden:false },
+  { id:3,  costume:'suit',         hidden:false },
+  { id:4,  costume:'zombie',       hidden:false },
+  { id:5,  costume:'pet',          hidden:false },
+  { id:6,  costume:'thinker',      hidden:false },
+  { id:7,  costume:'wedding',      hidden:false },
+  { id:8,  costume:'fog',          hidden:false },
+  { id:9,  costume:'sailor',       hidden:true  },
+  { id:10, costume:'salaryman',    hidden:true  },
+  { id:11, costume:'poet',         hidden:true  },
+  { id:12, costume:'king',         hidden:true  },
+  { id:13, costume:'skeleton',     hidden:false },
+  { id:14, costume:'princess',     hidden:false },
+  { id:15, costume:'pegasus',      hidden:true  },
+  { id:16, costume:'master',       hidden:false },
+  { id:17, costume:'rockstar',     hidden:false },
+  { id:18, costume:'painter',      hidden:false },
+  { id:19, costume:'killer',       hidden:false },
+  { id:20, costume:'god',          hidden:true  },
+  { id:21, costume:'lover',        hidden:false },
+  { id:22, costume:'sage',         hidden:true  },
+  { id:23, costume:'influencer',   hidden:false },
+  { id:24, costume:'catlike',      hidden:true  }
 ];
-
-// Backfill titles for endings 1-10 too
-['전설의 폐사자','전설의 골초','부두의 보스','약쟁이','입양된 새','금연의 현자','담배회사 신부','안개의 갈매기','선원','회사원']
-  .forEach((t, i) => { if (ENDING_DEFS[i+1]) ENDING_DEFS[i+1].title = t; });
+// Wire i18n keys onto each entry (name/flavor/costumeName resolved via t() — language-reactive).
+// Titles are stored as stable English keys so they round-trip correctly through META.titlesUnlocked
+// across language switches. Use titleText(def) for display, keep def.title as the stable id.
+for (const def of ENDING_DEFS) {
+  if (!def) continue;
+  Object.defineProperty(def, 'name',         { get(){ return t('end.'+this.id+'.name'); }, enumerable: true });
+  Object.defineProperty(def, 'flavor',       { get(){ return t('end.'+this.id+'.flavor'); }, enumerable: true });
+  Object.defineProperty(def, 'costumeName',  { get(){ return t('end.'+this.id+'.cosName'); }, enumerable: true });
+  // stable English id; '' for endings without a title concept (1-10 originally had separate titles)
+  const enTitle = (STR['end.'+def.id+'.title'] && STR['end.'+def.id+'.title'].en) || '';
+  def.title = enTitle;
+}
+// Titles 1-10 received their English titles via STR['end.N.title'] — populate where missing
+['Legendary Lung Death','Legendary Smoker','Dock Boss','Junkie','Adopted Bird','Quitting Sage','Tobacco Bride','Fog Seagull','Sailor','Salaryman'].forEach((tEn, i) => {
+  if (ENDING_DEFS[i+1] && !ENDING_DEFS[i+1].title) ENDING_DEFS[i+1].title = tEn;
+});
+// Localized title text — pass an ending def or a stored title string
+function titleText(t_or_id) {
+  if (!t_or_id) return '';
+  // If it's a def, use its id
+  if (typeof t_or_id === 'object' && t_or_id.id != null) {
+    return t('end.'+t_or_id.id+'.title') || t_or_id.title || '';
+  }
+  // If it's a stored title string, find the matching def by EN title and translate
+  for (const def of ENDING_DEFS) {
+    if (!def) continue;
+    if (def.title === t_or_id) return t('end.'+def.id+'.title') || def.title;
+  }
+  return t_or_id;
+}
 
 // Stats helper
 function changeStatSafe(key, delta) {
@@ -4278,10 +5206,10 @@ function triggerEnding(id) {
   const ok = saveMeta();
   console.log('[ending]', id, def.name, 'unlocked total:', META.endingsUnlocked.length, 'saved:', ok);
   if (ok) {
-    if (wasNew) setTimeout(() => toast(`📔 새 엔딩 해금: ${def.name} · 자동 저장됨`, 'good'), 600);
-    else setTimeout(() => toast(`✅ ${def.name} 도달 (자동 저장됨)`, 'good'), 600);
+    if (wasNew) setTimeout(() => toast(t('ending.unlockNew', {n: def.name}), 'good'), 600);
+    else setTimeout(() => toast(t('ending.reached', {n: def.name}), 'good'), 600);
   } else {
-    setTimeout(() => toast('⚠ 저장 실패 — 메뉴 → 백업으로 수동 저장 권장', 'bad'), 600);
+    setTimeout(() => toast(t('ending.saveFail'), 'bad'), 600);
   }
   clearRun();
 
@@ -4291,7 +5219,7 @@ function triggerEnding(id) {
   document.getElementById('endingSummary').textContent = def.flavor;
   const reward = document.getElementById('endingReward');
   reward.style.display = '';
-  reward.textContent = `🎁 코스튬 해금: ${def.costumeName}`;
+  reward.textContent = t('ending.cosUnlocked', {n: def.costumeName});
   // draw ending portrait
   const ec = document.getElementById('endingCanvas');
   drawEndingPortrait(ec, def.costume);
@@ -4347,70 +5275,70 @@ function showInventory() {
     const info = GRADES[g];
     html += `<div class="inv-item">
       <div class="grade grade-${g}">${g}<span style="color:var(--c-text-dim);font-size:11px">×${n}</span></div>
-      <div class="meta">${info.name}</div>
-      <div class="meta">만족 +${info.satisfaction} / 폐 -${info.lungDamage}</div>
+      <div class="meta">${escapeHtml(gradeName(g))}</div>
+      <div class="meta">${escapeHtml(t('smoke.meta', {sat: info.satisfaction, dmg: info.lungDamage}))}</div>
     </div>`;
   }
   html += '</div>';
   // food eat button
   html += `<hr><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px">
-    <span>🍖 음식 ${RUN.foodCount}개 · 포만감 ${Math.round(RUN.stats.hunger)}/100</span>
-    <button id="invEat" style="background:#7BC47F;color:#fff;border:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer" ${RUN.foodCount<=0?'disabled':''}>지금 먹기 (+30)</button>
+    <span>${escapeHtml(t('inv.foodLine', {n: RUN.foodCount, h: Math.round(RUN.stats.hunger)}))}</span>
+    <button id="invEat" style="background:#7BC47F;color:#fff;border:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer" ${RUN.foodCount<=0?'disabled':''}>${escapeHtml(t('inv.eatNow'))}</button>
   </div>`;
-  html += `<div class="dim">자금: 💰${RUN.money} · Day ${RUN.day}/30 · 음식은 포만감 50 이하에서 자동 소비됨 (+40)</div>`;
-  html += `<div class="dim">총 흡연량: ${RUN.cigarettesSmokedTotal} · S급 흡연: ${RUN.flags.sCigarettesSmoked}</div>`;
-  html += `<div class="dim">🧠 지능 ${Math.round(RUN.stats.intel||0)} · 💋 매력 ${Math.round(RUN.stats.charm||0)} · 💧 감수성 ${Math.round(RUN.stats.sense||0)}</div>`;
+  html += `<div class="dim">${escapeHtml(t('inv.fundsLine', {money: RUN.money, day: RUN.day}))}</div>`;
+  html += `<div class="dim">${escapeHtml(t('inv.smokeStat', {tot: RUN.cigarettesSmokedTotal, s: RUN.flags.sCigarettesSmoked}))}</div>`;
+  html += `<div class="dim">${escapeHtml(t('inv.subStats', {i: Math.round(RUN.stats.intel||0), c: Math.round(RUN.stats.charm||0), s: Math.round(RUN.stats.sense||0)}))}</div>`;
 
   // === Ending progress (collapsible) ===
   const unlockedSetForCount = new Set(META.endingsUnlocked);
   let unlockedCount = 0;
   for (let i=1;i<=ENDING_DEFS.length-1;i++) if (unlockedSetForCount.has(i)) unlockedCount++;
-  html += `<details><summary>🎯 엔딩 진행도 (${unlockedCount}/${ENDING_DEFS.length-1} 해금)</summary><div>`;
+  html += `<details><summary>${escapeHtml(t('inv.endProgress', {n: unlockedCount, tot: ENDING_DEFS.length-1}))}</summary><div>`;
   const s = RUN.stats;
   const f = RUN.flags;
   const rows = [
-    { id:1,  label:'폐사',              cur:`폐 ${Math.round(s.lung)}/100 → 0이면 사망 (또는 30일 자연사)` },
-    { id:2,  label:'전설의 골초',        cur:`S급 시가 ${f.sCigarettesSmoked}/3개 흡연` },
-    { id:3,  label:'마피아 보스',        cur:`평판 ${Math.round(s.reputation)}/100 + 부하 ${f.underlings}/5명` },
-    { id:4,  label:'약물 과다',          cur:f.overdose?'✓ 발생':`S급 5개 보유 후 흡연 모달의 "한입에 5개"` },
-    { id:5,  label:'인간 입양',          cur:`인간 호감 ${f.humanAffinity}/55 + 인간 추격 시 폐 30↓ 부상` },
-    { id:6,  label:'철학자',             cur:`연속 무흡연 ${f.consecutiveCleanDays}/18일 + 평판 50+ + Day 22+` },
-    { id:7,  label:'CEO와 결혼',         cur:`${f.ceoMet?'✓ CEO 만남':'CEO 만남 (정장 갈매기 명함→2일 후 따라가기)'} + A급↑ ${f.aPlusSmokedTotal}/3개` },
-    { id:8,  label:'어느 날 사라짐',     cur:`평판 ${Math.round(s.reputation)}≤5 + 무상호작용 ${f.daysWithoutInteraction}/8일` },
-    { id:9,  label:'돌고래와 떠남 🔒',   cur:`돌고래 충고 ${f.dolphinChats}/5회 + 연속 무흡연 ${f.consecutiveCleanDays}/7일` },
-    { id:10, label:'평범한 삶 🔒',       cur:`모든 스탯 50~70 유지 ${f.normalDayStreak}/14일 + Day 22+` },
-    { id:11, label:'부둣가의 시인 🔒',   cur:`연속 무흡연 ${f.consecutiveCleanDays}/12일 + 평판 ${Math.round(s.reputation)}≤20` },
-    { id:12, label:'갈매기왕 🔒',        cur:`평판 ${Math.round(s.reputation)}/90 + 부하 ${f.underlings}/4명 + S급 ${f.sCigarettesSmoked}/1개` },
-    { id:13, label:'굶어 죽음',          cur:`포만감 ${Math.round(s.hunger)}/100 → 0이면 사망 · 음식 ${RUN.foodCount}개` },
-    { id:14, label:'프린세스',           cur:`호감 ${f.humanAffinity}/55 + 평판 ${Math.round(s.reputation)}/45 + Day 6+ + CEO 안 만남` },
-    { id:15, label:'천마 갈매기 🔒',     cur:`비행 ${Math.round(s.flight)}/75 + 폭죽 무대 통과(비행 75+) 또는 태풍 강풍 돌파 ${f.pegasusAchieved?'✓':'✗'}` },
-    { id:16, label:'사부 갈매기',        cur:`부하 ${f.underlings}/3명 + 평판 ${Math.round(s.reputation)}/50` },
-    { id:17, label:'록스타',             cur:`폭죽 무대 통과 ${f.fireworkStageDone?'✓':'✗'} + 평판 ${Math.round(s.reputation)}/80 + 비행 ${Math.round(s.flight)}/70` },
-    { id:18, label:'화가',               cur:`사진작가 ${f.photoCount||0}/2회 + 인간 호감 ${f.humanAffinity}/40` },
-    { id:19, label:'거리의 깡패',        cur:`라이벌 격투 승리 ${f.killCount||0}/2회` },
-    { id:20, label:'갈매기 신 🔒',       cur:`엔딩 1~19 모두 해금 후 다음 회차 Day 10+에 자동` },
-    { id:21, label:'갈매기 짝꿍',        cur:`연속 무흡연 ${f.consecutiveCleanDays}/8일 + 매력 ${Math.round(s.charm||0)}/50 + 짝 만남 ${f.metMate?'✓':'✗'}` },
-    { id:22, label:'깨달은 갈매기 🔒',   cur:`지능 ${Math.round(s.intel||0)}/75 + 감수성 ${Math.round(s.sense||0)}/75 + 연속 무흡연 ${f.consecutiveCleanDays}/10일` },
-    { id:23, label:'갈매기 인플루언서',  cur:`매력 ${Math.round(s.charm||0)}/70 + 사진 ${f.photoCount||0}/4회 + 인간 호감 ${f.humanAffinity}/60` },
-    { id:24, label:'정체성 혼란 🔒',     cur:`인간 호감 ${f.humanAffinity}/90 + 인간 추격 받음 ${f.humanChaseCount||0}/3회 + Day 12+` }
+    { id:1,  label:t('ep.1.label'),  cur:t('ep.1.cur', {l: Math.round(s.lung)}) },
+    { id:2,  label:t('ep.2.label'),  cur:t('ep.2.cur', {s: f.sCigarettesSmoked}) },
+    { id:3,  label:t('ep.3.label'),  cur:t('ep.3.cur', {r: Math.round(s.reputation), u: f.underlings}) },
+    { id:4,  label:t('ep.4.label'),  cur: f.overdose ? t('ep.4.cur.yes') : t('ep.4.cur.no') },
+    { id:5,  label:t('ep.5.label'),  cur:t('ep.5.cur', {a: f.humanAffinity}) },
+    { id:6,  label:t('ep.6.label'),  cur:t('ep.6.cur', {c: f.consecutiveCleanDays}) },
+    { id:7,  label:t('ep.7.label'),  cur:t('ep.7.cur', {m: f.ceoMet ? t('ep.7.metYes') : t('ep.7.metNo'), a: f.aPlusSmokedTotal}) },
+    { id:8,  label:t('ep.8.label'),  cur:t('ep.8.cur', {r: Math.round(s.reputation), d: f.daysWithoutInteraction}) },
+    { id:9,  label:t('ep.9.label'),  cur:t('ep.9.cur', {n: f.dolphinChats, c: f.consecutiveCleanDays}) },
+    { id:10, label:t('ep.10.label'), cur:t('ep.10.cur', {n: f.normalDayStreak}) },
+    { id:11, label:t('ep.11.label'), cur:t('ep.11.cur', {c: f.consecutiveCleanDays, r: Math.round(s.reputation)}) },
+    { id:12, label:t('ep.12.label'), cur:t('ep.12.cur', {r: Math.round(s.reputation), u: f.underlings, s: f.sCigarettesSmoked}) },
+    { id:13, label:t('ep.13.label'), cur:t('ep.13.cur', {h: Math.round(s.hunger), f: RUN.foodCount}) },
+    { id:14, label:t('ep.14.label'), cur:t('ep.14.cur', {a: f.humanAffinity, r: Math.round(s.reputation)}) },
+    { id:15, label:t('ep.15.label'), cur:t('ep.15.cur', {f: Math.round(s.flight), p: f.pegasusAchieved?'✓':'✗'}) },
+    { id:16, label:t('ep.16.label'), cur:t('ep.16.cur', {u: f.underlings, r: Math.round(s.reputation)}) },
+    { id:17, label:t('ep.17.label'), cur:t('ep.17.cur', {p: f.fireworkStageDone?'✓':'✗', r: Math.round(s.reputation), f: Math.round(s.flight)}) },
+    { id:18, label:t('ep.18.label'), cur:t('ep.18.cur', {n: f.photoCount||0, a: f.humanAffinity}) },
+    { id:19, label:t('ep.19.label'), cur:t('ep.19.cur', {k: f.killCount||0}) },
+    { id:20, label:t('ep.20.label'), cur:t('ep.20.cur') },
+    { id:21, label:t('ep.21.label'), cur:t('ep.21.cur', {c: f.consecutiveCleanDays, ch: Math.round(s.charm||0), m: f.metMate?'✓':'✗'}) },
+    { id:22, label:t('ep.22.label'), cur:t('ep.22.cur', {i: Math.round(s.intel||0), s: Math.round(s.sense||0), c: f.consecutiveCleanDays}) },
+    { id:23, label:t('ep.23.label'), cur:t('ep.23.cur', {ch: Math.round(s.charm||0), n: f.photoCount||0, a: f.humanAffinity}) },
+    { id:24, label:t('ep.24.label'), cur:t('ep.24.cur', {a: f.humanAffinity, c: f.humanChaseCount||0}) }
   ];
   const unlockedSet = new Set(META.endingsUnlocked);
   for (const r of rows) {
-    const got = unlockedSet.has(r.id) ? '<span class="tag good">✓</span>' : '<span class="tag">진행</span>';
+    const got = unlockedSet.has(r.id) ? '<span class="tag good">✓</span>' : '<span class="tag">'+escapeHtml(t('inv.tagPending'))+'</span>';
     html += `<div class="stats-detail-row"><span>${got}${escapeHtml(r.label)}</span><span class="dim">${escapeHtml(r.cur)}</span></div>`;
   }
-  html += '<div class="dim" style="font-size:10px;margin-top:6px">조건 충족 즉시 자동 트리거 · Day 30이 지나면 자동 종료</div>';
+  html += '<div class="dim" style="font-size:10px;margin-top:6px">' + escapeHtml(t('inv.endNote')) + '</div>';
   html += `</div></details>`;
   // Meta bonus list (collapsible)
   const n = META.endingsUnlocked.length;
   let metaActive = 0; for (const b of META_BONUSES) if (n >= b.req) metaActive++;
-  html += `<details><summary>✨ 메타 진행 보너스 (${metaActive}/${META_BONUSES.length} 활성)</summary><div>`;
+  html += `<details><summary>${escapeHtml(t('inv.metaProgress', {n: metaActive, tot: META_BONUSES.length}))}</summary><div>`;
   for (const b of META_BONUSES) {
     const got = (n >= b.req) ? '<span class="tag good">✓</span>' : '<span class="tag">🔒</span>';
-    html += `<div class="stats-detail-row"><span>${got}엔딩 ${b.req}개</span><span class="dim">${escapeHtml(b.desc)}</span></div>`;
+    html += `<div class="stats-detail-row"><span>${got}${escapeHtml(t('inv.metaLine', {got:'', n: b.req}))}</span><span class="dim">${escapeHtml(t('meta.b'+b.req))}</span></div>`;
   }
   html += `</div></details>`;
-  openModal('🚬 인벤토리 / 상태', html);
+  openModal(t('inv.title'), html);
   const eat = document.getElementById('invEat');
   if (eat) {
     eat.addEventListener('click', () => {
@@ -4418,7 +5346,7 @@ function showInventory() {
       RUN.foodCount--;
       changeStat('hunger', +30);
       AUDIO.sfx('coin');
-      toast('🍖 먹었다. 포만감 +30','good');
+      toast(t('misc.eatToast'),'good');
       closeModal();
       saveRun();
       updateUI();
@@ -4444,35 +5372,35 @@ function showAlbum(opts={}) {
     html += `<div class="album-card ${cls}" data-eid="${i}">
       <div class="id">${('0'+i).slice(-2)}</div>
       ${def.hidden ? '<div class="hidden-tag">HIDDEN</div>' : ''}
-      ${unlocked ? `<button class="album-dl" data-dl="${i}" title="이미지 저장">🖼️</button>` : ''}
+      ${unlocked ? `<button class="album-dl" data-dl="${i}" title="${escapeHtml(t('album.imgTip'))}">🖼️</button>` : ''}
       <div class="frame"><canvas data-cos="${def.costume}" data-locked="${!unlocked}" width="120" height="100"></canvas></div>
       <div class="name">${escapeHtml(displayName)}</div>
-      ${displayTitle ? `<div style="font-size:10px;color:var(--c-accent);margin:2px 0 3px">🏆 ${escapeHtml(displayTitle)}</div>` : ''}
-      <div class="dim">${unlocked ? escapeHtml(def.flavor) : (def.hidden ? '히든 엔딩' : '미해금 — 진행도 모달에서 조건 확인')}</div>
+      ${displayTitle ? `<div style="font-size:10px;color:var(--c-accent);margin:2px 0 3px">🏆 ${escapeHtml(titleText(def))}</div>` : ''}
+      <div class="dim">${unlocked ? escapeHtml(def.flavor) : (def.hidden ? escapeHtml(t('album.hidden')) : escapeHtml(t('album.locked')))}</div>
     </div>`;
   }
   html += '</div>';
-  html += `<hr><div class="dim">해금: ${META.endingsUnlocked.length}/${totalEndings} · 총 회차: ${META.totalRuns} · 최장수: ${META.longestLife}일 · 총 흡연: ${META.totalCigSmoked}</div>`;
-  html += `<div style="margin-top:8px"><button id="albumShareBtn" style="width:100%;padding:8px;background:var(--c-panel-2);border:1px solid var(--c-line);color:var(--c-text);border-radius:6px;font-size:12px;cursor:pointer">📤 SNS 공유</button></div>`;
+  html += `<hr><div class="dim">${escapeHtml(t('album.summary', {n: META.endingsUnlocked.length, tot: totalEndings, runs: META.totalRuns, long: META.longestLife, cigs: META.totalCigSmoked}))}</div>`;
+  html += `<div style="margin-top:8px"><button id="albumShareBtn" style="width:100%;padding:8px;background:var(--c-panel-2);border:1px solid var(--c-line);color:var(--c-text);border-radius:6px;font-size:12px;cursor:pointer">${escapeHtml(t('album.share'))}</button></div>`;
   // milestone
-  let milestoneHtml = '<hr><div class="dim">누적 마일스톤</div>';
+  let milestoneHtml = '<hr><div class="dim">' + escapeHtml(t('album.milestoneHdr')) + '</div>';
   const mls = [
-    [3,  '신규 사냥터: 도시 옥상 (점심/저녁)'],
-    [5,  '신규 사냥터: 지하철 입구'],
-    [8,  '신규 BGM 트랙 + 매 턴 욕구/포만감 누적 감소'],
-    [10, '시작 모든 스탯 +5 메타 보너스'],
-    [13, '인벤 C급 ×2 시작 보너스'],
-    [16, '시작 인벤 B급 ×1'],
-    [18, '시작 모든 스탯 +10'],
-    [19, '진엔딩 #20 "갈매기 신" 트리거 해금'],
-    [21, '전체 도달 — 모든 코스튬에 색상 변형 추가 (예정)']
+    [3,  t('album.ms3')],
+    [5,  t('album.ms5')],
+    [8,  t('album.ms8')],
+    [10, t('album.ms10')],
+    [13, t('album.ms13')],
+    [16, t('album.ms16')],
+    [18, t('album.ms18')],
+    [19, t('album.ms19')],
+    [21, t('album.ms21')]
   ];
   for (const [n, label] of mls) {
     const met = META.endingsUnlocked.length >= n;
-    milestoneHtml += `<div class="dim">${met?'✅':'⬜'} ${n}개 — ${label}</div>`;
+    milestoneHtml += `<div class="dim">${met?'✅':'⬜'} ${n} — ${escapeHtml(label)}</div>`;
   }
   html += milestoneHtml;
-  openModal('📔 꽁초의 일대기', html, { allowOverEnding: opts.allowOverEnding });
+  openModal(t('album.title'), html, { allowOverEnding: opts.allowOverEnding });
   const sBtn = document.getElementById('albumShareBtn');
   if (sBtn) sBtn.addEventListener('click', () => shareProgress());
   // album per-ending download buttons
@@ -4507,22 +5435,23 @@ function showAlbum(opts={}) {
 // ============================================================
 function showMenu() {
   let html = '<div class="menu-list">';
-  html += '<button id="m_save">💾 수동 저장</button>';
-  html += '<button id="m_swap">🔄 슬롯 전환 (현재: 슬롯 ' + ((META.currentSlot|0)+1) + ')</button>';
-  html += '<button id="m_stats">📈 누적 통계</button>';
-  html += '<button id="m_share">📤 진행 공유</button>';
-  html += '<button id="m_backup">💾 데이터 백업/복원</button>';
-  html += '<button id="m_controls">🎮 조작법 다시 보기</button>';
-  html += '<button id="m_costume">🎩 코스튬 변경</button>';
-  html += '<button id="m_titles">🏆 칭호 변경 (' + ((META.titlesUnlocked||[]).length) + ' 보유)</button>';
-  html += '<button id="m_album">📔 엔딩 앨범</button>';
-  html += '<button id="m_help">❓ 도움말</button>';
-  html += '<button id="m_title" class="danger">🚪 타이틀로 (현재 진행 저장)</button>';
-  html += '<button id="m_reset" class="danger">🗑 모든 메타 초기화</button>';
+  html += '<button id="m_save">' + escapeHtml(t('menu.save')) + '</button>';
+  html += '<button id="m_swap">' + escapeHtml(t('menu.swap', {n: (META.currentSlot|0)+1})) + '</button>';
+  html += '<button id="m_stats">' + escapeHtml(t('menu.stats')) + '</button>';
+  html += '<button id="m_share">' + escapeHtml(t('menu.share')) + '</button>';
+  html += '<button id="m_backup">' + escapeHtml(t('menu.backup')) + '</button>';
+  html += '<button id="m_controls">' + escapeHtml(t('menu.controls')) + '</button>';
+  html += '<button id="m_costume">' + escapeHtml(t('menu.costume')) + '</button>';
+  html += '<button id="m_titles">' + escapeHtml(t('menu.titles', {n: (META.titlesUnlocked||[]).length})) + '</button>';
+  html += '<button id="m_album">' + escapeHtml(t('menu.album')) + '</button>';
+  html += '<button id="m_help">' + escapeHtml(t('menu.help')) + '</button>';
+  html += '<button id="m_lang">' + escapeHtml(t('menu.langCurrent')) + '</button>';
+  html += '<button id="m_title" class="danger">' + escapeHtml(t('menu.toTitle')) + '</button>';
+  html += '<button id="m_reset" class="danger">' + escapeHtml(t('menu.reset')) + '</button>';
   html += '</div>';
-  html += `<hr><div class="dim">청소년이용불가. 그래야 할 만한 이유가 있다.</div>`;
-  openModal('≡ 메뉴', html);
-  document.getElementById('m_save').onclick = () => { saveRun(); toast('저장됨','good'); closeModal(); };
+  html += '<hr><div class="dim">' + escapeHtml(t('ui.title.footer')) + '</div>';
+  openModal(t('menu.title'), html);
+  document.getElementById('m_save').onclick = () => { saveRun(); toast(t('misc.savedToast'),'good'); closeModal(); };
   document.getElementById('m_swap').onclick = () => { showSlotSwitch(); };
   document.getElementById('m_stats').onclick = () => { showStats(); };
   document.getElementById('m_share').onclick = () => { closeModal(); shareProgress(); };
@@ -4532,49 +5461,31 @@ function showMenu() {
   document.getElementById('m_titles').onclick = () => { showTitles(); };
   document.getElementById('m_album').onclick = () => { showAlbum(); };
   document.getElementById('m_help').onclick = () => { showHelp(); };
+  document.getElementById('m_lang').onclick = () => { setLang(LANG === 'en' ? 'ko' : 'en'); closeModal(); showMenu(); };
   document.getElementById('m_title').onclick = () => { saveRun(); closeModal(); showTitle(); };
   document.getElementById('m_reset').onclick = () => {
-    if (confirm('정말로 모든 메타 데이터를 지울까? (엔딩, 코스튬, 통계, 모든 슬롯 전부)')) {
+    if (confirm(t('menu.confirmReset'))) {
       META = defaultMeta();
       saveMeta();
       for (let i=0;i<SLOT_COUNT;i++) clearSlot(i);
       RUN = defaultRun();
       closeModal();
       showTitle();
-      toast('초기화됨','warn');
+      toast(t('misc.resetToast'),'warn');
     }
   };
 }
-const COSTUME_EFFECTS = {
-  default:      { name:'기본 꽁초',     effect:'효과 없음',                                      tradeoff:'-' },
-  patient:      { name:'환자복 갈매기', effect:'시작 폐 +20',                                    tradeoff:'시작 비행 -10' },
-  cigar_master: { name:'시가 마스터',   effect:'S급 시가 1개 보유',                              tradeoff:'시작 욕구 +30' },
-  suit:         { name:'정장 갈매기',   effect:'시작 평판 +20',                                  tradeoff:'잡담 1턴 추가 (위엄)' },
-  zombie:       { name:'좀비 갈매기',   effect:'폐 손상 -30%, 인간 강탈 +20%',                   tradeoff:'시작 평판 -30' },
-  pet:          { name:'가정용 갈매기', effect:'음식 5개, 스트레스 자연 감소',                    tradeoff:'추격 회피 -15%' },
-  thinker:      { name:'사색가',        effect:'스트레스 감소 +10%/일',                          tradeoff:'흡연 만족 -20%' },
-  wedding:      { name:'웨딩 갈매기',   effect:'자금 +50%, A급↑ 만족 +15%',                      tradeoff:'F/D급 만족 -30%' },
-  fog:          { name:'안개 갈매기',   effect:'라이벌/인간 회피',                               tradeoff:'동료 협력 불가' },
-  sailor:       { name:'항해사 갈매기', effect:'비행 +15, 사냥터 "원해" 전용',                   tradeoff:'도시 사냥터 평판 -10' },
-  salaryman:    { name:'회사원 갈매기', effect:'모든 시작 스탯 +10',                             tradeoff:'스트레스 누적 +20%' },
-  poet:         { name:'시인 갈매기',   effect:'스트레스 자연 감소 +5%, 평판 패널티 면제',         tradeoff:'다른 갈매기 무시당함' },
-  king:         { name:'갈매기왕',      effect:'시작 평판 +30, 부하 모집 확률 +20%',              tradeoff:'사냥터 위험도 +10%' },
-  skeleton:     { name:'해골 갈매기',   effect:'포만감 0이어도 즉사하지 않음 (1회)',              tradeoff:'시작 비행 -20' },
-  princess:     { name:'프린세스',     effect:'시작 인간 호감 +30, 사진작가 보상 +50%',          tradeoff:'시작 평판 -10' },
-  pegasus:      { name:'천마 갈매기',   effect:'시작 비행 +30, 비행 능력 자연 회복',              tradeoff:'시작 욕구 +20' },
-  master:       { name:'사부 갈매기',   effect:'시작 부하 +2, 평판 회복 빠름',                    tradeoff:'시작 흡연 만족 -10%' },
-  rockstar:     { name:'록스타',        effect:'폭죽 이벤트 자동 성공, 평판 +25',                  tradeoff:'시작 폐 -15' },
-  painter:      { name:'화가',          effect:'사진작가 호감 +50%, 동전 획득 +30%',               tradeoff:'시작 비행 -10' },
-  killer:       { name:'거리의 깡패',   effect:'라이벌 격투 자동 승리',                            tradeoff:'시작 평판 -40, 잡담 불가' },
-  god:          { name:'갈매기 신',     effect:'모든 스탯 100, 죽지 않음',                         tradeoff:'엔딩 도달 시까지 자동 진행' },
-  lover:        { name:'사랑꾼 갈매기', effect:'시작 매력 +30, 짝 만남 이벤트 +확률',              tradeoff:'시작 평판 -10' },
-  sage:         { name:'현자 갈매기',   effect:'시작 지능 +30, 감수성 +20, 스트레스 자연 감소',     tradeoff:'시작 비행 -15' },
-  influencer:   { name:'인플루언서',   effect:'시작 매력 +25, 인간 호감 +20, 사진작가 보상 +50%',  tradeoff:'시작 폐 -10 (성형의 흔적)' },
-  catlike:      { name:'갈매고양이',   effect:'인간 추격 회피 +30%, 인간 호감 +30',                 tradeoff:'다른 갈매기 평판 -25 (배신자 취급)' }
-};
+const COSTUME_EFFECTS = {};
+['default','patient','cigar_master','suit','zombie','pet','thinker','wedding','fog','sailor','salaryman','poet','king','skeleton','princess','pegasus','master','rockstar','painter','killer','god','lover','sage','influencer','catlike'].forEach(id => {
+  const obj = { id };
+  Object.defineProperty(obj, 'name',     { get(){ return t('cos.'+id+'.name'); }, enumerable: true });
+  Object.defineProperty(obj, 'effect',   { get(){ return t('cos.'+id+'.eff'); }, enumerable: true });
+  Object.defineProperty(obj, 'tradeoff',{ get(){ return t('cos.'+id+'.tr'); }, enumerable: true });
+  COSTUME_EFFECTS[id] = obj;
+});
 
 function showCostumes() {
-  let html = '<p class="dim">회차 시작 시 적용. 효과는 한 번 적용되며 트레이드오프가 따른다.</p><div class="album-grid">';
+  let html = '<p class="dim">' + escapeHtml(t('cos.intro')) + '</p><div class="album-grid">';
   const order = ['default','patient','cigar_master','suit','zombie','pet','thinker','wedding','fog','sailor','salaryman','poet','king','skeleton','princess','pegasus','master','rockstar','painter','killer','god','lover','sage','influencer','catlike'];
   for (const cosId of order) {
     if (!META.costumesUnlocked.includes(cosId)) continue;
@@ -4591,8 +5502,8 @@ function showCostumes() {
   // unlock progress
   const total = order.length;
   const got = order.filter(c => META.costumesUnlocked.includes(c)).length;
-  html += `<hr><div class="dim">해금: ${got}/${total} · 미해금 코스튬은 해당 엔딩 도달 시 자동 해금</div>`;
-  openModal('🎩 코스튬', html);
+  html += `<hr><div class="dim">${escapeHtml(t('cos.summary', {n: got, tot: total}))}</div>`;
+  openModal(t('cos.title'), html);
   document.querySelectorAll('#modalBody canvas').forEach(c => {
     const ec = c.getContext('2d');
     ec.imageSmoothingEnabled = false;
@@ -4605,7 +5516,7 @@ function showCostumes() {
   document.querySelectorAll('#modalBody .album-card').forEach(card => {
     card.addEventListener('click', () => {
       RUN.costume = card.dataset.cos;
-      toast('코스튬 변경: '+card.querySelector('.name').textContent,'good');
+      toast(t('cos.changedTo', {n: card.querySelector('.name').textContent}),'good');
       saveRun();
       showCostumes();
     });
@@ -4616,12 +5527,12 @@ function showCostumes() {
 function showSlotPicker(mode) {
   let html;
   if (mode === 'continue') {
-    html = '<p class="dim">이어할 갈매기를 선택하세요.</p>';
+    html = '<p class="dim">' + escapeHtml(t('slot.continueIntro')) + '</p>';
   } else {
-    html = '<p class="dim">새 갈매기를 시작할 슬롯. 진행 중 슬롯을 고르면 덮어쓸지 확인합니다.</p>';
+    html = '<p class="dim">' + escapeHtml(t('slot.newIntro')) + '</p>';
   }
   html += '<div class="slot-list" id="pickList"></div>';
-  openModal(mode === 'continue' ? '▶ 이어하기' : '＋ 새 갈매기 시작', html);
+  openModal(mode === 'continue' ? t('slot.continueTitle') : t('slot.newTitle'), html);
   const list = document.getElementById('pickList');
   let visible = 0;
   for (let i=0;i<SLOT_COUNT;i++) {
@@ -4631,18 +5542,18 @@ function showSlotPicker(mode) {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'slot-card' + (data ? '' : ' empty');
-    btn.setAttribute('aria-label', data ? `슬롯 ${i+1} ${mode==='continue'?'이어하기':'덮어쓰기'}` : `슬롯 ${i+1} 새 시작`);
+    btn.setAttribute('aria-label', data ? t(mode==='continue'?'slot.label.continue':'slot.label.overwrite', {n: i+1}) : t('slot.label.new', {n: i+1}));
     if (data) {
-      const cosName = (COSTUME_EFFECTS[data.costume]||{}).name || '기본 꽁초';
-      const t = TIMES[data.timeIdx||0];
+      const cosName = (COSTUME_EFFECTS[data.costume]||{}).name || t('slot.cosDefault');
+      const tInfo = TIMES[data.timeIdx||0];
       btn.innerHTML = `
         <div class="slot-info">
-          <b>슬롯 ${i+1} · Day ${data.day} ${escapeHtml(t.icon||'')}</b>
-          <span class="meta">${escapeHtml(cosName)} · 폐 ${Math.round(data.stats.lung)} · 평판 ${Math.round(data.stats.reputation)}</span>
+          <b>${escapeHtml(t('slot.row', {n: i+1, d: data.day, icon: tInfo.icon||''}))}</b>
+          <span class="meta">${escapeHtml(t('slot.rowMeta', {cos: cosName, l: Math.round(data.stats.lung), r: Math.round(data.stats.reputation)}))}</span>
         </div>`;
       btn.addEventListener('click', () => {
         if (mode === 'new') {
-          if (!confirm(`슬롯 ${i+1}의 Day ${data.day} 갈매기를 덮어쓸까? (되돌릴 수 없음)`)) return;
+          if (!confirm(t('slot.confirmOver', {n: i+1, d: data.day}))) return;
           clearSlot(i);
           META.currentSlot = i; saveMeta();
           closeModal();
@@ -4655,14 +5566,14 @@ function showSlotPicker(mode) {
           document.getElementById('endingScreen').classList.remove('show');
           AUDIO.resume(); AUDIO.startBgm();
           updateUI();
-          logLine(`▶ 슬롯 ${i+1} 이어하기 (Day ${RUN.day})`);
+          logLine(t('slot.continueLog', {n: i+1, d: RUN.day}));
         }
       });
     } else {
       btn.innerHTML = `
         <div class="slot-info">
-          <b>슬롯 ${i+1} · 빈 슬롯</b>
-          <span class="meta">＋ 새 갈매기</span>
+          <b>${escapeHtml(t('slot.rowEmpty', {n: i+1}))}</b>
+          <span class="meta">${escapeHtml(t('slot.newAt'))}</span>
         </div>`;
       btn.addEventListener('click', () => {
         META.currentSlot = i; saveMeta();
@@ -4673,15 +5584,15 @@ function showSlotPicker(mode) {
     list.appendChild(btn);
   }
   if (visible === 0) {
-    list.innerHTML = '<p class="dim">진행 중인 갈매기가 없습니다. "새 갈매기 시작"으로 시작해주세요.</p>';
+    list.innerHTML = '<p class="dim">' + escapeHtml(t('slot.noSaves')) + '</p>';
   }
 }
 
 function showSlotSwitch() {
   // Save current run before switching
   if (RUN && !RUN.finished) saveRun();
-  let html = '<p class="dim">현재 슬롯의 진행은 자동 저장됨. 다른 슬롯으로 이동:</p><div class="slot-list" id="swapList"></div>';
-  openModal('🔄 슬롯 전환', html);
+  let html = '<p class="dim">' + escapeHtml(t('slot.swapIntro')) + '</p><div class="slot-list" id="swapList"></div>';
+  openModal(t('slot.swapTitle'), html);
   const list = document.getElementById('swapList');
   for (let i=0;i<SLOT_COUNT;i++) {
     const data = loadRunFromSlot(i);
@@ -4690,12 +5601,13 @@ function showSlotSwitch() {
     btn.type = 'button';
     btn.className = 'slot-card' + (data ? '' : ' empty') + (isActive ? ' active-slot' : '');
     if (data) {
-      const cosName = (COSTUME_EFFECTS[data.costume] || {}).name || '기본 꽁초';
-      const t = TIMES[data.timeIdx || 0];
+      const cosName = (COSTUME_EFFECTS[data.costume] || {}).name || t('slot.cosDefault');
+      const tInfo = TIMES[data.timeIdx || 0];
+      const headTxt = t('slot.row', {n: i+1, d: data.day, icon: tInfo.icon||''}) + (isActive ? t('slot.activeMark') : '');
       btn.innerHTML = `
         <div class="slot-info">
-          <b>슬롯 ${i+1} · Day ${data.day} ${escapeHtml(t.icon||'')}${isActive?' (현재)':''}</b>
-          <span class="meta">${escapeHtml(cosName)} · 폐 ${Math.round(data.stats.lung)} · 평판 ${Math.round(data.stats.reputation)}</span>
+          <b>${escapeHtml(headTxt)}</b>
+          <span class="meta">${escapeHtml(t('slot.rowMeta', {cos: cosName, l: Math.round(data.stats.lung), r: Math.round(data.stats.reputation)}))}</span>
         </div>`;
       btn.addEventListener('click', () => {
         if (isActive) { closeModal(); return; }
@@ -4704,13 +5616,13 @@ function showSlotSwitch() {
         closeModal();
         AUDIO.startBgm();
         updateUI();
-        toast(`▶ 슬롯 ${i+1}로 전환 (Day ${RUN.day})`,'good');
+        toast(t('slot.swapToast', {n: i+1, d: RUN.day}),'good');
       });
     } else {
       btn.innerHTML = `
         <div class="slot-info">
-          <b>슬롯 ${i+1} · 빈 슬롯${isActive?' (현재)':''}</b>
-          <span class="meta">+ 새 갈매기 시작</span>
+          <b>${escapeHtml(t('slot.rowEmpty', {n: i+1}) + (isActive ? t('slot.activeMark') : ''))}</b>
+          <span class="meta">${escapeHtml(t('slot.newAt'))}</span>
         </div>`;
       btn.addEventListener('click', () => {
         META.currentSlot = i; saveMeta();
@@ -4730,20 +5642,20 @@ function showBackup() {
   const cosCount = (META.costumesUnlocked||[]).length;
   let html = `
     <div style="background:rgba(123,196,127,0.1);border:1px solid rgba(123,196,127,0.3);padding:8px 10px;border-radius:6px;font-size:12px;margin-bottom:10px">
-      ✅ <b>엔딩 자동 로컬 저장됨</b><br>
-      <span class="dim">엔딩 ${unlocked}/${ENDING_DEFS.length-1} · 칭호 ${titleCount} · 코스튬 ${cosCount} · 회차 ${META.totalRuns||0}</span>
+      <b>${escapeHtml(t('bk.savedOk'))}</b><br>
+      <span class="dim">${escapeHtml(t('bk.savedSummary', {e: unlocked, tot: ENDING_DEFS.length-1, t: titleCount, c: cosCount, r: META.totalRuns||0}))}</span>
     </div>
-    <p class="dim">localStorage 메인 키 + 백업 키 동시 보관. 캐시가 날아갈 위험에 대비해 아래 백업 사용.</p>
+    <p class="dim">${escapeHtml(t('bk.note'))}</p>
     <div class="menu-list">
-      <button id="bkDownload">💾 JSON 파일로 다운로드</button>
-      <button id="bkImport">📥 백업 파일 불러오기</button>
-      <button id="bkCopy">📋 클립보드로 복사</button>
+      <button id="bkDownload">${escapeHtml(t('bk.download'))}</button>
+      <button id="bkImport">${escapeHtml(t('bk.import'))}</button>
+      <button id="bkCopy">${escapeHtml(t('bk.copy'))}</button>
     </div>
     <hr>
-    <p class="dim">현재 메타 데이터 미리보기</p>
+    <p class="dim">${escapeHtml(t('bk.preview'))}</p>
     <textarea id="bkPreview" readonly style="width:100%;height:120px;background:#14181F;color:var(--c-text-dim);border:1px solid var(--c-line);border-radius:6px;padding:6px;font-size:10px;font-family:monospace">${escapeHtml(json)}</textarea>
     <input type="file" id="bkFile" accept=".json,application/json" style="display:none">`;
-  openModal('💾 데이터 백업 / 복원', html);
+  openModal(t('bk.title'), html);
   // Programmatic download (a-tag with button child was breaking on some browsers)
   document.getElementById('bkDownload').onclick = () => {
     try {
@@ -4757,7 +5669,7 @@ function showBackup() {
       a.click();
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
-      toast('💾 파일 저장됨', 'good');
+      toast(t('bk.savedFile'), 'good');
     } catch(e) {
       console.error('download failed', e);
       const dataUrl = 'data:application/json;charset=utf-8,' + encodeURIComponent(json);
@@ -4765,19 +5677,19 @@ function showBackup() {
       a2.href = dataUrl;
       a2.download = `kkeuh-meta-${today}.json`;
       a2.click();
-      toast('💾 파일 저장됨 (대체 모드)', 'warn');
+      toast(t('bk.savedFileAlt'), 'warn');
     }
   };
   document.getElementById('bkImport').onclick = () => document.getElementById('bkFile').click();
   document.getElementById('bkCopy').onclick = async () => {
     try {
       await navigator.clipboard.writeText(json);
-      toast('📋 클립보드에 복사됐다','good');
+      toast(t('bk.copied'),'good');
     } catch(e) {
       const ta = document.getElementById('bkPreview');
       ta.select(); ta.setSelectionRange(0, 999999);
-      try { document.execCommand('copy'); toast('📋 복사됐다','good'); }
-      catch(e2) { toast('복사 실패 — 박스에서 직접 복사하세요','warn'); }
+      try { document.execCommand('copy'); toast(t('bk.copied2'),'good'); }
+      catch(e2) { toast(t('bk.copyFail'),'warn'); }
     }
   };
   document.getElementById('bkFile').onchange = (e) => {
@@ -4788,14 +5700,14 @@ function showBackup() {
       try {
         const obj = JSON.parse(reader.result);
         if (!obj || typeof obj !== 'object' || !Array.isArray(obj.endingsUnlocked)) throw new Error('format');
-        if (!confirm(`백업을 복원할까? 현재 메타 데이터는 덮어쓰여집니다.\n해금된 엔딩: ${(obj.endingsUnlocked||[]).length}개`)) return;
+        if (!confirm(t('bk.confirmRestore', {n: (obj.endingsUnlocked||[]).length}))) return;
         META = Object.assign(defaultMeta(), obj);
         saveMeta();
         closeModal();
-        toast('✅ 복원 완료','good');
+        toast(t('bk.restoreOk'),'good');
         showTitle();
       } catch(err) {
-        alert('파일 형식 오류: ' + err.message);
+        alert(t('bk.fileFmt') + err.message);
       }
     };
     reader.readAsText(f);
@@ -4844,11 +5756,11 @@ function makeEndingShareImage(endingId) {
   ctx.font = 'bold 56px "Malgun Gothic","Apple SD Gothic Neo",sans-serif';
   ctx.textAlign = 'center';
   ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowOffsetX = 4; ctx.shadowOffsetY = 4;
-  ctx.fillText('끄어억', 360, 90);
+  ctx.fillText(t('ending.titleHero'), 360, 90);
   ctx.shadowColor = 'transparent';
   ctx.fillStyle = 'rgba(166,174,192,0.9)';
   ctx.font = '18px "Malgun Gothic","Apple SD Gothic Neo",sans-serif';
-  ctx.fillText('부둣가 골초 갈매기 시뮬레이터', 360, 120);
+  ctx.fillText(t('ending.subtitleHero'), 360, 120);
 
   // Big seagull (5x scale)
   ctx.save();
@@ -4872,7 +5784,7 @@ function makeEndingShareImage(endingId) {
   if (def.title) {
     ctx.fillStyle = '#F4C430';
     ctx.font = 'bold 22px "Malgun Gothic","Apple SD Gothic Neo",sans-serif';
-    ctx.fillText('🏆 ' + def.title, 360, 615);
+    ctx.fillText('🏆 ' + titleText(def), 360, 615);
   }
 
   // Flavor text — wrapped
@@ -4927,7 +5839,7 @@ function downloadEndingImage(endingId) {
       a.click();
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
-      toast(`🖼️ ${def.name} 이미지 저장됨`, 'good');
+      toast(t('ending.imgSaved', {n: def.name}), 'good');
     }, 'image/png');
   } else {
     _fallbackDataUrl(c, filename);
@@ -4939,10 +5851,10 @@ function _fallbackDataUrl(c, filename) {
     const a = document.createElement('a');
     a.href = url; a.download = filename;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    toast(`🖼️ 이미지 저장됨`, 'good');
+    toast(t('ending.imgSaved2'), 'good');
   } catch(e) {
     console.error('image download failed', e);
-    toast('이미지 저장 실패', 'bad');
+    toast(t('ending.imgFail'), 'bad');
   }
 }
 
@@ -4953,13 +5865,13 @@ function showEndingShareModal(endingId) {
   const c = makeEndingShareImage(endingId);
   const dataUrl = c.toDataURL('image/png');
   let html = `
-    <p class="dim">SNS 공유용 카드. 길게 눌러 저장하거나 아래 버튼을 누르세요.</p>
+    <p class="dim">${escapeHtml(t('ending.shareIntro'))}</p>
     <img src="${dataUrl}" alt="ending share" style="width:100%;border-radius:8px;border:1px solid var(--c-line);background:#000">
     <div class="menu-list" style="margin-top:10px">
-      <button id="esDownload">🖼️ PNG 다운로드</button>
-      <button id="esShare">📤 공유</button>
+      <button id="esDownload">${escapeHtml(t('ending.shareDl'))}</button>
+      <button id="esShare">${escapeHtml(t('ending.shareBtn'))}</button>
     </div>`;
-  openModal(`🖼️ ${def.name} — 공유 카드`, html);
+  openModal(t('ending.shareTitle', {n: def.name}), html);
   document.getElementById('esDownload').onclick = () => downloadEndingImage(endingId);
   document.getElementById('esShare').onclick = () => shareProgress({ endingId });
 }
@@ -4967,16 +5879,16 @@ function showEndingShareModal(endingId) {
 function shareProgress(opts={}) {
   const totalEndings = ENDING_DEFS.length - 1;
   const unlocked = META.endingsUnlocked.length;
-  let text;
+  let text_;
   if (opts.endingId && ENDING_DEFS[opts.endingId]) {
     const def = ENDING_DEFS[opts.endingId];
-    text = `🚬🐦 끄어억에서 [${def.name}] 엔딩에 도달했다! (${unlocked}/${totalEndings} 해금)\n"끼룩이 아니라 끄어억"\nhttps://seagull-game-rhr1109.vercel.app`;
+    text_ = t('ending.shareTextEnd', {n: def.name, u: unlocked, t: totalEndings});
   } else {
-    text = `🚬🐦 끄어억 — ${unlocked}/${totalEndings} 엔딩 해금 / 최장수 ${META.longestLife||0}일 / 총 회차 ${META.totalRuns||0}회\nhttps://seagull-game-rhr1109.vercel.app`;
+    text_ = t('ending.shareText', {u: unlocked, t: totalEndings, l: META.longestLife||0, r: META.totalRuns||0});
   }
   const data = {
-    title: '끄어억 — 부둣가 골초 갈매기',
-    text,
+    title: t('ending.shareTitle2'),
+    text: text_,
     url: 'https://seagull-game-rhr1109.vercel.app'
   };
   if (navigator.share) {
@@ -4984,16 +5896,16 @@ function shareProgress(opts={}) {
       if (e && e.name !== 'AbortError') console.warn('share failed', e);
     });
   } else if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(
-      () => toast('📋 클립보드에 복사됐다','good'),
-      () => promptCopyFallback(text)
+    navigator.clipboard.writeText(text_).then(
+      () => toast(t('bk.copied'),'good'),
+      () => promptCopyFallback(text_)
     );
   } else {
-    promptCopyFallback(text);
+    promptCopyFallback(text_);
   }
 }
-function promptCopyFallback(text) {
-  prompt('아래 텍스트를 복사해서 공유:', text);
+function promptCopyFallback(text_) {
+  prompt(t('ending.copyPrompt'), text_);
 }
 
 function showStats() {
@@ -5009,62 +5921,62 @@ function showStats() {
     totalReaches += c;
     if (c > topEndingCount) { topEndingCount = c; topEndingId = parseInt(id); }
   }
-  const topName = (topEndingId && ENDING_DEFS[topEndingId]) ? ENDING_DEFS[topEndingId].name : '없음';
+  const topName = (topEndingId && ENDING_DEFS[topEndingId]) ? ENDING_DEFS[topEndingId].name : t('stats.topNone');
   let html = `
-    <p><b>📊 누적 진행</b></p>
-    <div class="stats-detail-row"><span>총 회차 수</span><span class="dim">${META.totalRuns || 0}회</span></div>
-    <div class="stats-detail-row"><span>최장 수명</span><span class="dim">${META.longestLife || 0}일</span></div>
-    <div class="stats-detail-row"><span>총 흡연량</span><span class="dim">${META.totalCigSmoked || 0}개비</span></div>
-    <div class="stats-detail-row"><span>총 엔딩 도달</span><span class="dim">${totalReaches}회 (중복 포함)</span></div>
+    <p><b>${escapeHtml(t('stats.h.runs'))}</b></p>
+    <div class="stats-detail-row"><span>${escapeHtml(t('stats.totalRuns'))}</span><span class="dim">${escapeHtml(t('stats.totalRunsV', {n: META.totalRuns || 0}))}</span></div>
+    <div class="stats-detail-row"><span>${escapeHtml(t('stats.longest'))}</span><span class="dim">${escapeHtml(t('stats.longestV', {n: META.longestLife || 0}))}</span></div>
+    <div class="stats-detail-row"><span>${escapeHtml(t('stats.totalCigs'))}</span><span class="dim">${escapeHtml(t('stats.totalCigsV', {n: META.totalCigSmoked || 0}))}</span></div>
+    <div class="stats-detail-row"><span>${escapeHtml(t('stats.totalReach'))}</span><span class="dim">${escapeHtml(t('stats.totalReachV', {n: totalReaches}))}</span></div>
     <hr>
-    <p><b>🏆 컬렉션</b></p>
-    <div class="stats-detail-row"><span>해금된 엔딩</span><span class="dim">${unlockedCount}/${totalEndings} 종</span></div>
-    <div class="stats-detail-row"><span>보유 코스튬</span><span class="dim">${costumeCount}/25 종</span></div>
-    <div class="stats-detail-row"><span>보유 칭호</span><span class="dim">${titleCount}/${totalEndings} 종</span></div>
-    <div class="stats-detail-row"><span>활성 메타 보너스</span><span class="dim">${META_BONUSES.filter(b => unlockedCount >= b.req).length}/${META_BONUSES.length} 종</span></div>
+    <p><b>${escapeHtml(t('stats.h.coll'))}</b></p>
+    <div class="stats-detail-row"><span>${escapeHtml(t('stats.unlocked'))}</span><span class="dim">${escapeHtml(t('stats.unlockedV', {n: unlockedCount, tot: totalEndings}))}</span></div>
+    <div class="stats-detail-row"><span>${escapeHtml(t('stats.cosOwned'))}</span><span class="dim">${escapeHtml(t('stats.cosOwnedV', {n: costumeCount}))}</span></div>
+    <div class="stats-detail-row"><span>${escapeHtml(t('stats.titlesOwned'))}</span><span class="dim">${escapeHtml(t('stats.titlesOwnedV', {n: titleCount, tot: totalEndings}))}</span></div>
+    <div class="stats-detail-row"><span>${escapeHtml(t('stats.metaActive'))}</span><span class="dim">${escapeHtml(t('stats.metaActiveV', {n: META_BONUSES.filter(b => unlockedCount >= b.req).length, tot: META_BONUSES.length}))}</span></div>
     <hr>
-    <p><b>👑 가장 많이 도달한 엔딩</b></p>
-    <div class="stats-detail-row"><span>${escapeHtml(topName)}</span><span class="dim">${topEndingCount}회 도달</span></div>`;
+    <p><b>${escapeHtml(t('stats.h.top'))}</b></p>
+    <div class="stats-detail-row"><span>${escapeHtml(topName)}</span><span class="dim">${escapeHtml(t('stats.topReach', {n: topEndingCount}))}</span></div>`;
 
   if (totalReaches > 0) {
-    html += `<details style="margin-top:8px"><summary>📈 엔딩별 도달 횟수</summary><div>`;
+    html += `<details style="margin-top:8px"><summary>${escapeHtml(t('stats.byEnding'))}</summary><div>`;
     for (let i=1;i<=totalEndings;i++) {
       const c = reached[i] || 0;
       const def = ENDING_DEFS[i];
       if (!def) continue;
       const name = META.endingsUnlocked.includes(i) ? def.name : (def.hidden ? '🔒 ???' : '???');
-      html += `<div class="stats-detail-row"><span>#${i} ${escapeHtml(name)}</span><span class="dim">${c}회</span></div>`;
+      html += `<div class="stats-detail-row"><span>#${i} ${escapeHtml(name)}</span><span class="dim">${escapeHtml(t('stats.byEndingV', {n: c}))}</span></div>`;
     }
     html += `</div></details>`;
   }
 
   // Current run snapshot
   if (!RUN.finished && RUN.day) {
-    html += `<hr><p><b>📍 현재 회차</b></p>`;
-    html += `<div class="stats-detail-row"><span>슬롯 ${(META.currentSlot|0)+1} · Day ${RUN.day}/30</span><span class="dim">총 흡연 ${RUN.cigarettesSmokedTotal||0}개</span></div>`;
+    html += `<hr><p><b>${escapeHtml(t('stats.cur'))}</b></p>`;
+    html += `<div class="stats-detail-row"><span>${escapeHtml(t('stats.curRow', {s: (META.currentSlot|0)+1, d: RUN.day}))}</span><span class="dim">${escapeHtml(t('stats.curMeta', {n: RUN.cigarettesSmokedTotal||0}))}</span></div>`;
   }
 
-  openModal('📈 누적 통계', html);
+  openModal(t('stats.title'), html);
 }
 
 function showTitles() {
   const list = META.titlesUnlocked || [];
-  let html = '<p class="dim">엔딩 도달 시 칭호가 해금됩니다. 회차 시작 시 상단바에 표시.</p>';
+  let html = '<p class="dim">' + escapeHtml(t('titles.intro')) + '</p>';
   html += '<div class="menu-list">';
   const sel = (META.selectedTitle === '') ? 'border:2px solid var(--c-accent)' : '';
-  html += `<button data-title="" style="${sel}">— 칭호 없음 —</button>`;
-  for (const t of list) {
-    const s = (META.selectedTitle === t) ? 'border:2px solid var(--c-accent)' : '';
-    html += `<button data-title="${escapeHtml(t)}" style="${s}">🏆 ${escapeHtml(t)}</button>`;
+  html += `<button data-title="" style="${sel}">${escapeHtml(t('titles.none'))}</button>`;
+  for (const titEn of list) {
+    const s = (META.selectedTitle === titEn) ? 'border:2px solid var(--c-accent)' : '';
+    html += `<button data-title="${escapeHtml(titEn)}" style="${s}">🏆 ${escapeHtml(titleText(titEn))}</button>`;
   }
-  if (list.length === 0) html += '<p class="dim">아직 해금된 칭호가 없다.</p>';
+  if (list.length === 0) html += '<p class="dim">' + escapeHtml(t('titles.empty')) + '</p>';
   html += '</div>';
-  openModal('🏆 칭호 변경', html);
+  openModal(t('titles.title'), html);
   document.querySelectorAll('#modalBody [data-title]').forEach(b => {
     b.addEventListener('click', () => {
       META.selectedTitle = b.dataset.title;
       saveMeta();
-      toast(META.selectedTitle ? '칭호 변경: ' + META.selectedTitle : '칭호 해제', 'good');
+      toast(META.selectedTitle ? t('titles.changedTo', {t: titleText(META.selectedTitle)}) : t('titles.cleared'), 'good');
       updateUI();
       showTitles();
     });
@@ -5073,31 +5985,27 @@ function showTitles() {
 
 function showHelp() {
   let html = `
-  <p><b>🎮 조작</b></p>
-  <p class="dim">PC: ← → 이동 · Space 점프/날갯짓 · 1~5 액션 단축키</p>
-  <p class="dim">모바일: 화면 하단 ◀ ▶ 이동 · ▲ 점프 · 5개 액션 버튼</p>
+  <p><b>${escapeHtml(t('help.controls'))}</b></p>
+  <p class="dim">${escapeHtml(t('help.controlsPC'))}</p>
+  <p class="dim">${escapeHtml(t('help.controlsMobile'))}</p>
   <hr>
-  <p><b>📊 핵심 6대 스탯</b></p>
-  <p class="dim">🫁 폐 0이면 사망 · 🚬 욕구 안 채우면 발작 · ✈️ 비행 (사냥 안 할 때 자연 회복) · 😤 스트레스 (흡연/노을로 회복) · 👥 평판 · 🍖 포만감 0이면 굶어죽음 (음식 자동 소비)</p>
-  <p><b>📊 보조 3대 스탯</b></p>
-  <p class="dim">🧠 지능 (책/돌고래/사색) · 💋 매력 (그루밍/사진/평판) · 💧 감수성 (노을/시/금연)</p>
+  <p><b>${escapeHtml(t('help.coreStats'))}</b></p>
+  <p class="dim">${escapeHtml(t('help.coreDesc'))}</p>
+  <p><b>${escapeHtml(t('help.subStats'))}</b></p>
+  <p class="dim">${escapeHtml(t('help.subDesc'))}</p>
   <hr>
-  <p><b>🎯 액션</b></p>
-  <p class="dim"><b>사냥</b>: 시간대별 사냥터 (담배/음식 획득)<br>
-  <b>흡연</b>: 등급별 만족/폐손상<br>
-  <b>탐험</b>: 랜덤 이벤트 (📚책 · 🪞그루밍 · 🌅노을 · 🎰슬롯 · 🐬돌고래 · 🎆폭죽 · 🌪️태풍 · 🛒상점 …)<br>
-  <b>상호작용</b>: 다른 갈매기·돌고래·CEO 등<br>
-  <b>수면</b>: 시간 진행, 스트레스 회복</p>
+  <p><b>${escapeHtml(t('help.actionsHdr'))}</b></p>
+  <p class="dim">${t('help.actionsBody')}</p>
   <hr>
-  <p><b>📔 엔딩 24종</b></p>
-  <p class="dim">어떤 길로 가도 부두는 그대로다. 도달 조건은 🚬 인벤토리 → 엔딩 진행도에서 실시간 확인.</p>
-  <p class="dim">⚠ Day 30이 지나면 가장 가까운 엔딩으로 자동 종료.</p>
+  <p><b>${escapeHtml(t('help.endingsHdr'))}</b></p>
+  <p class="dim">${escapeHtml(t('help.endingsBody'))}</p>
+  <p class="dim">${escapeHtml(t('help.endingsWarn'))}</p>
   <hr>
-  <p><b>✨ 메타 진행</b></p>
-  <p class="dim">엔딩 해금 누적 시 시작 보너스 + 매 턴 욕구/포만감 감소. 회차 거듭할수록 쉬워진다.</p>
+  <p><b>${escapeHtml(t('help.metaHdr'))}</b></p>
+  <p class="dim">${escapeHtml(t('help.metaBody'))}</p>
   <hr>
-  <p class="dim">청소년이용불가. 그래야 할 만한 이유가 있다.</p>`;
-  openModal('❓ 도움말', html);
+  <p class="dim">${escapeHtml(t('ui.title.footer'))}</p>`;
+  openModal(t('help.title'), html);
 }
 
 // ============================================================
@@ -5117,7 +6025,7 @@ function showTitle() {
   if (cb) {
     cb.classList.toggle('hidden', savedCount === 0);
     cb.style.display = savedCount > 0 ? '' : 'none';
-    cb.textContent = savedCount > 0 ? `▶ 이어하기 (${savedCount}개 진행 중)` : '▶ 이어하기';
+    cb.textContent = savedCount > 0 ? t('ui.title.continueWith', {n: savedCount}) : t('ui.title.continue');
   }
   if (ng) {
     ng.classList.remove('hidden');
@@ -5141,17 +6049,17 @@ function renderSlotList() {
     card.type = 'button';
     const isActive = (META.currentSlot === i);
     card.className = 'slot-card' + (data ? '' : ' empty') + (isActive && data ? ' active-slot' : '');
-    card.setAttribute('aria-label', data ? `슬롯 ${i+1} 이어하기` : `슬롯 ${i+1} 새 시작`);
+    card.setAttribute('aria-label', data ? t('slot.label.continue', {n: i+1}) : t('slot.label.new', {n: i+1}));
     if (data) {
-      const cosName = (COSTUME_EFFECTS[data.costume] || {}).name || '기본 꽁초';
-      const t = TIMES[data.timeIdx || 0];
+      const cosName = (COSTUME_EFFECTS[data.costume] || {}).name || t('slot.cosDefault');
+      const tInfo = TIMES[data.timeIdx || 0];
       card.innerHTML = `
         <div class="slot-info">
-          <b>슬롯 ${i+1} · Day ${data.day} ${escapeHtml(t.icon||'')}</b>
-          <span class="meta">${escapeHtml(cosName)} · 폐 ${Math.round(data.stats.lung)} · 평판 ${Math.round(data.stats.reputation)}</span>
+          <b>${escapeHtml(t('slot.row', {n: i+1, d: data.day, icon: tInfo.icon||''}))}</b>
+          <span class="meta">${escapeHtml(t('slot.rowMeta', {cos: cosName, l: Math.round(data.stats.lung), r: Math.round(data.stats.reputation)}))}</span>
         </div>
         <div class="slot-action">
-          <button class="slot-del" data-idx="${i}" title="삭제">🗑</button>
+          <button class="slot-del" data-idx="${i}" title="${escapeHtml(t('slot.delTip'))}">🗑</button>
         </div>`;
       card.addEventListener('click', (e) => {
         if (e.target.classList.contains('slot-del')) return;
@@ -5162,13 +6070,13 @@ function renderSlotList() {
         document.getElementById('endingScreen').classList.remove('show');
         AUDIO.resume(); AUDIO.startBgm();
         updateUI();
-        logLine(`▶ 슬롯 ${i+1} 이어하기 (Day ${RUN.day})`);
+        logLine(t('slot.continueLog', {n: i+1, d: RUN.day}));
       });
     } else {
       card.innerHTML = `
         <div class="slot-info">
-          <b>슬롯 ${i+1} · 빈 슬롯</b>
-          <span class="meta">+ 새 갈매기 시작</span>
+          <b>${escapeHtml(t('slot.rowEmpty', {n: i+1}))}</b>
+          <span class="meta">${escapeHtml(t('slot.newAt'))}</span>
         </div>
         <div class="slot-action">
           <span style="color:var(--c-text-dim);font-size:18px">＋</span>
@@ -5186,7 +6094,7 @@ function renderSlotList() {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const idx = parseInt(btn.dataset.idx);
-      if (confirm(`슬롯 ${idx+1}의 갈매기를 삭제할까? (되돌릴 수 없음)`)) {
+      if (confirm(t('slot.delConfirm', {n: idx+1}))) {
         clearSlot(idx);
         renderSlotList();
       }
@@ -5210,15 +6118,15 @@ function newGame() {
   updateUI();
   AUDIO.resume(); AUDIO.startBgm();
   AUDIO.sfx('kkiruk');
-  logLine('Day 1: 부둣가에 또 하나의 한심한 갈매기가 깨어났다.');
+  logLine(t('day1.start'));
   if (RUN.costume !== 'default') {
     const def = ENDING_DEFS.find(d => d && d.costume === RUN.costume);
-    if (def) toast('🎩 코스튬 적용: ' + def.costumeName, 'good');
+    if (def) toast(t('run.cosApplied', {n: def.costumeName}), 'good');
   }
-  if (META.selectedTitle) toast('🏆 칭호: ' + META.selectedTitle, 'good');
+  if (META.selectedTitle) toast(t('run.titleApplied', {t: titleText(META.selectedTitle)}), 'good');
   if (earnedBonuses && earnedBonuses.length > 0) {
     setTimeout(() => {
-      toast(`✨ 메타 보너스 ${earnedBonuses.length}개 적용됨 (인벤 모달에서 확인)`, 'good');
+      toast(t('run.metaApplied', {n: earnedBonuses.length}), 'good');
     }, 2200);
   }
   showControlHint();
@@ -5228,9 +6136,7 @@ function showControlHint() {
   const hint = document.getElementById('controlHint');
   if (!hint) return;
   const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-  hint.textContent = isTouch
-    ? '터치: 하단 ◀ ▶ 버튼 이동 · ▲ 점프 · 5개 액션 버튼 누르기'
-    : 'PC: ← → 이동 · Space 점프 · 1~5 액션 단축키';
+  hint.textContent = isTouch ? t('ui.controlHint.touch') : t('ui.controlHint.pc');
   hint.classList.add('show');
   clearTimeout(showControlHint._t);
   showControlHint._t = setTimeout(() => hint.classList.remove('show'), 6000);
@@ -5239,22 +6145,25 @@ function showControlHint() {
 // Permanent bonuses earned by unlocking endings. Applied at run start AFTER costume,
 // also exposed via META.metaBonus_* for use during the run (per-turn drift tuning).
 const META_BONUSES = [
-  { req: 1,  desc:'시작 동전 +5',                         apply:(R)=>{ R.money += 5; } },
-  { req: 2,  desc:'시작 음식 +1',                         apply:(R)=>{ R.foodCount += 1; } },
-  { req: 3,  desc:'시작 폐 +5',                           apply:(R)=>{ R.stats.lung = clamp(R.stats.lung+5,0,100); } },
-  { req: 4,  desc:'시작 인벤 D급 ×1',                     apply:(R)=>{ R.inventory.D += 1; } },
-  { req: 5,  desc:'매 턴 욕구 누적 -0.5',                  apply:(R,M)=>{ M.metaBonus_cravingReduce = (M.metaBonus_cravingReduce||0) + 0.5; } },
-  { req: 6,  desc:'시작 비행 +5',                         apply:(R)=>{ R.stats.flight = clamp(R.stats.flight+5,0,100); } },
-  { req: 7,  desc:'시작 평판 +5',                         apply:(R)=>{ R.stats.reputation = clamp(R.stats.reputation+5,0,100); } },
-  { req: 8,  desc:'매 턴 포만감 누적 -0.4 (덜 배고파짐)',     apply:(R,M)=>{ M.metaBonus_hungerReduce = (M.metaBonus_hungerReduce||0) + 0.4; } },
-  { req: 9,  desc:'시작 동전 +15, 음식 +2',                apply:(R)=>{ R.money += 15; R.foodCount += 2; } },
-  { req: 10, desc:'시작 모든 스탯 +5',                     apply:(R)=>{ for (const k of ['lung','flight','reputation']) R.stats[k] = clamp(R.stats[k]+5,0,100); R.stats.hunger = clamp(R.stats.hunger+5,0,100); } },
-  { req: 12, desc:'시작 인벤 C급 ×2',                     apply:(R)=>{ R.inventory.C += 2; } },
-  { req: 14, desc:'시작 폐 +10, 매 턴 욕구 -0.5 추가',     apply:(R,M)=>{ R.stats.lung = clamp(R.stats.lung+10,0,100); M.metaBonus_cravingReduce = (M.metaBonus_cravingReduce||0) + 0.5; } },
-  { req: 16, desc:'시작 인벤 B급 ×1',                     apply:(R)=>{ R.inventory.B += 1; } },
-  { req: 18, desc:'시작 모든 스탯 +10',                    apply:(R)=>{ for (const k of ['lung','flight','reputation']) R.stats[k] = clamp(R.stats[k]+10,0,100); R.stats.hunger = clamp(R.stats.hunger+10,0,100); } },
-  { req: 20, desc:'전설의 갈매기: 모든 보너스 강화 + A급 ×1', apply:(R,M)=>{ R.inventory.A += 1; M.metaBonus_cravingReduce = (M.metaBonus_cravingReduce||0) + 0.5; M.metaBonus_hungerReduce = (M.metaBonus_hungerReduce||0) + 0.3; } }
+  { req: 1,  apply:(R)=>{ R.money += 5; } },
+  { req: 2,  apply:(R)=>{ R.foodCount += 1; } },
+  { req: 3,  apply:(R)=>{ R.stats.lung = clamp(R.stats.lung+5,0,100); } },
+  { req: 4,  apply:(R)=>{ R.inventory.D += 1; } },
+  { req: 5,  apply:(R,M)=>{ M.metaBonus_cravingReduce = (M.metaBonus_cravingReduce||0) + 0.5; } },
+  { req: 6,  apply:(R)=>{ R.stats.flight = clamp(R.stats.flight+5,0,100); } },
+  { req: 7,  apply:(R)=>{ R.stats.reputation = clamp(R.stats.reputation+5,0,100); } },
+  { req: 8,  apply:(R,M)=>{ M.metaBonus_hungerReduce = (M.metaBonus_hungerReduce||0) + 0.4; } },
+  { req: 9,  apply:(R)=>{ R.money += 15; R.foodCount += 2; } },
+  { req: 10, apply:(R)=>{ for (const k of ['lung','flight','reputation']) R.stats[k] = clamp(R.stats[k]+5,0,100); R.stats.hunger = clamp(R.stats.hunger+5,0,100); } },
+  { req: 12, apply:(R)=>{ R.inventory.C += 2; } },
+  { req: 14, apply:(R,M)=>{ R.stats.lung = clamp(R.stats.lung+10,0,100); M.metaBonus_cravingReduce = (M.metaBonus_cravingReduce||0) + 0.5; } },
+  { req: 16, apply:(R)=>{ R.inventory.B += 1; } },
+  { req: 18, apply:(R)=>{ for (const k of ['lung','flight','reputation']) R.stats[k] = clamp(R.stats[k]+10,0,100); R.stats.hunger = clamp(R.stats.hunger+10,0,100); } },
+  { req: 20, apply:(R,M)=>{ R.inventory.A += 1; M.metaBonus_cravingReduce = (M.metaBonus_cravingReduce||0) + 0.5; M.metaBonus_hungerReduce = (M.metaBonus_hungerReduce||0) + 0.3; } }
 ];
+META_BONUSES.forEach(b => {
+  Object.defineProperty(b, 'desc', { get(){ return t('meta.b'+this.req); }, enumerable: true });
+});
 
 function applyMetaBonuses() {
   // Reset per-run multipliers; META object holds the active values
@@ -5400,7 +6309,10 @@ document.getElementById('menuBtn').addEventListener('click', () => { AUDIO.sfx('
 document.getElementById('muteBtn').addEventListener('click', () => {
   const on = AUDIO.toggleMute();
   document.getElementById('muteBtn').textContent = on ? '🔊' : '🔇';
-  toast(on ? '🔊 사운드 ON' : '🔇 사운드 OFF', '');
+  toast(on ? t('snd.on') : t('snd.off'), '');
+});
+document.getElementById('langToggleBtn').addEventListener('click', () => {
+  setLang(LANG === 'en' ? 'ko' : 'en');
 });
 // Title: "이어하기" → slot picker. "새 갈매기" → first empty slot, fallback to picker if all full.
 document.getElementById('newGameBtn').addEventListener('click', () => {
@@ -5420,18 +6332,18 @@ document.getElementById('newGameBtn').addEventListener('click', () => {
 document.getElementById('continueBtn').addEventListener('click', () => { showSlotPicker('continue'); });
 document.getElementById('albumOpenBtn').addEventListener('click', showAlbum);
 document.getElementById('creditsBtn').addEventListener('click', () => {
-  openModal('크레딧', `
-    <p><b>끄어억 — 부둣가 골초 갈매기 시뮬레이터</b></p>
-    <p class="dim">기획: 마스터 문서 v2 기반</p>
-    <p class="dim">개발: 단일 HTML 프로토타입</p>
-    <p class="dim">아트: 절차적 캔버스 픽셀 (외부 에셋 0개)</p>
+  openModal(t('credits.title'),
+    `<p>${t('credits.headline')}</p>
+    <p class="dim">${escapeHtml(t('credits.plan'))}</p>
+    <p class="dim">${escapeHtml(t('credits.dev'))}</p>
+    <p class="dim">${escapeHtml(t('credits.art'))}</p>
     <hr>
-    <p>"꽁초를 문 갈매기 한 마리가 부두에 산다.</p>
-    <p>그는 죽거나, 살거나, 사라진다.</p>
-    <p>어느 쪽이든 부두는 그대로다."</p>
+    <p>${escapeHtml(t('credits.poem1'))}</p>
+    <p>${escapeHtml(t('credits.poem2'))}</p>
+    <p>${escapeHtml(t('credits.poem3'))}</p>
     <hr>
-    <p class="dim">청소년이용불가. 그래야 할 만한 이유가 있다.</p>
-  `);
+    <p class="dim">${escapeHtml(t('ui.title.footer'))}</p>`
+  );
 });
 
 // auto-save before close
@@ -5461,8 +6373,19 @@ window.addEventListener('orientationchange', setCanvasSize);
 // ============================================================
 // BOOT
 // ============================================================
+function refreshTitleScreen() {
+  // Re-render the title screen continue-button label which is dynamic
+  const cb = document.getElementById('continueBtn');
+  if (!cb) return;
+  let savedCount = 0;
+  for (let i=0;i<SLOT_COUNT;i++) if (loadRunFromSlot(i)) savedCount++;
+  cb.textContent = savedCount > 0 ? t('ui.title.continueWith', {n: savedCount}) : t('ui.title.continue');
+}
+
 function boot() {
   migrateLegacySave();
+  applyStaticI18n();
+  document.documentElement.lang = (LANG === 'ko' ? 'ko' : 'en');
   showTitle();
   setCanvasSize();
   setupSceneInput();
