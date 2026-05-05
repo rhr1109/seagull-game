@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#1E2A3A">
-<title>Kkeueok — Dockside Chain-Smoking Seagull Simulator</title>
+<title>GRAWK — Dockside Chain-Smoking Seagull Simulator</title>
 <style>
 :root {
   --c-dock: #6B7280;
@@ -914,7 +914,7 @@ hr { border: none; border-top: 1px solid var(--c-line); margin: 8px 0; }
   <!-- Scene -->
   <div class="scene" id="scene">
     <canvas id="gameCanvas" width="320" height="240"></canvas>
-    <div class="cry" id="cry" data-i18n="ui.cry.default">kkiruk</div>
+    <div class="cry" id="cry" data-i18n="ui.cry.default">squawk</div>
     <div class="control-hint" id="controlHint" data-i18n="ui.controlHint">PC: ← → · Space jump · 1~5 actions</div>
     <div class="scene-overlay-text" id="locText" data-i18n="misc.locDefault">Dockside</div>
     <div class="log" id="log"></div>
@@ -969,9 +969,9 @@ hr { border: none; border-top: 1px solid var(--c-line); margin: 8px 0; }
     <div class="title-inner">
       <div>
         <canvas id="titleCanvas" width="160" height="120"></canvas>
-        <h1 data-i18n="ui.title.gameTitle">Kkeueok</h1>
+        <h1 data-i18n="ui.title.gameTitle">GRAWK</h1>
         <div class="sub" data-i18n="ui.title.subtitle">Dockside Chain-Smoking Seagull Simulator</div>
-        <div class="by"><span data-i18n="ui.title.tagline">"Not kkiruk — kkeueok"</span> <span class="rating-mark">19</span></div>
+        <div class="by"><span data-i18n="ui.title.tagline">"It's not squawk — it's GRAWK"</span> <span class="rating-mark">19</span></div>
       </div>
       <div class="menu">
         <button id="newGameBtn" data-i18n="ui.title.newGame">＋ New Seagull</button>
@@ -1175,7 +1175,7 @@ function setLang(lang) {
 }
 const STR = {
   // ===== Top bar / static UI =====
-  'ui.title.tab':            { en: 'Kkeueok — Dockside Chain-Smoking Seagull Simulator', ko: '끄어억 — 부둣가 골초 갈매기 시뮬레이터' },
+  'ui.title.tab':            { en: 'GRAWK — Dockside Chain-Smoking Seagull Simulator', ko: '끄어억 — 부둣가 골초 갈매기 시뮬레이터' },
   'ui.titlePill.title':      { en: 'Current title', ko: '현재 칭호' },
   'ui.timeLabel':            { en: 'Morning ☀️', ko: '아침 ☀️' },
   'ui.weatherLabel':         { en: 'Clear', ko: '맑음' },
@@ -1185,7 +1185,7 @@ const STR = {
   'ui.inv.title':            { en: 'Inventory', ko: '인벤토리' },
   'ui.album.title':          { en: 'Ending album', ko: '엔딩 앨범' },
   'ui.menu.title':           { en: 'Menu', ko: '메뉴' },
-  'ui.cry.default':          { en: 'kkiruk', ko: '끼룩' },
+  'ui.cry.default':          { en: 'squawk', ko: '끼룩' },
   'ui.controlHint':          { en: 'PC: ← → · Space jump · 1~5 actions', ko: 'PC: ← → · Space 점프 · 1~5 액션' },
   'ui.controlHint.touch':    { en: 'Touch: bottom ◀ ▶ to move · ▲ jump · 5 action buttons', ko: '터치: 하단 ◀ ▶ 버튼 이동 · ▲ 점프 · 5개 액션 버튼 누르기' },
   'ui.controlHint.pc':       { en: 'PC: ← → move · Space jump · 1~5 action shortcuts', ko: 'PC: ← → 이동 · Space 점프 · 1~5 액션 단축키' },
@@ -1210,9 +1210,9 @@ const STR = {
   'ui.action.interact':      { en: 'Interact', ko: '상호작용' },
   'ui.action.sleep':         { en: 'Sleep', ko: '수면' },
   'ui.modal.titlePh':        { en: 'Title', ko: '제목' },
-  'ui.title.gameTitle':      { en: 'Kkeueok', ko: '끄어억' },
+  'ui.title.gameTitle':      { en: 'GRAWK', ko: '끄어억' },
   'ui.title.subtitle':       { en: 'Dockside Chain-Smoking Seagull Simulator', ko: '부둣가 골초 갈매기 시뮬레이터' },
-  'ui.title.tagline':        { en: '"Not kkiruk — kkeueok"', ko: '"끼룩이 아니라 끄어억"' },
+  'ui.title.tagline':        { en: '"It\'s not squawk — it\'s GRAWK"', ko: '"끼룩이 아니라 끄어억"' },
   'ui.title.newGame':        { en: '＋ New Seagull', ko: '＋ 새 갈매기 시작' },
   'ui.title.continue':       { en: '▶ Continue', ko: '▶ 이어하기' },
   'ui.title.continueWith':   { en: '▶ Continue ({n} in progress)', ko: '▶ 이어하기 ({n}개 진행 중)' },
@@ -1277,7 +1277,7 @@ const STR = {
 
   // ===== Smoking =====
   'smoke.nothing':       { en: 'Nothing to smoke…', ko: '피울 게 없다…' },
-  'smoke.cryNothing':    { en: 'Kkeuueoeoeok', ko: '끄으어어억' },
+  'smoke.cryNothing':    { en: 'GRAAAWK', ko: '끄으어어억' },
   'smoke.choosePrompt':  { en: 'What to smoke?', ko: '어떤 걸 피울까?' },
   'smoke.meta':          { en: 'Sat +{sat} / Lung -{dmg}', ko: '만족 +{sat} / 폐 -{dmg}' },
   'smoke.btnSmoke':      { en: 'Smoke', ko: '피우기' },
@@ -1287,7 +1287,7 @@ const STR = {
   'smoke.empty':         { en: 'Nothing to smoke at all… terrible.', ko: '피울 게 하나도 없다… 끔찍하다.' },
   'smoke.modalTitle':    { en: '🚬 Smoke', ko: '🚬 흡연' },
   'smoke.toast':         { en: '🚬 {name} smoked. Sat {sat} / Lung -{dmg}', ko: '🚬 {name} 흡연. 만족 {sat} / 폐 -{dmg}' },
-  'smoke.log':           { en: '{grade}-grade smoked: kkeueoeo… (Sat +{sat})', ko: '{grade}급 흡연: 끄어어… (만족 +{sat})' },
+  'smoke.log':           { en: '{grade}-grade smoked: grawk-aaah… (Sat +{sat})', ko: '{grade}급 흡연: 끄어어… (만족 +{sat})' },
   'smoke.od.toast':      { en: '💀 5 in one mouth… vision blurs.', ko: '💀 한입에 5개… 시야가 흐릿해진다.' },
   'smoke.od.log':        { en: '5 cigars at once. The seagull is no longer a seagull.', ko: '시가 5개 동시 흡연. 갈매기는 더는 갈매기가 아니다.' },
 
@@ -1300,7 +1300,7 @@ const STR = {
 
   // ===== Sleep =====
   'sleep.clean':         { en: '💤 A day with no smoking. Lungs recovered a little.', ko: '💤 흡연 없는 하루. 폐가 약간 회복됐다.' },
-  'sleep.cry':           { en: 'kuhl…kuhl…', ko: '쿨…쿨…' },
+  'sleep.cry':           { en: 'zzz…zzz…', ko: '쿨…쿨…' },
   'sleep.noSleep':       { en: 'A new day broke without sleeping.', ko: '자지 않은 채 새 날이 밝았다.' },
 
   // ===== Day messages =====
@@ -1320,12 +1320,12 @@ const STR = {
   'misc.cravingBurst':   { en: '💥 Craving burst — the seagull convulses.', ko: '💥 욕구 폭발 — 갈매기가 발작한다.' },
   'misc.atFood':         { en: '🍖 Hungry, ate stored food.', ko: '🍖 배가 고파 챙겨둔 먹이를 먹었다.' },
   'misc.skeletonLives':  { en: '💀 Skeleton seagull does not die. Once.', ko: '💀 해골 갈매기는 죽지 않는다. 한 번은.' },
-  'misc.cryDefault':     { en: 'kkeueok…', ko: '끄어억…' },
-  'misc.voice.healthy':  { en: 'kkiruk-kkiruk', ko: '끼룩끼룩' },
-  'misc.voice.mid':      { en: 'kki…ruk…', ko: '끼…룩…' },
-  'misc.voice.low':      { en: 'kkeueok', ko: '끄어억' },
-  'misc.voice.dying':    { en: 'kehek…', ko: '케헥…' },
-  'misc.voice.craving':  { en: 'kkeuueoeoeok!!', ko: '끄으으어어억!!' },
+  'misc.cryDefault':     { en: 'grawk…', ko: '끄어억…' },
+  'misc.voice.healthy':  { en: 'squawk-squawk', ko: '끼룩끼룩' },
+  'misc.voice.mid':      { en: 'squa…wk…', ko: '끼…룩…' },
+  'misc.voice.low':      { en: 'grawk', ko: '끄어억' },
+  'misc.voice.dying':    { en: '*hack*…', ko: '케헥…' },
+  'misc.voice.craving':  { en: 'GRAAAAAWK!!', ko: '끄으으어어억!!' },
   'misc.storageFail':    { en: '⚠ Save failed — check incognito/private mode', ko: '⚠ 저장 실패 — 시크릿/프라이빗 모드인지 확인하세요' },
 
   // ===== Interaction events =====
@@ -1337,7 +1337,7 @@ const STR = {
   'evt.friend.chatToast':{ en: 'Chatted briefly. Nothing of substance.', ko: '잠깐 수다떨었다. 별 내용은 없었다.' },
   'evt.friend.ignore':   { en: 'Ignore', ko: '무시한다' },
   'evt.friend.ignoreSub':{ en: 'Reputation -3', ko: '평판 -3' },
-  'evt.friend.ignoreToast':{ en: '"Kkiruk!" and ignored them.', ko: '"끼룩"하고 무시했다.' },
+  'evt.friend.ignoreToast':{ en: '"Squawk!" and ignored them.', ko: '"끼룩"하고 무시했다.' },
   'evt.friend.lend':     { en: 'Lend a smoke', ko: '한 대 빌려준다' },
   'evt.friend.lendSub':  { en: '1 cig consumed, Reputation +10', ko: '담배 1개 소모, 평판 +10' },
   'evt.friend.minion':   { en: '💪 Minion seagull +1 (total {n}/5)', ko: '💪 부하 갈매기 +1 (총 {n}/5)' },
@@ -1346,7 +1346,7 @@ const STR = {
   'evt.rival.title':     { en: '🦅 Rival Seagull', ko: '🦅 라이벌 갈매기' },
   'evt.rival.intro':     { en: 'A big-brother seagull asks to bum a smoke.', ko: '큰형 갈매기가 다가와 한 대 빌려달라고 한다.' },
   'evt.rival.give':      { en: 'Give in (Rep +8)', ko: '양보한다 (평판 +8)' },
-  'evt.rival.giveToast': { en: 'Big bro: "Thanks kkiruk"', ko: '큰형: "고맙다 끼룩"' },
+  'evt.rival.giveToast': { en: 'Big bro: "Thanks, squawk"', ko: '큰형: "고맙다 끼룩"' },
   'evt.rival.fight':     { en: 'Refuse (Fight!)', ko: '거절한다 (전투!)' },
   'evt.rival.win':       { en: '🦅 Beat big bro. A street legend now. (Wins {n})', ko: '🦅 큰형을 이겼다. 거리의 전설이 됐다. (격투 승리 {n})' },
   'evt.rival.loseToast': { en: '🩸 Got beaten down.', ko: '🩸 두들겨 맞았다.' },
@@ -1360,7 +1360,7 @@ const STR = {
   'evt.dolphin.listen':  { en: 'Listen', ko: '들어준다' },
   'evt.dolphin.listenSub':{ en: 'Intel +6, Sense +6 (and …)', ko: '지능 +6, 감수성 +6 (그리고 …)' },
   'evt.dolphin.q1':      { en: '"The sea is wide. You are narrow."', ko: '"바다는 넓다. 너는 좁다."' },
-  'evt.dolphin.q2':      { en: '"Kkeueok is more honest than kkiruk."', ko: '"끼룩보다 끄어억이 솔직하다."' },
+  'evt.dolphin.q2':      { en: '"GRAWK is more honest than squawk."', ko: '"끼룩보다 끄어억이 솔직하다."' },
   'evt.dolphin.q3':      { en: '"Cigarettes ruin a seagull. But poetry creates one."', ko: '"담배는 갈매기를 망친다. 그러나 시는 만든다."' },
   'evt.dolphin.q4':      { en: '"I am a mammal. You are a bird. We differ. Therefore we are the same."', ko: '"나는 포유류다. 너는 새다. 우리는 다르다. 그래서 같다."' },
   'evt.dolphin.q5':      { en: '"Just being alive at this dock today is itself a miracle."', ko: '"오늘 하루도 부두에 살아있다는 것 자체가 기적이다."' },
@@ -1463,8 +1463,8 @@ const STR = {
   'evt.fw.hide':         { en: 'Hide behind the warehouse', ko: '창고 뒤로 숨는다' },
   'evt.fw.hideWin':      { en: '🔇 A genuine pack dropped behind the warehouse.', ko: '🔇 창고 뒤에 떨어진 정품 한 갑.' },
   'evt.fw.hideLose':     { en: 'Hidden, but still loud.', ko: '숨었지만 시끄러움은 그대로다.' },
-  'evt.fw.cry':          { en: 'Just cry (kkeueok)', ko: '그냥 운다 (끄어억)' },
-  'evt.fw.cryToast':     { en: 'Your kkeueok was buried by fireworks.', ko: '너의 끄어억은 폭죽에 묻혔다.' },
+  'evt.fw.cry':          { en: 'Just cry (grawk)', ko: '그냥 운다 (끄어억)' },
+  'evt.fw.cryToast':     { en: 'Your grawk was buried by fireworks.', ko: '너의 끄어억은 폭죽에 묻혔다.' },
 
   // Storm
   'evt.storm.title':     { en: '🌪️ Typhoon Warning', ko: '🌪️ 태풍 경보' },
@@ -1540,7 +1540,7 @@ const STR = {
   'evt.sun.gazeToast':   { en: '💧 An odd ache in the chest.', ko: '💧 가슴이 묘하게 시리다.' },
   'evt.sun.poem':        { en: 'Recite a poem', ko: '시 한 줄을 읊는다' },
   'evt.sun.poemSub':     { en: 'Sense +15, Intel +5, Rep -5', ko: '감수성 +15, 지능 +5, 평판 -5' },
-  'evt.sun.poemToast':   { en: '"Kkeueok is what fades." Other seagulls left.', ko: '"끄어억은 사라지는 것이다." 다른 갈매기가 떠났다.' },
+  'evt.sun.poemToast':   { en: '"GRAWK is what fades." Other seagulls left.', ko: '"끄어억은 사라지는 것이다." 다른 갈매기가 떠났다.' },
   'evt.sun.skip':        { en: 'Ignore', ko: '무시한다' },
 
   // Mate
@@ -1551,7 +1551,7 @@ const STR = {
   'evt.mate.win':        { en: '💞 You watched the sunset together. Mate bond ✓', ko: '💞 너희는 함께 노을을 봤다. 짝 인연 ✓' },
   'evt.mate.smell':      { en: 'They smelled smoke and left.', ko: '상대가 담배 냄새를 맡고 떠났다.' },
   'evt.mate.lowCharm':   { en: 'Charm too low (now {n}/40). Maybe next time…', ko: '매력 부족 (현재 {n}/40). 다음 기회에…' },
-  'evt.mate.loud':       { en: 'kkiruk-kkiruk loudly', ko: '끼룩끼룩 시끄럽게' },
+  'evt.mate.loud':       { en: 'Squawk-squawk loudly', ko: '끼룩끼룩 시끄럽게' },
   'evt.mate.loudSub':    { en: 'Rep +3, mate flees', ko: '평판 +3, 짝은 도망' },
   'evt.mate.loudToast':  { en: 'They covered their ears and left.', ko: '상대는 귀를 막고 떠났다.' },
   'evt.mate.skip':       { en: 'Ignore', ko: '무시한다' },
@@ -1738,7 +1738,7 @@ const STR = {
 
   // Credits
   'credits.title':       { en: 'Credits', ko: '크레딧' },
-  'credits.headline':    { en: '<b>Kkeueok — Dockside Chain-Smoking Seagull Simulator</b>', ko: '<b>끄어억 — 부둣가 골초 갈매기 시뮬레이터</b>' },
+  'credits.headline':    { en: '<b>GRAWK — Dockside Chain-Smoking Seagull Simulator</b>', ko: '<b>끄어억 — 부둣가 골초 갈매기 시뮬레이터</b>' },
   'credits.plan':        { en: 'Design: based on master document v2', ko: '기획: 마스터 문서 v2 기반' },
   'credits.dev':         { en: 'Dev: single-HTML prototype', ko: '개발: 단일 HTML 프로토타입' },
   'credits.art':         { en: 'Art: procedural canvas pixels (zero external assets)', ko: '아트: 절차적 캔버스 픽셀 (외부 에셋 0개)' },
@@ -1792,7 +1792,7 @@ const STR = {
   'end.8.flavor':        { en: 'Nobody looked for you. The dock is the same.', ko: '아무도 너를 찾지 않았다. 부두는 그대로다.' },
   'end.8.cosName':       { en: 'Fog Seagull', ko: '안개 갈매기' },
   'end.9.name':          { en: 'Left with the Dolphin', ko: '돌고래와 떠남' },
-  'end.9.flavor':        { en: 'On the dolphin\'s back you cried kkiruk for the last time.', ko: '돌고래의 등 위에서 너는 마지막으로 끼룩거렸다.' },
+  'end.9.flavor':        { en: 'On the dolphin\'s back you squawked for the last time.', ko: '돌고래의 등 위에서 너는 마지막으로 끼룩거렸다.' },
   'end.9.cosName':       { en: 'Sailor Seagull', ko: '항해사 갈매기' },
   'end.10.name':         { en: 'An Ordinary Life', ko: '평범한 삶' },
   'end.10.flavor':       { en: 'You lived ordinarily. After 30 days the dock is the same.', ko: '평범하게 살았다. 30일이 지나도 부두는 그대로다.' },
@@ -1818,9 +1818,9 @@ const STR = {
   'end.15.cosName':      { en: 'Pegasus Seagull', ko: '천마 갈매기' },
   'end.15.title':        { en: 'Skybound Seagull', ko: '천공의 갈매기' },
   'end.16.name':         { en: 'Master Seagull', ko: '갈매기 사부' },
-  'end.16.flavor':       { en: 'Young seagulls came to learn the kkeueok from you.', ko: '젊은 갈매기들이 너에게 와서 끄어억을 배웠다.' },
+  'end.16.flavor':       { en: 'Young seagulls came to learn the GRAWK from you.', ko: '젊은 갈매기들이 너에게 와서 끄어억을 배웠다.' },
   'end.16.cosName':      { en: 'Master Seagull', ko: '사부 갈매기' },
-  'end.16.title':        { en: 'Kkeueok Master', ko: '끄어억 사부' },
+  'end.16.title':        { en: 'GRAWK Master', ko: '끄어억 사부' },
   'end.17.name':         { en: 'Seagull Rockstar', ko: '갈매기 록스타' },
   'end.17.flavor':       { en: 'Mid-stage among fireworks, you became a rockstar.', ko: '폭죽 무대 한가운데에서 너는 록스타가 됐다.' },
   'end.17.cosName':      { en: 'Rockstar', ko: '록스타' },
@@ -1834,9 +1834,9 @@ const STR = {
   'end.19.cosName':      { en: 'Street Thug', ko: '거리의 깡패' },
   'end.19.title':        { en: 'Dock Thug', ko: '부두의 깡패' },
   'end.20.name':         { en: 'Seagull God', ko: '갈매기 신' },
-  'end.20.flavor':       { en: 'Having seen every path, you became the essence of kkeueok.', ko: '모든 길을 본 너는 끄어억의 본질이 됐다.' },
+  'end.20.flavor':       { en: 'Having seen every path, you became the essence of the GRAWK.', ko: '모든 길을 본 너는 끄어억의 본질이 됐다.' },
   'end.20.cosName':      { en: 'Seagull God', ko: '갈매기 신' },
-  'end.20.title':        { en: 'Kkeueok Itself', ko: '끄어억 자체' },
+  'end.20.title':        { en: 'GRAWK Itself', ko: '끄어억 자체' },
   'end.21.name':         { en: 'Seagull Mate', ko: '갈매기 짝꿍' },
   'end.21.flavor':       { en: 'After quitting smoking you found a mate. A small nest at the dock.', ko: '금연 끝에 새 짝을 만났다. 부둣가에 작은 둥지가 생겼다.' },
   'end.21.cosName':      { en: 'Lover Seagull', ko: '사랑꾼 갈매기' },
@@ -1846,7 +1846,7 @@ const STR = {
   'end.22.cosName':      { en: 'Sage Seagull', ko: '현자 갈매기' },
   'end.22.title':        { en: 'Dockside Sage', ko: '부둣가의 현자' },
   'end.23.name':         { en: 'Seagull Influencer', ko: '갈매기 인플루언서' },
-  'end.23.flavor':       { en: 'A million followers. Every kkeueok pinned as a clip.', ko: '팔로워 100만. 너의 모든 끄어억이 클립으로 박제됐다.' },
+  'end.23.flavor':       { en: 'A million followers. Every grawk pinned as a clip.', ko: '팔로워 100만. 너의 모든 끄어억이 클립으로 박제됐다.' },
   'end.23.cosName':      { en: 'Influencer', ko: '인플루언서' },
   'end.23.title':        { en: 'Million Seagull', ko: '100만 갈매기' },
   'end.24.name':         { en: 'Identity Crisis', ko: '정체성 혼란' },
@@ -2013,11 +2013,11 @@ const STR = {
   'ending.shareIntro':   { en: 'SNS share card. Long-press to save or use the buttons below.', ko: 'SNS 공유용 카드. 길게 눌러 저장하거나 아래 버튼을 누르세요.' },
   'ending.shareDl':      { en: '🖼️ Download PNG', ko: '🖼️ PNG 다운로드' },
   'ending.shareBtn':     { en: '📤 Share', ko: '📤 공유' },
-  'ending.shareTextEnd': { en: '🚬🐦 Reached the [{n}] ending in Kkeueok! ({u}/{t} unlocked)\n"Not kkiruk — kkeueok"\nhttps://seagull-game-rhr1109.vercel.app', ko: '🚬🐦 끄어억에서 [{n}] 엔딩에 도달했다! ({u}/{t} 해금)\n"끼룩이 아니라 끄어억"\nhttps://seagull-game-rhr1109.vercel.app' },
-  'ending.shareText':    { en: '🚬🐦 Kkeueok — {u}/{t} endings · longest {l}d · {r} runs\nhttps://seagull-game-rhr1109.vercel.app', ko: '🚬🐦 끄어억 — {u}/{t} 엔딩 해금 / 최장수 {l}일 / 총 회차 {r}회\nhttps://seagull-game-rhr1109.vercel.app' },
-  'ending.shareTitle2':  { en: 'Kkeueok — Dockside Chain-Smoking Seagull', ko: '끄어억 — 부둣가 골초 갈매기' },
+  'ending.shareTextEnd': { en: '🚬🐦 Reached the [{n}] ending in GRAWK! ({u}/{t} unlocked)\n"It\'s not squawk — it\'s GRAWK"\nhttps://seagull-game-rhr1109.vercel.app', ko: '🚬🐦 끄어억에서 [{n}] 엔딩에 도달했다! ({u}/{t} 해금)\n"끼룩이 아니라 끄어억"\nhttps://seagull-game-rhr1109.vercel.app' },
+  'ending.shareText':    { en: '🚬🐦 GRAWK — {u}/{t} endings · longest {l}d · {r} runs\nhttps://seagull-game-rhr1109.vercel.app', ko: '🚬🐦 끄어억 — {u}/{t} 엔딩 해금 / 최장수 {l}일 / 총 회차 {r}회\nhttps://seagull-game-rhr1109.vercel.app' },
+  'ending.shareTitle2':  { en: 'GRAWK — Dockside Chain-Smoking Seagull', ko: '끄어억 — 부둣가 골초 갈매기' },
   'ending.copyPrompt':   { en: 'Copy text below to share:', ko: '아래 텍스트를 복사해서 공유:' },
-  'ending.titleHero':    { en: 'Kkeueok', ko: '끄어억' },
+  'ending.titleHero':    { en: 'GRAWK', ko: '끄어억' },
   'ending.subtitleHero': { en: 'Dockside Chain-Smoking Seagull Simulator', ko: '부둣가 골초 갈매기 시뮬레이터' }
 };
 function t(key, params) {
